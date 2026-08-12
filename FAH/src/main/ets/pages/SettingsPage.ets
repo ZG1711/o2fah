@@ -285,7 +285,7 @@ export struct SettingsPage {
             .backgroundColor(this.getColors().cardBackground)
             .borderRadius(12)
 
-            Text('O2FAH v1.0.0 · ❤️')
+            Text('O2FAH '+ this.version +'· ❤️')
               .fontSize(11)
               .fontColor(this.getColors().textTertiary)
               .width('100%')
