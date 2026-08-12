@@ -1,0 +1,18 @@
+{
+  "UniformDataTypeDeclarations": [
+    {
+      "TypeId": "com.xjsjdwg.o2fah.backup",
+      "BelongingToTypes": [
+        "general.object"
+      ],
+      "FilenameExtensions": [
+        ".o2fah"
+      ],
+      "MIMETypes": [
+        "application/x-o2fah"
+      ],
+      "Description": "O2FAH encrypted backup file",
+      "ReferenceURL": ""
+    }
+  ]
+}

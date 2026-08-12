@@ -1,0 +1,240 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "O2FAH - 双因素认证令牌管理应用"
+    },
+    {
+      "name": "FAHAbility_desc",
+      "value": "O2FAH 主入口"
+    },
+    {
+      "name": "FAHAbility_label",
+      "value": "O2FAH"
+    },
+    {
+      "name": "tab_tokens",
+      "value": "令牌"
+    },
+    {
+      "name": "tab_settings",
+      "value": "设置"
+    },
+    {
+      "name": "add_token_manual",
+      "value": "手动输入"
+    },
+    {
+      "name": "add_token_scan",
+      "value": "扫描二维码"
+    },
+    {
+      "name": "add_token_title",
+      "value": "添加令牌"
+    },
+    {
+      "name": "search_placeholder",
+      "value": "搜索令牌"
+    },
+    {
+      "name": "empty_tokens_title",
+      "value": "暂无令牌"
+    },
+    {
+      "name": "empty_tokens_desc",
+      "value": "点击右下角按钮添加您的第一个令牌"
+    },
+    {
+      "name": "confirm_delete_title",
+      "value": "确认删除"
+    },
+    {
+      "name": "confirm_delete_desc",
+      "value": "删除后将无法恢复，确定要删除此令牌吗？"
+    },
+    {
+      "name": "button_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "button_confirm",
+      "value": "确定"
+    },
+    {
+      "name": "button_delete",
+      "value": "删除"
+    },
+    {
+      "name": "button_save",
+      "value": "保存"
+    },
+    {
+      "name": "button_edit",
+      "value": "编辑"
+    },
+    {
+      "name": "button_export",
+      "value": "导出"
+    },
+    {
+      "name": "button_import",
+      "value": "导入"
+    },
+    {
+      "name": "settings_security",
+      "value": "安全"
+    },
+    {
+      "name": "settings_biometric",
+      "value": "生物识别验证"
+    },
+    {
+      "name": "settings_auto_lock",
+      "value": "自动锁定时间"
+    },
+    {
+      "name": "settings_theme",
+      "value": "主题"
+    },
+    {
+      "name": "settings_theme_follow_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "settings_theme_light",
+      "value": "浅色模式"
+    },
+    {
+      "name": "settings_theme_dark",
+      "value": "深色模式"
+    },
+    {
+      "name": "settings_help_feedback",
+      "value": "帮助与反馈"
+    },
+    {
+      "name": "settings_about",
+      "value": "关于 O2FAH"
+    },
+    {
+      "name": "settings_token_code_length",
+      "value": "验证码位数"
+    },
+    {
+      "name": "settings_token_period",
+      "value": "默认刷新周期"
+    },
+    {
+      "name": "settings_sort",
+      "value": "排序方式"
+    },
+    {
+      "name": "sort_manual",
+      "value": "手动排序"
+    },
+    {
+      "name": "sort_name",
+      "value": "按名称排序"
+    },
+    {
+      "name": "sort_recently_used",
+      "value": "按最近使用"
+    },
+    {
+      "name": "sort_recently_added",
+      "value": "按最近添加"
+    },
+    {
+      "name": "tag_manager_title",
+      "value": "标签管理"
+    },
+    {
+      "name": "tag_all",
+      "value": "全部"
+    },
+    {
+      "name": "tag_new_tag",
+      "value": "新建标签"
+    },
+    {
+      "name": "tag_placeholder",
+      "value": "输入标签名称"
+    },
+    {
+      "name": "copied_toast",
+      "value": "验证码已复制"
+    },
+    {
+      "name": "export_success",
+      "value": "导出成功"
+    },
+    {
+      "name": "import_success",
+      "value": "导入成功"
+    },
+    {
+      "name": "token_added",
+      "value": "令牌已添加"
+    },
+    {
+      "name": "token_deleted",
+      "value": "令牌已删除"
+    },
+    {
+      "name": "token_edited",
+      "value": "令牌已更新"
+    },
+    {
+      "name": "about_version",
+      "value": "版本"
+    },
+    {
+      "name": "about_developer",
+      "value": "开发者"
+    },
+    {
+      "name": "about_license",
+      "value": "开源许可"
+    },
+    {
+      "name": "password_placeholder",
+      "value": "请输入备份密码"
+    },
+    {
+      "name": "password_confirm_placeholder",
+      "value": "请再次输入密码"
+    },
+    {
+      "name": "password_not_match",
+      "value": "两次密码不一致"
+    },
+    {
+      "name": "auto_lock_immediately",
+      "value": "立即锁定"
+    },
+    {
+      "name": "auto_lock_1min",
+      "value": "1 分钟"
+    },
+    {
+      "name": "auto_lock_5min",
+      "value": "5 分钟"
+    },
+    {
+      "name": "auto_lock_15min",
+      "value": "15 分钟"
+    },
+    {
+      "name": "auto_lock_never",
+      "value": "永不锁定"
+    },
+    {
+      "name": "permission_reason_camera",
+      "value": "用于扫描二维码添加两步验证令牌"
+    },
+    {
+      "name": "permission_reason_biometric",
+      "value": "用于验证身份以解锁 O2FAH"
+    }
+  ]
+}

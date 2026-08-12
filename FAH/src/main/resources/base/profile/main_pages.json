@@ -1,0 +1,11 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/LockPage",
+    "pages/AddManualPage",
+    "pages/AddConfirmPage",
+    "pages/TagManagerPage",
+    "pages/HelpFeedbackPage",
+    "pages/AboutPage"
+  ]
+}

@@ -1,0 +1,86 @@
+import { IconConstants } from '../common/IconConstants';
+import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+
+export interface SortOption {
+  key: string;
+  label: string;
+}
+
+@Component
+export struct SortMenu {
+  @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  options: SortOption[] = [
+    { key: 'manual', label: '手动拖动排序' },
+    { key: 'name', label: '按名称 A-Z' },
+    { key: 'created', label: '按添加时间' },
+    { key: 'lastUsed', label: '按最近使用' }
+  ];
+  @Prop selectedSort: string = 'manual';
+  @Prop visible: boolean = false;
+  onSelectSort?: (sortKey: string) => void;
+  onClose?: () => void;
+
+  getColors(): ThemeColors {
+    if (this.isDarkMode) {
+      return ThemeManager.getDarkColors();
+    }
+    return ThemeManager.getLightColors();
+  }
+
+  build() {
+    if (this.visible) {
+      Stack({ alignContent: Alignment.TopStart }) {
+        // Backdrop
+        Column()
+          .width('100%')
+          .height('100%')
+          .backgroundColor('rgba(0,0,0,0.01)')
+          .onClick(() => {
+            if (this.onClose !== undefined) {
+              this.onClose();
+            }
+          })
+
+        // Menu card
+        Column() {
+          Text('排序方式')
+            .fontSize(12)
+            .fontWeight(600)
+            .fontColor(this.getColors().textSecondary)
+            .padding({ top: 8, bottom: 8, left: 16, right: 16 })
+            .width('100%')
+
+          ForEach(this.options, (option: SortOption) => {
+            Row() {
+              Text(option.label)
+                .fontSize(15)
+                .fontWeight(this.selectedSort === option.key ? 600 : 400)
+                .fontColor(this.getColors().textPrimary)
+                .layoutWeight(1)
+              if (this.selectedSort === option.key) {
+                Image(IconConstants.IC_CHECK)
+                  .width(16)
+                  .height(16)
+                  .fillColor(this.getColors().accentBlue)
+              }
+            }
+            .width('100%')
+            .padding({ top: 13, bottom: 13, left: 16, right: 16 })
+            .onClick(() => {
+              if (this.onSelectSort !== undefined) {
+                this.onSelectSort(option.key);
+              }
+            })
+          }, (option: SortOption) => option.key)
+        }
+        .width(200)
+        .borderRadius(14)
+        .backgroundColor(this.getColors().cardBackground)
+        .shadow(this.isDarkMode ? undefined : ({ radius: 20, color: 'rgba(0,0,0,0.12)', offsetY: 4 } as ShadowOptions))
+        .position({ right: 20, top: 48 })
+      }
+      .width('100%')
+      .height('100%')
+    }
+  }
+}

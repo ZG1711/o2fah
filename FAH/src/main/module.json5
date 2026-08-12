@@ -1,0 +1,85 @@
+{
+  "module": {
+    "name": "FAH",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "FAHAbility",
+    "deviceTypes": [
+      "phone"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.CAMERA",
+        "reason": "$string:permission_reason_camera",
+        "usedScene": {
+          "abilities": ["FAHAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.ACCESS_BIOMETRIC",
+        "reason": "$string:permission_reason_biometric",
+        "usedScene": {
+          "abilities": ["FAHAbility"],
+          "when": "inuse"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "name": "FAHAbility",
+        "srcEntry": "./ets/fahability/FAHAbility.ets",
+        "description": "$string:FAHAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:FAHAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          },
+          {
+            "actions": [
+              "ohos.want.action.viewData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "type": "com.xjsjdwg.o2fah.backup",
+                "linkFeature": "FileOpen"
+              },
+              {
+                "scheme": "content",
+                "type": "com.xjsjdwg.o2fah.backup",
+                "linkFeature": "FileOpen"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "FAHBackupAbility",
+        "srcEntry": "./ets/fahbackupability/FAHBackupAbility.ets",
+        "type": "backup",
+        "exported": false,
+        "metadata": [
+          {
+            "name": "ohos.extension.backup",
+            "resource": "$profile:backup_config"
+          }
+        ],
+      }
+    ]
+  }
+}
