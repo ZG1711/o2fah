@@ -17,13 +17,12 @@
 
 ## 技术栈
 
-| 分层 | 技术 |
-|---|---|
-| 平台 | HarmonyOS 6.1.0 · Stage 模型 · API 16 |
-| 语言 | ArkTS (严格模式) |
-| 构建 | hvigor |
-| OTP 算法 | otplib |
-| 二维码识别 | zxing-js/library |
+| 分层 | 技术                                       |
+|---|------------------------------------------|
+| 平台 | HarmonyOS 6.1.0 · Stage 模型 · API 23      |
+| 语言 | ArkTS (严格模式)                             |
+| 构建 | hvigor                                   |
+| 二维码识别 | 鸿蒙SDK，ScanBarcode模块                      |
 | 安全 | @ohos.biometrics · @ohos.security.crypto |
 
 ## 快速开始
