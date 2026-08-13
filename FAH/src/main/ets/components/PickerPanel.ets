@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { curves } from '@kit.ArkUI';
 
 export interface PickerOption {
   label: string;
@@ -14,7 +15,8 @@ export struct PickerPanel {
   @Prop title: string = '';
   @Prop options: PickerOption[] = [];
   @Prop selectedValue: string = '';
-  @Prop visible: boolean = false;
+  @Prop @Watch('onVisibleChanged') visible: boolean = false;
+  @State internalVisible: boolean = false;
   onSelect?: (value: string) => void;
   onClose?: () => void;
 
@@ -25,8 +27,19 @@ export struct PickerPanel {
     return ThemeManager.getLightColors();
   }
 
+  onVisibleChanged(): void {
+    const uiContext = this.getUIContext();
+    if (uiContext !== undefined) {
+      uiContext.animateTo({ curve: curves.springMotion() }, () => {
+        this.internalVisible = this.visible;
+      });
+    } else {
+      this.internalVisible = this.visible;
+    }
+  }
+
   build() {
-    if (this.visible) {
+    if (this.internalVisible) {
       Stack({ alignContent: Alignment.Bottom }) {
         // Backdrop
         Column()
@@ -115,6 +128,7 @@ export struct PickerPanel {
       }
       .width('100%')
       .height('100%')
+      .transition(TransitionEffect.OPACITY.animation({ curve: curves.springMotion() }))
     }
   }
 }

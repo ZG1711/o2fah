@@ -50,7 +50,7 @@ export struct SettingsPage {
   @State toastMessage: string = '';
   @State toastVisible: boolean = false;
   @State autoLockValue: number = 0;
-  @State backupReminder: string = 'weekly';
+  @State backupReminder: string = 'never';
   @State defaultSort: string = 'manual';
   @State biometricEnabled: boolean = true;
   @StorageLink('showAppearancePicker') showAppearancePicker: boolean = false;
