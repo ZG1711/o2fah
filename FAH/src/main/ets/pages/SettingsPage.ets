@@ -9,6 +9,7 @@ import { BackupImporter, MergeResult } from '../backup/BackupImporter';
 import { SettingsStorage } from '../storage/SettingsStorage';
 import { TokenStorage } from '../storage/TokenStorage';
 import { TagStorage } from '../storage/TagStorage';
+import { TokenModel } from '../model/TokenModel';
 import { AppSettings } from '../model/AppSettings';
 import { BiometricUtil } from '../utils/BiometricUtil';
 import { promptAction } from '@kit.ArkUI';
@@ -183,6 +184,17 @@ export struct SettingsPage {
                 showDivider: true,
                 onRowClick: () => {
                   this.exportDialogController.open();
+                }
+              })
+              Divider().height(0.5).color(this.getColors().divider).width('100%').margin({ left: 56 })
+              SettingsRow({
+                iconEmoji: '📱',
+                iconBgColor: '#E8F5E9',
+                label: '导出二维码',
+                showArrow: true,
+                showDivider: true,
+                onRowClick: () => {
+                  this.handleExportQr();
                 }
               })
               Divider().height(0.5).color(this.getColors().divider).width('100%').margin({ left: 56 })
@@ -549,6 +561,16 @@ export struct SettingsPage {
   }
 
   // --- Backup handlers ---
+
+  private handleExportQr(): void {
+    TokenStorage.getAll().then((tokens: TokenModel[]): void => {
+      if (tokens.length === 0) {
+        this.showToast('暂无令牌可导出', 2000);
+        return;
+      }
+      this.getUIContext().getRouter().pushUrl({ url: 'pages/ExportQrPage' });
+    });
+  }
 
   private handleExport(password: string): void {
     const ctx: Context = this.getUIContext().getHostContext()!;

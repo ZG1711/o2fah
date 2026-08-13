@@ -359,7 +359,7 @@ struct Index {
                           },
                           onAction: (): void => {
                           },
-                          actionAreaDistance: 112
+                          actionAreaDistance: 168
                         }
                       } as SwipeActionOptions)
                     }, (item: TokenModel) => item.id)
@@ -866,6 +866,26 @@ struct Index {
   @Builder
   SwipeActionsBuilder(): void {
     Row() {
+      Button() {
+        Text('二维码')
+          .fontSize(12)
+          .fontWeight(600)
+          .fontColor(this.getColors().white)
+      }
+      .width(56)
+      .height('100%')
+      .backgroundColor('#007AFF')
+      .borderRadius(0)
+      .onClick(() => {
+        const token: TokenModel | undefined = this.findTokenById(this.swipedTokenId);
+        if (token !== undefined) {
+          this.getUIContext().getRouter().pushUrl({
+            url: 'pages/ExportQrPage',
+            params: { focusTokenId: token.id }
+          });
+        }
+      })
+
       Button() {
         Text('编辑')
           .fontSize(12)

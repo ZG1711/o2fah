@@ -4,6 +4,7 @@
     "pages/LockPage",
     "pages/AddManualPage",
     "pages/AddConfirmPage",
+    "pages/ExportQrPage",
     "pages/TagManagerPage",
     "pages/HelpFeedbackPage",
     "pages/AboutPage"

@@ -4,6 +4,8 @@ import { ThemeManager, ThemeColors } from '../common/ThemeManager';
 @Component
 export struct EmptyState {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @Prop title: string = '还没有令牌';
+  @Prop subtitle: string = '点击右下角 + 按钮添加你的第一个两步验证令牌';
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -28,12 +30,12 @@ export struct EmptyState {
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
 
-      Text('还没有令牌')
+      Text(this.title)
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
 
-      Text('点击右下角 + 按钮添加你的第一个两步验证令牌')
+      Text(this.subtitle)
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)
