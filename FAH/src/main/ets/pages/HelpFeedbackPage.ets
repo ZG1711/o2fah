@@ -270,98 +270,98 @@ struct HelpFeedbackPage {
           .margin({ top: 6 })
 
           // ===================== Section 3: Feedback Form =====================
-          this.SectionHeader('问题反馈')
+          // this.SectionHeader('问题反馈')
 
-          Column() {
-            // Feedback type label
-            Text('反馈类型')
-              .fontSize(14)
-              .fontColor(this.getColors().textSecondary)
-              .width('100%')
-              .padding({ bottom: 10 })
-
-            // Feedback type tags
-            Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
-              ForEach(this.feedbackTypes, (type: string, index: number) => {
-                Text(type)
-                  .fontSize(13)
-                  .fontWeight(index === this.selectedFeedbackType ? 600 : 500)
-                  .fontColor(index === this.selectedFeedbackType ? '#FFFFFF' : this.getColors().textPrimary)
-                  .backgroundColor(index === this.selectedFeedbackType ? '#4285F4' : this.getTagUnselectedBg())
-                  .borderRadius(16)
-                  .padding({ top: 7, bottom: 7, left: 16, right: 16 })
-                  .margin({ right: 8, bottom: 8 })
-                  .onClick(() => {
-                    this.selectedFeedbackType = index;
-                  })
-              }, (type: string, index: number) => index.toString())
-            }
-            .width('100%')
-            .margin({ bottom: 16 })
-
-            // TextArea for feedback content
-            TextArea({ placeholder: '请描述您的问题或建议…', text: this.feedbackContent })
-              .backgroundColor(this.getInputBg())
-              .borderRadius(10)
-              .padding({ left: 14, right: 14, top: 12, bottom: 12 })
-              .constraintSize({ minHeight: 100 })
-              .width('100%')
-              .margin({ bottom: 12 })
-              .onChange((value: string) => {
-                this.feedbackContent = value;
-              })
-
-            // Email input row
-            Row() {
-              Text('📧 联系方式 (选填)')
-                .fontSize(13)
-                .fontColor(this.getColors().textSecondary)
-
-              TextInput({ placeholder: 'your@email.com', text: this.feedbackEmail })
-                .backgroundColor(this.getInputBg())
-                .borderRadius(10)
-                .padding({ left: 14, right: 14, top: 10, bottom: 10 })
-                .layoutWeight(1)
-                .margin({ left: 10 })
-                .onChange((value: string) => {
-                  this.feedbackEmail = value;
-                })
-            }
-            .width('100%')
-            .alignItems(VerticalAlign.Center)
-            .margin({ bottom: 16 })
-
-            // Submit button
-            Button() {
-              Text('提交反馈')
-                .fontSize(16)
-                .fontWeight(600)
-                .fontColor('#FFFFFF')
-            }
-            .width('100%')
-            .padding({ top: 14, bottom: 14 })
-            .backgroundColor('#4285F4')
-            .borderRadius(12)
-            .onClick(() => {
-              this.getUIContext().getPromptAction().showToast({ message: '感谢反馈！' });
-              this.feedbackContent = '';
-              this.feedbackEmail = '';
-              this.selectedFeedbackType = 0;
-            })
-
-            // Privacy note
-            Text('提交即表示同意收集上述信息用于改进产品')
-              .fontSize(11)
-              .fontColor(this.getColors().textTertiary)
-              .width('100%')
-              .textAlign(TextAlign.Center)
-              .margin({ top: 8 })
-          }
-          .width('100%')
-          .backgroundColor(this.getColors().cardBackground)
-          .borderRadius(12)
-          .padding(16)
-          .margin({ top: 6 })
+          // Column() {
+          //   // Feedback type label
+          //   Text('反馈类型')
+          //     .fontSize(14)
+          //     .fontColor(this.getColors().textSecondary)
+          //     .width('100%')
+          //     .padding({ bottom: 10 })
+          //
+          //   // Feedback type tags
+          //   Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
+          //     ForEach(this.feedbackTypes, (type: string, index: number) => {
+          //       Text(type)
+          //         .fontSize(13)
+          //         .fontWeight(index === this.selectedFeedbackType ? 600 : 500)
+          //         .fontColor(index === this.selectedFeedbackType ? '#FFFFFF' : this.getColors().textPrimary)
+          //         .backgroundColor(index === this.selectedFeedbackType ? '#4285F4' : this.getTagUnselectedBg())
+          //         .borderRadius(16)
+          //         .padding({ top: 7, bottom: 7, left: 16, right: 16 })
+          //         .margin({ right: 8, bottom: 8 })
+          //         .onClick(() => {
+          //           this.selectedFeedbackType = index;
+          //         })
+          //     }, (type: string, index: number) => index.toString())
+          //   }
+          //   .width('100%')
+          //   .margin({ bottom: 16 })
+          //
+          //   // TextArea for feedback content
+          //   TextArea({ placeholder: '请描述您的问题或建议…', text: this.feedbackContent })
+          //     .backgroundColor(this.getInputBg())
+          //     .borderRadius(10)
+          //     .padding({ left: 14, right: 14, top: 12, bottom: 12 })
+          //     .constraintSize({ minHeight: 100 })
+          //     .width('100%')
+          //     .margin({ bottom: 12 })
+          //     .onChange((value: string) => {
+          //       this.feedbackContent = value;
+          //     })
+          //
+          //   // Email input row
+          //   Row() {
+          //     Text('📧 联系方式 (选填)')
+          //       .fontSize(13)
+          //       .fontColor(this.getColors().textSecondary)
+          //
+          //     TextInput({ placeholder: 'your@email.com', text: this.feedbackEmail })
+          //       .backgroundColor(this.getInputBg())
+          //       .borderRadius(10)
+          //       .padding({ left: 14, right: 14, top: 10, bottom: 10 })
+          //       .layoutWeight(1)
+          //       .margin({ left: 10 })
+          //       .onChange((value: string) => {
+          //         this.feedbackEmail = value;
+          //       })
+          //   }
+          //   .width('100%')
+          //   .alignItems(VerticalAlign.Center)
+          //   .margin({ bottom: 16 })
+          //
+          //   // Submit button
+          //   Button() {
+          //     Text('提交反馈')
+          //       .fontSize(16)
+          //       .fontWeight(600)
+          //       .fontColor('#FFFFFF')
+          //   }
+          //   .width('100%')
+          //   .padding({ top: 14, bottom: 14 })
+          //   .backgroundColor('#4285F4')
+          //   .borderRadius(12)
+          //   .onClick(() => {
+          //     this.getUIContext().getPromptAction().showToast({ message: '感谢反馈！' });
+          //     this.feedbackContent = '';
+          //     this.feedbackEmail = '';
+          //     this.selectedFeedbackType = 0;
+          //   })
+          //
+          //   // Privacy note
+          //   Text('提交即表示同意收集上述信息用于改进产品')
+          //     .fontSize(11)
+          //     .fontColor(this.getColors().textTertiary)
+          //     .width('100%')
+          //     .textAlign(TextAlign.Center)
+          //     .margin({ top: 8 })
+          // }
+          // .width('100%')
+          // .backgroundColor(this.getColors().cardBackground)
+          // .borderRadius(12)
+          // .padding(16)
+          // .margin({ top: 6 })
 
           // Bottom spacer
           Column()
@@ -370,7 +370,6 @@ struct HelpFeedbackPage {
         .width('100%')
         .padding({ left: 20, right: 20 })
       }
-      .layoutWeight(1)
       .scrollBar(BarState.Off)
     }
     .width('100%')
