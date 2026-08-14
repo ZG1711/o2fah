@@ -396,7 +396,7 @@ struct Index {
                   .width('100%')
                   .height('100%')
                   .padding({ left: 20, right: 20, top: 6 })
-                  .scrollBar(BarState.Off)
+                  .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
                   .onItemDragStart((_event: ItemDragInfo, itemIndex: number): void => {
                     const displayed: TokenModel[] = this.getDisplayTokens();
                     if (itemIndex >= 0 && itemIndex < displayed.length) {
@@ -448,6 +448,8 @@ struct Index {
         .width('100%')
         .layoutWeight(1)
         .backgroundColor(this.getColors().tabBarBackground)
+        .scrollable(true)
+        .edgeEffect(EdgeEffect.Spring)
       }
       .width('100%')
       .height('100%')
