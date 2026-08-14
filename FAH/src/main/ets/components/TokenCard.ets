@@ -123,8 +123,8 @@ export struct TokenCard {
               .fontSize(10)
               .fontWeight(600)
               .fontColor(this.getTagTextColor(tag))
-              .padding({ left: 10, right: 10, top: 2, bottom: 2 })
-              .borderRadius(8)
+              .padding({ left: 10, right: 10, top: 5, bottom: 5 })
+              .borderRadius(10)
               .backgroundColor(this.getTagColor(tag))
           }, (tag: string) => tag)
         }
@@ -138,7 +138,7 @@ export struct TokenCard {
       .width('100%')
     }
     .width('100%')
-    .padding({ top: 16, bottom: 16, left: 18, right: 18 })
+    .padding({ top: 16, bottom: 12, left: 18, right: 18 })
     .borderRadius(18)
     .backgroundColor(this.getColors().cardBackground)
     .border({
