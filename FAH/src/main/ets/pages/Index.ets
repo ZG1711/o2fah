@@ -157,6 +157,7 @@ struct Index {
     }
     this.loadTokens();
     this.loadTags();
+    this.loadDefaultSort();
     if (this.pendingImportUri.length > 0) {
       this.fileImportDialogController.open();
     }
@@ -443,6 +444,7 @@ struct Index {
           if (index === 0) {
             this.loadTokens();
             this.loadTags();
+            this.loadDefaultSort();
           }
         })
         .width('100%')
@@ -547,6 +549,11 @@ struct Index {
     }
     this.displayTags = tagItems;
     this.tagColorMap = colorMap;
+  }
+
+  private async loadDefaultSort(): Promise<void> {
+    const settings: AppSettings = await SettingsStorage.get();
+    this.selectedSort = settings.defaultSort;
   }
 
   private updateCountdown(): void {
