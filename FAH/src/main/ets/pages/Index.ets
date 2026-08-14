@@ -46,7 +46,6 @@ struct Index {
   @State tokens: TokenModel[] = [];
   @State codeMap: Record<string, string> = {};
   @State remainingMap: Record<string, number> = {};
-  @State timerTick: number = 0;
   @State swipedTokenId: string = '';
   @State editDialogIssuer: string = '';
   @State editDialogAccount: string = '';
@@ -73,6 +72,12 @@ struct Index {
   private editingTokenId: string = '';
   private deletingTokenId: string = '';
   private tabTitles: string[] = ['令牌', '设置'];
+  private displayTokensCache: TokenModel[] = [];
+  private cacheTokensRef: TokenModel[] | undefined = undefined;
+  private cacheDisplayTagsRef: TagItem[] | undefined = undefined;
+  private cacheSearchText: string = '';
+  private cacheSelectedTagIndex: number = -1;
+  private cacheSelectedSort: string = '';
 
   @State displayTags: TagItem[] = [{ id: 'all', name: '全部', color: '#6B7280' }];
 
@@ -368,7 +373,7 @@ struct Index {
                       if (from === to) {
                         return;
                       }
-                      const displayed: TokenModel[] = this.getDisplayTokens();
+                      const displayed: TokenModel[] = this.computeDisplayTokens();
                       const moved: TokenModel = displayed.splice(from, 1)[0];
                       displayed.splice(to, 0, moved);
                       const newTokens: TokenModel[] = [...displayed];
@@ -388,9 +393,7 @@ struct Index {
                         newTokens[i].sortOrder = i;
                       }
                       this.tokens = newTokens;
-                      for (let i: number = 0; i < newTokens.length; i++) {
-                        TokenStorage.update(newTokens[i]);
-                      }
+                      TokenStorage.saveAll(newTokens);
                       this.showToast('排序已保存 ✓', 'success');
                     })
                   }
@@ -526,17 +529,25 @@ struct Index {
   private async loadTokens(): Promise<void> {
     const all: TokenModel[] = await TokenStorage.getAll();
     this.tokens = all;
+    const codeMapCopy: Record<string, string> = {};
+    const remainingCopy: Record<string, number> = {};
+    const tasks: Promise<void>[] = [];
     for (let i: number = 0; i < all.length; i++) {
       const t: TokenModel = all[i];
       if (t.type === 'TOTP') {
-        const code: string = await TotpEngine.generateWithToken(t);
-        this.codeMap[t.id] = code;
-        this.remainingMap[t.id] = TotpEngine.getRemainingSeconds(t.period);
+        tasks.push(TotpEngine.generateWithToken(t).then((code: string): void => {
+          codeMapCopy[t.id] = code;
+          remainingCopy[t.id] = TotpEngine.getRemainingSeconds(t.period);
+        }));
       } else if (t.type === 'HOTP') {
-        const code: string = await HotpEngine.generate(t.secret, t.counter, t.algorithm, t.digits);
-        this.codeMap[t.id] = code;
+        tasks.push(HotpEngine.generate(t.secret, t.counter, t.algorithm, t.digits).then((code: string): void => {
+          codeMapCopy[t.id] = code;
+        }));
       }
     }
+    await Promise.all(tasks);
+    this.codeMap = codeMapCopy;
+    this.remainingMap = remainingCopy;
     this.tokens = [...all];
   }
 
@@ -558,7 +569,6 @@ struct Index {
   }
 
   private updateCountdown(): void {
-    this.timerTick = this.timerTick + 1;
     const newRemaining: Record<string, number> = {};
     for (let i: number = 0; i < this.tokens.length; i++) {
       const t: TokenModel = this.tokens[i];
@@ -578,6 +588,23 @@ struct Index {
   // --- Filtering and sorting ---
 
   private getDisplayTokens(): TokenModel[] {
+    if (this.tokens === this.cacheTokensRef &&
+        this.displayTags === this.cacheDisplayTagsRef &&
+        this.searchText === this.cacheSearchText &&
+        this.selectedTagIndex === this.cacheSelectedTagIndex &&
+        this.selectedSort === this.cacheSelectedSort) {
+      return this.displayTokensCache;
+    }
+    this.cacheTokensRef = this.tokens;
+    this.cacheDisplayTagsRef = this.displayTags;
+    this.cacheSearchText = this.searchText;
+    this.cacheSelectedTagIndex = this.selectedTagIndex;
+    this.cacheSelectedSort = this.selectedSort;
+    this.displayTokensCache = this.computeDisplayTokens();
+    return this.displayTokensCache;
+  }
+
+  private computeDisplayTokens(): TokenModel[] {
     let result: TokenModel[] = [];
     const searchLower: string = this.searchText.toLowerCase();
     let selectedTagName: string = '';

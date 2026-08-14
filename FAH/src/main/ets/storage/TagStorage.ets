@@ -6,6 +6,7 @@ const KEY_TAGS: string = 'tags';
 
 export class TagStorage {
   private static storedContext: Context | undefined = undefined;
+  private static prefsCache: preferences.Preferences | undefined = undefined;
 
   static init(ctx: Context): void {
     TagStorage.storedContext = ctx;
@@ -74,8 +75,11 @@ export class TagStorage {
   }
 
   private static getPrefsSync(ctx: Context): preferences.Preferences {
-    const options: preferences.Options = { name: STORE_NAME };
-    return preferences.getPreferencesSync(ctx, options);
+    if (TagStorage.prefsCache === undefined) {
+      const options: preferences.Options = { name: STORE_NAME };
+      TagStorage.prefsCache = preferences.getPreferencesSync(ctx, options);
+    }
+    return TagStorage.prefsCache;
   }
 
   private static getContext(): Context {

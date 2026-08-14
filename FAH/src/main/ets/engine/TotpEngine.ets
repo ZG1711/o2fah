@@ -3,6 +3,8 @@ import { Base32Decoder } from './Base32Decoder';
 import { TokenModel } from '../model/TokenModel';
 
 export class TotpEngine {
+  private static symKeyCache: Map<string, cryptoFramework.SymKey> = new Map<string, cryptoFramework.SymKey>();
+
   static async generate(secret: string, algorithm: string, digits: number, period: number): Promise<string> {
     let keyBytes: Uint8Array = Base32Decoder.decode(secret);
 
@@ -13,7 +15,7 @@ export class TotpEngine {
 
     let macAlgName: string = TotpEngine.mapAlgorithm(algorithm);
 
-    let hmacResult: Uint8Array = await TotpEngine.computeHmac(keyBytes, macAlgName, counterBytes);
+    let hmacResult: Uint8Array = await TotpEngine.computeHmac(secret, keyBytes, macAlgName, counterBytes);
 
     let otp: number = TotpEngine.dynamicTruncation(hmacResult);
 
@@ -57,10 +59,15 @@ export class TotpEngine {
     return counterBytes;
   }
 
-  private static async computeHmac(keyBytes: Uint8Array, macAlgName: string, messageBytes: Uint8Array): Promise<Uint8Array> {
-    let symKeyBlob: cryptoFramework.DataBlob = { data: keyBytes };
-    let symKeyGenerator: cryptoFramework.SymKeyGenerator = cryptoFramework.createSymKeyGenerator('HMAC');
-    let symKey: cryptoFramework.SymKey = await symKeyGenerator.convertKey(symKeyBlob);
+  private static async computeHmac(secret: string, keyBytes: Uint8Array, macAlgName: string, messageBytes: Uint8Array): Promise<Uint8Array> {
+    const cacheKey: string = secret + '|' + macAlgName;
+    let symKey: cryptoFramework.SymKey | undefined = TotpEngine.symKeyCache.get(cacheKey);
+    if (symKey === undefined) {
+      const symKeyBlob: cryptoFramework.DataBlob = { data: keyBytes };
+      const symKeyGenerator: cryptoFramework.SymKeyGenerator = cryptoFramework.createSymKeyGenerator('HMAC');
+      symKey = await symKeyGenerator.convertKey(symKeyBlob);
+      TotpEngine.symKeyCache.set(cacheKey, symKey);
+    }
 
     let mac: cryptoFramework.Mac = cryptoFramework.createMac(macAlgName);
     await mac.init(symKey);

@@ -6,6 +6,7 @@ const KEY_TOKENS: string = 'tokens';
 
 export class TokenStorage {
   private static storedContext: Context | undefined = undefined;
+  private static prefsCache: preferences.Preferences | undefined = undefined;
 
   static init(ctx: Context): void {
     TokenStorage.storedContext = ctx;
@@ -21,6 +22,14 @@ export class TokenStorage {
   static async save(token: TokenModel): Promise<void> {
     const tokens: TokenModel[] = await TokenStorage.getAll();
     tokens.push(token);
+    const ctx: Context = TokenStorage.getContext();
+    const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
+    const jsonStr: string = JSON.stringify(tokens);
+    prefs.putSync(KEY_TOKENS, jsonStr);
+    await prefs.flush();
+  }
+
+  static async saveAll(tokens: TokenModel[]): Promise<void> {
     const ctx: Context = TokenStorage.getContext();
     const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
     const jsonStr: string = JSON.stringify(tokens);
@@ -66,8 +75,11 @@ export class TokenStorage {
   }
 
   private static getPrefsSync(ctx: Context): preferences.Preferences {
-    const options: preferences.Options = { name: STORE_NAME };
-    return preferences.getPreferencesSync(ctx, options);
+    if (TokenStorage.prefsCache === undefined) {
+      const options: preferences.Options = { name: STORE_NAME };
+      TokenStorage.prefsCache = preferences.getPreferencesSync(ctx, options);
+    }
+    return TokenStorage.prefsCache;
   }
 
   private static getContext(): Context {

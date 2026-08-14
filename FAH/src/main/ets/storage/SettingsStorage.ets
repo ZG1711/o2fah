@@ -6,6 +6,7 @@ const KEY_SETTINGS: string = 'settings';
 
 export class SettingsStorage {
   private static storedContext: Context | undefined = undefined;
+  private static prefsCache: preferences.Preferences | undefined = undefined;
 
   static init(ctx: Context): void {
     SettingsStorage.storedContext = ctx;
@@ -34,8 +35,11 @@ export class SettingsStorage {
   }
 
   private static getPrefsSync(ctx: Context): preferences.Preferences {
-    const options: preferences.Options = { name: STORE_NAME };
-    return preferences.getPreferencesSync(ctx, options);
+    if (SettingsStorage.prefsCache === undefined) {
+      const options: preferences.Options = { name: STORE_NAME };
+      SettingsStorage.prefsCache = preferences.getPreferencesSync(ctx, options);
+    }
+    return SettingsStorage.prefsCache;
   }
 
   private static getContext(): Context {

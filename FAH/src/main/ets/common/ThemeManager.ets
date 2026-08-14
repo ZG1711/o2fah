@@ -37,6 +37,9 @@ const THEME_MODE_LIGHT: string = 'light';
 const THEME_MODE_DARK: string = 'dark';
 
 export class ThemeManager {
+  private static lightColorsCache: ThemeColors = ThemeManager.buildLightColors();
+  private static darkColorsCache: ThemeColors = ThemeManager.buildDarkColors();
+
   static init(systemColorMode: number): void {
     const systemIsDark: boolean = systemColorMode === ConfigurationConstant.ColorMode.COLOR_MODE_DARK;
     AppStorage.setOrCreate(KEY_SYSTEM_IS_DARK, systemIsDark);
@@ -107,6 +110,14 @@ export class ThemeManager {
   }
 
   static getLightColors(): ThemeColors {
+    return ThemeManager.lightColorsCache;
+  }
+
+  static getDarkColors(): ThemeColors {
+    return ThemeManager.darkColorsCache;
+  }
+
+  private static buildLightColors(): ThemeColors {
     const lightColors: ThemeColors = {
       pageBackground: ColorClass.PAGE_BG_LIGHT,
       cardBackground: ColorClass.CARD_BG_LIGHT,
@@ -136,7 +147,7 @@ export class ThemeManager {
     return lightColors;
   }
 
-  static getDarkColors(): ThemeColors {
+  private static buildDarkColors(): ThemeColors {
     const darkColors: ThemeColors = {
       pageBackground: ColorClass.PAGE_BG_DARK,
       cardBackground: ColorClass.CARD_BG_DARK,
