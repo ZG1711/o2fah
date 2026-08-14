@@ -397,6 +397,7 @@ struct Index {
                   .width('100%')
                   .height('100%')
                   .padding({ left: 20, right: 20, top: 6 })
+                  .scrollBar(BarState.Off)
                   .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
                   .onItemDragStart((_event: ItemDragInfo, itemIndex: number): void => {
                     const displayed: TokenModel[] = this.getDisplayTokens();
