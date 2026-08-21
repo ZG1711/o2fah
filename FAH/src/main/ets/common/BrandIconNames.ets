@@ -3453,3 +3453,46 @@ export const BRAND_ICON_NAMES: string[] = [
   'zx',
   'zyte',
 ];
+
+function normalizeName(value: string): string {
+  let result: string = '';
+  for (let i: number = 0; i < value.length; i++) {
+    const ch: string = value.charAt(i);
+    const code: number = value.charCodeAt(i);
+    const isLetter: boolean = (code >= 97 && code <= 122) || (code >= 65 && code <= 90);
+    const isDigit: boolean = code >= 48 && code <= 57;
+    if (isLetter || isDigit) {
+      result = result + ch.toLowerCase();
+    }
+  }
+  return result;
+}
+
+export function matchIcon(issuer: string): string {
+  const normalized: string = normalizeName(issuer);
+  if (normalized.length === 0) {
+    return '';
+  }
+  for (let i: number = 0; i < BRAND_ICON_NAMES.length; i++) {
+    if (BRAND_ICON_NAMES[i] === normalized) {
+      return BRAND_ICON_NAMES[i];
+    }
+  }
+  let best: string = '';
+  for (let i: number = 0; i < BRAND_ICON_NAMES.length; i++) {
+    const name: string = BRAND_ICON_NAMES[i];
+    if (name.length >= 3 && normalized.indexOf(name) >= 0 && name.length > best.length) {
+      best = name;
+    }
+  }
+  if (best.length > 0) {
+    return best;
+  }
+  for (let i: number = 0; i < BRAND_ICON_NAMES.length; i++) {
+    const name: string = BRAND_ICON_NAMES[i];
+    if (name.length >= 3 && normalized.length >= 3 && name.indexOf(normalized) >= 0 && name.length > best.length) {
+      best = name;
+    }
+  }
+  return best;
+}

@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { matchIcon } from '../common/BrandIconNames';
 import { IconPickerPanel } from '../components/IconPicker';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
@@ -40,6 +41,7 @@ struct AddConfirmPage {
           this.issuer = token.issuer;
           this.account = token.account;
           this.secretKey = token.secret;
+          this.icon = matchIcon(token.issuer);
         }
       }
     }
@@ -53,6 +55,14 @@ struct AddConfirmPage {
       return this.account.trim().charAt(0).toUpperCase();
     }
     return '?';
+  }
+
+  onBackPress(): boolean {
+    if (this.showIconPicker) {
+      this.showIconPicker = false;
+      return true;
+    }
+    return false;
   }
 
   getColors(): ThemeColors {

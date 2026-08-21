@@ -65,6 +65,19 @@ struct AddManualPage {
     this.loadTags();
   }
 
+  onBackPress(): boolean {
+    if (this.showIconPicker || this.showProtocolPicker || this.showAlgorithmPicker ||
+      this.showDigitsPicker || this.showPeriodPicker) {
+      this.showIconPicker = false;
+      this.showProtocolPicker = false;
+      this.showAlgorithmPicker = false;
+      this.showDigitsPicker = false;
+      this.showPeriodPicker = false;
+      return true;
+    }
+    return false;
+  }
+
   private getInitial(): string {
     if (this.issuer.trim().length > 0) {
       return this.issuer.trim().charAt(0).toUpperCase();

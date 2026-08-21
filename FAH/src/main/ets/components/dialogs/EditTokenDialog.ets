@@ -1,5 +1,5 @@
 import { ThemeManager, ThemeColors } from '../../common/ThemeManager';
-import { IconGrid } from '../IconPicker';
+import { IconPickerDialog } from '../IconPickerDialog';
 
 export interface EditResult {
   issuer: string;
@@ -23,8 +23,19 @@ export struct EditTokenDialog {
   @State editIssuer: string = '';
   @State editAccount: string = '';
   @State editIcon: string = '';
-  @State showIconPicker: boolean = false;
   @State tagSelections: boolean[] = [];
+
+  private iconPickerController: CustomDialogController = new CustomDialogController({
+    builder: IconPickerDialog({
+      selected: this.editIcon,
+      confirm: (name: string): void => {
+        this.editIcon = name;
+      }
+    }),
+    autoCancel: true,
+    alignment: DialogAlignment.Center,
+    customStyle: true
+  });
 
   aboutToAppear(): void {
     this.editIssuer = this.issuer;
@@ -95,22 +106,8 @@ export struct EditTokenDialog {
           .alignItems(HorizontalAlign.Center)
           .margin({ bottom: 16 })
           .onClick(() => {
-            this.showIconPicker = !this.showIconPicker;
+            this.iconPickerController.open();
           })
-
-          if (this.showIconPicker) {
-            Column() {
-              IconGrid({
-                selected: this.editIcon,
-                onSelect: (name: string): void => {
-                  this.editIcon = name;
-                  this.showIconPicker = false;
-                }
-              })
-            }
-            .width('100%')
-            .padding({ left: 20, right: 20, bottom: 16 })
-          }
 
           Text('发行方')
             .fontSize(12)

@@ -720,14 +720,33 @@ struct Index {
   private async handleEditConfirm(issuer: string, account: string, icon: string, tags: string[]): Promise<void> {
     const token: TokenModel | undefined = this.findTokenById(this.editingTokenId);
     if (token !== undefined) {
-      token.issuer = issuer;
-      token.account = account;
-      token.icon = icon;
-      token.tags = tags;
-      token.lastUsedAt = Date.now();
-      await TokenStorage.update(token);
-      const tokensCopy: TokenModel[] = [...this.tokens];
-      this.tokens = tokensCopy;
+      const updated: TokenModel = new TokenModel();
+      updated.id = token.id;
+      updated.issuer = issuer;
+      updated.account = account;
+      updated.icon = icon;
+      updated.secret = token.secret;
+      updated.type = token.type;
+      updated.algorithm = token.algorithm;
+      updated.digits = token.digits;
+      updated.period = token.period;
+      updated.counter = token.counter;
+      updated.tags = tags;
+      updated.iconColor = token.iconColor;
+      updated.createdAt = token.createdAt;
+      updated.lastUsedAt = Date.now();
+      updated.sortOrder = token.sortOrder;
+
+      const newTokens: TokenModel[] = [];
+      for (let i: number = 0; i < this.tokens.length; i++) {
+        if (this.tokens[i].id === token.id) {
+          newTokens.push(updated);
+        } else {
+          newTokens.push(this.tokens[i]);
+        }
+      }
+      this.tokens = newTokens;
+      await TokenStorage.update(updated);
       this.showToast('令牌已更新 ✓', 'success');
     }
   }
