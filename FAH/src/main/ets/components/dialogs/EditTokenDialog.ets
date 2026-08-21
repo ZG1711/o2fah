@@ -1,5 +1,5 @@
 import { ThemeManager, ThemeColors } from '../../common/ThemeManager';
-import { IconPickerDialog } from '../IconPickerDialog';
+import { IconPickerPanel } from '../IconPicker';
 
 export interface EditResult {
   issuer: string;
@@ -23,24 +23,14 @@ export struct EditTokenDialog {
   @State editIssuer: string = '';
   @State editAccount: string = '';
   @State editIcon: string = '';
+  @StorageLink('editIconPickerOpen') showIconPicker: boolean = false;
   @State tagSelections: boolean[] = [];
-
-  private iconPickerController: CustomDialogController = new CustomDialogController({
-    builder: IconPickerDialog({
-      selected: this.editIcon,
-      confirm: (name: string): void => {
-        this.editIcon = name;
-      }
-    }),
-    autoCancel: true,
-    alignment: DialogAlignment.Center,
-    customStyle: true
-  });
 
   aboutToAppear(): void {
     this.editIssuer = this.issuer;
     this.editAccount = this.account;
     this.editIcon = this.icon;
+    this.showIconPicker = false;
     const selections: boolean[] = [];
     for (let i: number = 0; i < this.tagNames.length; i++) {
       let found: boolean = false;
@@ -63,166 +53,189 @@ export struct EditTokenDialog {
   }
 
   build() {
-    Column() {
-      Text('编辑令牌')
-        .fontSize(17)
-        .fontWeight(700)
-        .fontColor(this.getColors().textPrimary)
-        .textAlign(TextAlign.Center)
-        .padding({ top: 22, bottom: 8, left: 20, right: 20 })
+    Stack({ alignContent: Alignment.Center }) {
+      Column()
+        .width('100%')
+        .height('100%')
+        .backgroundColor('rgba(0,0,0,0.4)')
+        .onClick(() => {
+          this.controller.close();
+        })
 
-      Scroll() {
-        Column() {
+      Column() {
+        Text('编辑令牌')
+          .fontSize(17)
+          .fontWeight(700)
+          .fontColor(this.getColors().textPrimary)
+          .textAlign(TextAlign.Center)
+          .padding({ top: 22, bottom: 8, left: 20, right: 20 })
+
+        Scroll() {
           Column() {
-            Stack({ alignContent: Alignment.Center }) {
-              if (this.editIcon.length > 0) {
-                Image($r('app.media.' + this.editIcon))
-                  .width(40)
-                  .height(40)
-                  .objectFit(ImageFit.Contain)
-              } else {
-                Text(this.editIssuer.length > 0 ? this.editIssuer.charAt(0).toUpperCase() : '?')
-                  .fontSize(26)
-                  .fontWeight(700)
-                  .fontColor(this.getColors().white)
+            Column() {
+              Stack({ alignContent: Alignment.Center }) {
+                if (this.editIcon.length > 0) {
+                  Image($r('app.media.' + this.editIcon))
+                    .width(40)
+                    .height(40)
+                    .objectFit(ImageFit.Contain)
+                } else {
+                  Text(this.editIssuer.length > 0 ? this.editIssuer.charAt(0).toUpperCase() : '?')
+                    .fontSize(26)
+                    .fontWeight(700)
+                    .fontColor(this.getColors().white)
+                }
               }
+              .width(76)
+              .height(76)
+              .borderRadius(20)
+              .backgroundColor(this.editIcon.length > 0 ? this.getColors().cardBackground : this.getColors().accentBlue)
+              .border({
+                width: this.editIcon.length > 0 ? 1 : 0,
+                color: this.getColors().divider,
+                style: this.editIcon.length > 0 ? BorderStyle.Dashed : BorderStyle.Solid
+              })
+
+              Text(this.editIcon.length > 0 ? '点击更换图标' : '点击选择图标')
+                .fontSize(11)
+                .fontColor(this.getColors().textTertiary)
+                .margin({ top: 8 })
             }
-            .width(76)
-            .height(76)
-            .borderRadius(20)
-            .backgroundColor(this.editIcon.length > 0 ? this.getColors().cardBackground : this.getColors().accentBlue)
-            .border({
-              width: this.editIcon.length > 0 ? 1 : 0,
-              color: this.getColors().divider,
-              style: this.editIcon.length > 0 ? BorderStyle.Dashed : BorderStyle.Solid
+            .width('100%')
+            .alignItems(HorizontalAlign.Center)
+            .margin({ bottom: 16 })
+            .onClick(() => {
+              this.showIconPicker = true;
             })
 
-            Text(this.editIcon.length > 0 ? '点击更换图标' : '点击选择图标')
-              .fontSize(11)
-              .fontColor(this.getColors().textTertiary)
-              .margin({ top: 8 })
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Center)
-          .margin({ bottom: 16 })
-          .onClick(() => {
-            this.iconPickerController.open();
-          })
-
-          Text('发行方')
-            .fontSize(12)
-            .fontWeight(600)
-            .fontColor(this.getColors().textSecondary)
-            .padding({ left: 2, right: 20, bottom: 6 })
-
-          TextInput({ placeholder: '', text: this.editIssuer })
-            .fontSize(15)
-            .backgroundColor(this.getColors().pageBackground)
-            .borderRadius(10)
-            .padding({ top: 12, bottom: 12, left: 14, right: 14 })
-            .margin({ left: 20, right: 20 })
-            .onChange((value: string) => {
-              this.editIssuer = value;
-            })
-
-          Text('账户名')
-            .fontSize(12)
-            .fontWeight(600)
-            .fontColor(this.getColors().textSecondary)
-            .padding({ left: 2, right: 20, top: 10, bottom: 6 })
-
-          TextInput({ placeholder: '', text: this.editAccount })
-            .fontSize(15)
-            .backgroundColor(this.getColors().pageBackground)
-            .borderRadius(10)
-            .padding({ top: 12, bottom: 12, left: 14, right: 14 })
-            .margin({ left: 20, right: 20, bottom: 20 })
-            .onChange((value: string) => {
-              this.editAccount = value;
-            })
-
-          if (this.tagNames.length > 0) {
-            Text('分类标签')
+            Text('发行方')
               .fontSize(12)
               .fontWeight(600)
               .fontColor(this.getColors().textSecondary)
               .padding({ left: 2, right: 20, bottom: 6 })
 
-            Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
-              ForEach(this.tagNames, (tag: string, index: number) => {
-                Text(tag)
-                  .fontSize(13)
-                  .fontWeight(500)
-                  .fontColor(this.getTagTextColor(index))
-                  .padding({ top: 7, bottom: 7, left: 14, right: 14 })
-                  .borderRadius(16)
-                  .backgroundColor(this.tagColors[index])
-                  .border({
-                    width: this.tagSelections[index] ? 1 : 1,
-                    color: this.tagSelections[index] ? (this.isDark ? '#FFFFFF' : '#1F2937') : this.tagColors[index]
-                  })
-                  .margin({ right: 8, bottom: 8 })
-                  .onClick(() => {
-                    const newSelections: boolean[] = [...this.tagSelections];
-                    newSelections[index] = !newSelections[index];
-                    this.tagSelections = newSelections;
-                  })
-              }, (tag: string) => tag)
+            TextInput({ placeholder: '', text: this.editIssuer })
+              .fontSize(15)
+              .backgroundColor(this.getColors().pageBackground)
+              .borderRadius(10)
+              .padding({ top: 12, bottom: 12, left: 14, right: 14 })
+              .margin({ left: 20, right: 20 })
+              .onChange((value: string) => {
+                this.editIssuer = value;
+              })
+
+            Text('账户名')
+              .fontSize(12)
+              .fontWeight(600)
+              .fontColor(this.getColors().textSecondary)
+              .padding({ left: 2, right: 20, top: 10, bottom: 6 })
+
+            TextInput({ placeholder: '', text: this.editAccount })
+              .fontSize(15)
+              .backgroundColor(this.getColors().pageBackground)
+              .borderRadius(10)
+              .padding({ top: 12, bottom: 12, left: 14, right: 14 })
+              .margin({ left: 20, right: 20, bottom: 20 })
+              .onChange((value: string) => {
+                this.editAccount = value;
+              })
+
+            if (this.tagNames.length > 0) {
+              Text('分类标签')
+                .fontSize(12)
+                .fontWeight(600)
+                .fontColor(this.getColors().textSecondary)
+                .padding({ left: 2, right: 20, bottom: 6 })
+
+              Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
+                ForEach(this.tagNames, (tag: string, index: number) => {
+                  Text(tag)
+                    .fontSize(13)
+                    .fontWeight(500)
+                    .fontColor(this.getTagTextColor(index))
+                    .padding({ top: 7, bottom: 7, left: 14, right: 14 })
+                    .borderRadius(16)
+                    .backgroundColor(this.tagColors[index])
+                    .border({
+                      width: this.tagSelections[index] ? 1 : 1,
+                      color: this.tagSelections[index] ? (this.isDark ? '#FFFFFF' : '#1F2937') : this.tagColors[index]
+                    })
+                    .margin({ right: 8, bottom: 8 })
+                    .onClick(() => {
+                      const newSelections: boolean[] = [...this.tagSelections];
+                      newSelections[index] = !newSelections[index];
+                      this.tagSelections = newSelections;
+                    })
+                }, (tag: string) => tag)
+              }
+              .width('100%')
+              .padding({ left: 20, right: 20, bottom: 12 })
             }
-            .width('100%')
-            .padding({ left: 20, right: 20, bottom: 12 })
           }
+          .width('100%')
         }
         .width('100%')
-      }
-      .width('100%')
-      .constraintSize({ maxHeight: 420 })
-      .scrollBar(BarState.Off)
+        .constraintSize({ maxHeight: 420 })
+        .scrollBar(BarState.Off)
 
-      Row() {
-        Text('取消')
-          .fontSize(15)
-          .fontWeight(500)
-          .fontColor(this.getColors().textSecondary)
-          .width('50%')
-          .height(44)
-          .textAlign(TextAlign.Center)
-          .onClick(() => {
-            this.controller.close();
-          })
+        Row() {
+          Text('取消')
+            .fontSize(15)
+            .fontWeight(500)
+            .fontColor(this.getColors().textSecondary)
+            .width('50%')
+            .height(44)
+            .textAlign(TextAlign.Center)
+            .onClick(() => {
+              this.controller.close();
+            })
 
-        Text('保存')
-          .fontSize(15)
-          .fontWeight(600)
-          .fontColor(this.getColors().accentBlue)
-          .width('50%')
-          .height(44)
-          .textAlign(TextAlign.Center)
-          .onClick(() => {
-            if (this.confirm !== undefined) {
-              const selectedTags: string[] = [];
-              for (let i: number = 0; i < this.tagSelections.length; i++) {
-                if (this.tagSelections[i]) {
-                  selectedTags.push(this.tagNames[i]);
+          Text('保存')
+            .fontSize(15)
+            .fontWeight(600)
+            .fontColor(this.getColors().accentBlue)
+            .width('50%')
+            .height(44)
+            .textAlign(TextAlign.Center)
+            .onClick(() => {
+              if (this.confirm !== undefined) {
+                const selectedTags: string[] = [];
+                for (let i: number = 0; i < this.tagSelections.length; i++) {
+                  if (this.tagSelections[i]) {
+                    selectedTags.push(this.tagNames[i]);
+                  }
                 }
+                const result: EditResult = {
+                  issuer: this.editIssuer,
+                  account: this.editAccount,
+                  icon: this.editIcon,
+                  tags: selectedTags
+                };
+                this.confirm(result);
               }
-              const result: EditResult = {
-                issuer: this.editIssuer,
-                account: this.editAccount,
-                icon: this.editIcon,
-                tags: selectedTags
-              };
-              this.confirm(result);
-            }
-            this.controller.close();
-          })
+              this.controller.close();
+            })
+        }
+        .width('100%')
+        .border({ width: { top: 0.5 }, color: this.getColors().divider })
       }
-      .width('100%')
-      .border({ width: { top: 0.5 }, color: this.getColors().divider })
+      .width(300)
+      .backgroundColor(this.getColors().cardBackground)
+      .borderRadius(16)
+
+      IconPickerPanel({
+        visible: this.showIconPicker,
+        selected: this.editIcon,
+        onSelect: (name: string): void => {
+          this.editIcon = name;
+        },
+        onClose: (): void => {
+          this.showIconPicker = false;
+        }
+      })
     }
-    .width(300)
-    .backgroundColor(this.getColors().cardBackground)
-    .borderRadius(16)
+    .width('100%')
+    .height('100%')
   }
 
   private getTagTextColor(index: number): string {

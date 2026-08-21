@@ -97,7 +97,17 @@ struct Index {
     }),
     autoCancel: true,
     alignment: DialogAlignment.Center,
-    customStyle: true
+    customStyle: true,
+    onWillDismiss: (action: DismissDialogAction): void => {
+      if (action.reason === DismissReason.PRESS_BACK) {
+        const pickerOpen: boolean = AppStorage.get<boolean>('editIconPickerOpen') ?? false;
+        if (pickerOpen) {
+          AppStorage.set('editIconPickerOpen', false);
+          return;
+        }
+      }
+      action.dismiss();
+    }
   });
 
   private deleteDialogController: CustomDialogController = new CustomDialogController({
