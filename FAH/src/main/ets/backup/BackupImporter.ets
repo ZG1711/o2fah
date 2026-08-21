@@ -82,6 +82,7 @@ export class BackupImporter {
         newToken.period = importedToken.period;
         newToken.counter = importedToken.counter;
         newToken.tags = importedToken.tags;
+        newToken.icon = importedToken.icon;
         newToken.iconColor = importedToken.iconColor;
         newToken.createdAt = Date.now();
         newToken.sortOrder = Date.now();

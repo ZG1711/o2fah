@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { IconPickerPanel } from '../components/IconPicker';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
 import { TagStorage } from '../storage/TagStorage';
@@ -14,6 +15,7 @@ struct AddConfirmPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @State issuer: string = '';
   @State account: string = '';
+  @State icon: string = '';
   @State secretKey: string = '';
   @State parsedToken: TokenModel = new TokenModel();
   @State showKey: boolean = false;
@@ -23,6 +25,7 @@ struct AddConfirmPage {
   @State toastMessage: string = '';
   @State toastVisible: boolean = false;
   @State loading: boolean = false;
+  @State showIconPicker: boolean = false;
 
   aboutToAppear(): void {
     TagStorage.init(this.getUIContext().getHostContext()!);
@@ -40,6 +43,16 @@ struct AddConfirmPage {
         }
       }
     }
+  }
+
+  private getInitial(): string {
+    if (this.issuer.trim().length > 0) {
+      return this.issuer.trim().charAt(0).toUpperCase();
+    }
+    if (this.account.trim().length > 0) {
+      return this.account.trim().charAt(0).toUpperCase();
+    }
+    return '?';
   }
 
   getColors(): ThemeColors {
@@ -87,27 +100,40 @@ struct AddConfirmPage {
         Scroll() {
           Column() {
             Column() {
-              Row() {
-                Text(this.issuer.length > 0 ? this.issuer.charAt(0) : '?')
-                  .fontSize(26)
-                  .fontWeight(700)
-                  .fontColor(this.getColors().white)
+              Stack({ alignContent: Alignment.Center }) {
+                if (this.icon.length > 0) {
+                  Image($r('app.media.' + this.icon))
+                    .width(48)
+                    .height(48)
+                    .objectFit(ImageFit.Contain)
+                } else {
+                  Text(this.getInitial())
+                    .fontSize(26)
+                    .fontWeight(700)
+                    .fontColor(this.getColors().white)
+                }
               }
-              .width(60)
-              .height(60)
-              .borderRadius(18)
-              .backgroundColor(this.getColors().accentBlue)
-              .justifyContent(FlexAlign.Center)
+              .width(76)
+              .height(76)
+              .borderRadius(20)
+              .backgroundColor(this.icon.length > 0 ? this.getColors().cardBackground : this.getColors().accentBlue)
+              .border({
+                width: this.icon.length > 0 ? 1 : 0,
+                color: this.getColors().divider,
+                style: BorderStyle.Dashed
+              })
 
-              Text('已识别令牌信息，可修改后保存')
+              Text(this.icon.length > 0 ? '点击更换图标' : '点击选择图标')
                 .fontSize(11)
                 .fontColor(this.getColors().textTertiary)
-                .textAlign(TextAlign.Center)
-                .margin({ top: 10 })
+                .margin({ top: 8 })
             }
             .width('100%')
             .alignItems(HorizontalAlign.Center)
             .margin({ bottom: 22 })
+            .onClick(() => {
+              this.showIconPicker = true;
+            })
 
             Column() {
               Text('发行方')
@@ -299,6 +325,18 @@ struct AddConfirmPage {
       .height('100%')
       .backgroundColor(this.getColors().pageBackground)
 
+      // Icon Picker
+      IconPickerPanel({
+        visible: this.showIconPicker,
+        selected: this.icon,
+        onSelect: (name: string): void => {
+          this.icon = name;
+        },
+        onClose: (): void => {
+          this.showIconPicker = false;
+        }
+      })
+
       // Loading overlay
       if (this.loading) {
         Column() {
@@ -368,6 +406,7 @@ struct AddConfirmPage {
       }
     }
     token.tags = selectedTags;
+    token.icon = this.icon;
     token.iconColor = this.getIconColor(issuerTrimmed);
 
     TokenStorage.save(token).then((): void => {

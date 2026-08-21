@@ -108,6 +108,7 @@ export class TokenStorage {
       if (rawTags instanceof Array) {
         token.tags = rawTags as string[];
       }
+      token.icon = (raw['icon'] ?? '') as string;
       token.iconColor = (raw['iconColor'] ?? '#4285F4') as string;
       token.createdAt = (raw['createdAt'] ?? 0) as number;
       token.lastUsedAt = (raw['lastUsedAt'] ?? 0) as number;

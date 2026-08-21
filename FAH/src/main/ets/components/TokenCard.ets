@@ -25,15 +25,27 @@ export struct TokenCard {
     Column({ space: 0 }) {
       Row() {
         Row({ space: 12 }) {
-          Text(this.token.issuer.charAt(0).toUpperCase())
-            .fontSize(20)
-            .fontWeight(700)
-            .fontColor(this.getColors().white)
-            .width(42)
-            .height(42)
-            .borderRadius(13)
-            .backgroundColor(this.token.iconColor)
-            .textAlign(TextAlign.Center)
+          Stack({ alignContent: Alignment.Center }) {
+            if (this.token.icon.length > 0) {
+              Image($r('app.media.' + this.token.icon))
+                .width(24)
+                .height(24)
+                .objectFit(ImageFit.Contain)
+            } else {
+              Text(this.token.issuer.charAt(0).toUpperCase())
+                .fontSize(20)
+                .fontWeight(700)
+                .fontColor(this.getColors().white)
+            }
+          }
+          .width(42)
+          .height(42)
+          .borderRadius(13)
+          .backgroundColor(this.token.icon.length > 0 ? '#FFFFFF' : this.token.iconColor)
+          .border({
+            width: this.token.icon.length > 0 ? 0.5 : 0,
+            color: this.getColors().divider
+          })
           Column({ space: 1 }) {
             Text(this.token.issuer)
               .fontSize(16)

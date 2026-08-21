@@ -9,6 +9,7 @@ export class TokenModel {
   period: number = 30;
   counter: number = 0;
   tags: string[] = [];
+  icon: string = '';
   iconColor: string = '#4285F4';
   createdAt: number = 0;
   lastUsedAt: number = 0;

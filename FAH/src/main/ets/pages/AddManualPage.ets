@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { IconPickerPanel } from '../components/IconPicker';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
 import { TagStorage } from '../storage/TagStorage';
@@ -34,6 +35,7 @@ struct AddManualPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @State issuer: string = '';
   @State account: string = '';
+  @State icon: string = '';
   @State secretKey: string = '';
   @State protocolType: string = 'TOTP';
   @State algorithm: string = 'SHA-1';
@@ -49,6 +51,7 @@ struct AddManualPage {
   @State showAlgorithmPicker: boolean = false;
   @State showDigitsPicker: boolean = false;
   @State showPeriodPicker: boolean = false;
+  @State showIconPicker: boolean = false;
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -60,6 +63,16 @@ struct AddManualPage {
   aboutToAppear(): void {
     TagStorage.init(this.getUIContext().getHostContext()!);
     this.loadTags();
+  }
+
+  private getInitial(): string {
+    if (this.issuer.trim().length > 0) {
+      return this.issuer.trim().charAt(0).toUpperCase();
+    }
+    if (this.account.trim().length > 0) {
+      return this.account.trim().charAt(0).toUpperCase();
+    }
+    return '?';
   }
 
   build() {
@@ -96,6 +109,42 @@ struct AddManualPage {
 
         Scroll() {
           Column() {
+            Column() {
+              Stack({ alignContent: Alignment.Center }) {
+                if (this.icon.length > 0) {
+                  Image($r('app.media.' + this.icon))
+                    .width(48)
+                    .height(48)
+                    .objectFit(ImageFit.Contain)
+                } else {
+                  Text(this.getInitial())
+                    .fontSize(26)
+                    .fontWeight(700)
+                    .fontColor(this.getColors().white)
+                }
+              }
+              .width(76)
+              .height(76)
+              .borderRadius(20)
+              .backgroundColor(this.icon.length > 0 ? this.getColors().cardBackground : this.getColors().accentBlue)
+              .border({
+                width: this.icon.length > 0 ? 1 : 0,
+                color: this.getColors().divider,
+                style: BorderStyle.Dashed
+              })
+
+              Text(this.icon.length > 0 ? '点击更换图标' : '点击选择图标')
+                .fontSize(11)
+                .fontColor(this.getColors().textTertiary)
+                .margin({ top: 8 })
+            }
+            .width('100%')
+            .alignItems(HorizontalAlign.Center)
+            .margin({ bottom: 20 })
+            .onClick(() => {
+              this.showIconPicker = true;
+            })
+
             Column() {
               Row() {
                 Text('发行方')
@@ -421,6 +470,18 @@ struct AddManualPage {
         }
       })
 
+      // Icon Picker
+      IconPickerPanel({
+        visible: this.showIconPicker,
+        selected: this.icon,
+        onSelect: (name: string): void => {
+          this.icon = name;
+        },
+        onClose: (): void => {
+          this.showIconPicker = false;
+        }
+      })
+
       // Toast overlay
       if (this.toastVisible) {
         Row() {
@@ -481,6 +542,7 @@ struct AddManualPage {
       }
     }
     token.tags = selectedTags;
+    token.icon = this.icon;
     token.iconColor = this.getIconColor(issuerTrimmed);
 
     TokenStorage.save(token).then((): void => {

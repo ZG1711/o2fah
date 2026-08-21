@@ -1,8 +1,10 @@
 import { ThemeManager, ThemeColors } from '../../common/ThemeManager';
+import { IconGrid } from '../IconPicker';
 
 export interface EditResult {
   issuer: string;
   account: string;
+  icon: string;
   tags: string[];
 }
 
@@ -11,6 +13,7 @@ export struct EditTokenDialog {
   controller: CustomDialogController;
   @Prop issuer: string = '';
   @Prop account: string = '';
+  @Prop icon: string = '';
   @Prop tags: string[] = [];
   @Prop tagNames: string[] = [];
   @Prop tagColors: string[] = [];
@@ -19,11 +22,14 @@ export struct EditTokenDialog {
 
   @State editIssuer: string = '';
   @State editAccount: string = '';
+  @State editIcon: string = '';
+  @State showIconPicker: boolean = false;
   @State tagSelections: boolean[] = [];
 
   aboutToAppear(): void {
     this.editIssuer = this.issuer;
     this.editAccount = this.account;
+    this.editIcon = this.icon;
     const selections: boolean[] = [];
     for (let i: number = 0; i < this.tagNames.length; i++) {
       let found: boolean = false;
@@ -56,6 +62,56 @@ export struct EditTokenDialog {
 
       Scroll() {
         Column() {
+          Column() {
+            Stack({ alignContent: Alignment.Center }) {
+              if (this.editIcon.length > 0) {
+                Image($r('app.media.' + this.editIcon))
+                  .width(40)
+                  .height(40)
+                  .objectFit(ImageFit.Contain)
+              } else {
+                Text(this.editIssuer.length > 0 ? this.editIssuer.charAt(0).toUpperCase() : '?')
+                  .fontSize(26)
+                  .fontWeight(700)
+                  .fontColor(this.getColors().white)
+              }
+            }
+            .width(76)
+            .height(76)
+            .borderRadius(20)
+            .backgroundColor(this.editIcon.length > 0 ? this.getColors().cardBackground : this.getColors().accentBlue)
+            .border({
+              width: this.editIcon.length > 0 ? 1 : 0,
+              color: this.getColors().divider,
+              style: this.editIcon.length > 0 ? BorderStyle.Dashed : BorderStyle.Solid
+            })
+
+            Text(this.editIcon.length > 0 ? '点击更换图标' : '点击选择图标')
+              .fontSize(11)
+              .fontColor(this.getColors().textTertiary)
+              .margin({ top: 8 })
+          }
+          .width('100%')
+          .alignItems(HorizontalAlign.Center)
+          .margin({ bottom: 16 })
+          .onClick(() => {
+            this.showIconPicker = !this.showIconPicker;
+          })
+
+          if (this.showIconPicker) {
+            Column() {
+              IconGrid({
+                selected: this.editIcon,
+                onSelect: (name: string): void => {
+                  this.editIcon = name;
+                  this.showIconPicker = false;
+                }
+              })
+            }
+            .width('100%')
+            .padding({ left: 20, right: 20, bottom: 16 })
+          }
+
           Text('发行方')
             .fontSize(12)
             .fontWeight(600)
@@ -156,6 +212,7 @@ export struct EditTokenDialog {
               const result: EditResult = {
                 issuer: this.editIssuer,
                 account: this.editAccount,
+                icon: this.editIcon,
                 tags: selectedTags
               };
               this.confirm(result);

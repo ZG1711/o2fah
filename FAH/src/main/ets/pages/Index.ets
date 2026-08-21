@@ -49,6 +49,7 @@ struct Index {
   @State swipedTokenId: string = '';
   @State editDialogIssuer: string = '';
   @State editDialogAccount: string = '';
+  @State editDialogIcon: string = '';
   @State editDialogTags: string[] = [];
   @State editDialogTagNames: string[] = [];
   @State editDialogTagColors: string[] = [];
@@ -85,12 +86,13 @@ struct Index {
     builder: EditTokenDialog({
       issuer: this.editDialogIssuer,
       account: this.editDialogAccount,
+      icon: this.editDialogIcon,
       tags: this.editDialogTags,
       tagNames: this.editDialogTagNames,
       tagColors: this.editDialogTagColors,
       isDark: this.isDarkMode,
       confirm: (result: EditResult): void => {
-        this.handleEditConfirm(result.issuer, result.account, result.tags);
+        this.handleEditConfirm(result.issuer, result.account, result.icon, result.tags);
       }
     }),
     autoCancel: true,
@@ -698,6 +700,7 @@ struct Index {
     this.editingTokenId = token.id;
     this.editDialogIssuer = token.issuer;
     this.editDialogAccount = token.account;
+    this.editDialogIcon = token.icon;
     this.editDialogTags = token.tags;
     this.editDialogTagNames = [];
     this.editDialogTagColors = [];
@@ -714,11 +717,12 @@ struct Index {
     this.deleteDialogController.open();
   }
 
-  private async handleEditConfirm(issuer: string, account: string, tags: string[]): Promise<void> {
+  private async handleEditConfirm(issuer: string, account: string, icon: string, tags: string[]): Promise<void> {
     const token: TokenModel | undefined = this.findTokenById(this.editingTokenId);
     if (token !== undefined) {
       token.issuer = issuer;
       token.account = account;
+      token.icon = icon;
       token.tags = tags;
       token.lastUsedAt = Date.now();
       await TokenStorage.update(token);
