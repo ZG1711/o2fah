@@ -380,7 +380,7 @@ struct Index {
                           actionAreaDistance: 168
                         }
                       } as SwipeActionOptions)
-                    }, (item: TokenModel) => item.id)
+                    }, (item: TokenModel) => item.id + '_' + item.version.toString())
                     .onMove((from: number, to: number): void => {
                       if (from === to) {
                         return;
@@ -688,6 +688,7 @@ struct Index {
     const code: string = await HotpEngine.generate(token.secret, newCounter, token.algorithm, token.digits);
     token.counter = newCounter;
     token.lastUsedAt = Date.now();
+    token.version = token.version + 1;
     this.codeMap[token.id] = code;
     this.tokens = [...this.tokens];
     await TokenStorage.update(token);
@@ -735,6 +736,7 @@ struct Index {
       token.icon = icon;
       token.tags = tags;
       token.lastUsedAt = Date.now();
+      token.version = token.version + 1;
       this.tokens = [...this.tokens];
       await TokenStorage.update(token);
       this.showToast('令牌已更新 ✓', 'success');

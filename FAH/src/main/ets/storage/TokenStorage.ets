@@ -113,6 +113,7 @@ export class TokenStorage {
       token.createdAt = (raw['createdAt'] ?? 0) as number;
       token.lastUsedAt = (raw['lastUsedAt'] ?? 0) as number;
       token.sortOrder = (raw['sortOrder'] ?? 0) as number;
+      token.version = (raw['version'] ?? 0) as number;
       result.push(token);
     }
     return result;

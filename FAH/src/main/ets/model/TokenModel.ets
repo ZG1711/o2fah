@@ -15,6 +15,7 @@ export class TokenModel {
   createdAt: number = 0;
   lastUsedAt: number = 0;
   sortOrder: number = 0;
+  version: number = 0;
 
   static create(issuer: string, account: string, secret: string): TokenModel {
     const t: TokenModel = new TokenModel();
