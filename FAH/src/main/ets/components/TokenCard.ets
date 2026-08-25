@@ -6,7 +6,7 @@ import { TokenModel } from '../model/TokenModel';
 @Component
 export struct TokenCard {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
-  @Prop token: TokenModel;
+  @ObjectLink token: TokenModel;
   @Prop code: string = '';
   @Prop remainingSeconds: number = 0;
   @Prop isDragging: boolean = false;

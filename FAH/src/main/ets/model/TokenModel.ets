@@ -1,3 +1,4 @@
+@Observed
 export class TokenModel {
   id: string = '';
   issuer: string = '';
