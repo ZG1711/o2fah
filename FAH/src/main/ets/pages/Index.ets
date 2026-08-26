@@ -80,7 +80,7 @@ struct Index {
   private cacheSelectedTagIndex: number = -1;
   private cacheSelectedSort: string = '';
 
-  @State displayTags: TagItem[] = [{ id: 'all', name: '', color: '#6B7280' }];
+  @State displayTags: TagItem[] = [];
 
   private editDialogController: CustomDialogController = new CustomDialogController({
     builder: EditTokenDialog({
