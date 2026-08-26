@@ -82,7 +82,8 @@ export default class FAHAbility extends UIAbility {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onBackground');
     this.lastBackgroundTimestamp = Date.now();
     const biometricEnabled: boolean = AppStorage.get<boolean>(CACHED_BIOMETRIC_ENABLED) ?? true;
-    if (biometricEnabled) {
+    const autoLockTimeout: number = AppStorage.get<number>(CACHED_AUTO_LOCK_TIMEOUT) ?? 0;
+    if (biometricEnabled && autoLockTimeout === 0) {
       AppStorage.set(APP_LOCKED_KEY, true);
     }
   }
