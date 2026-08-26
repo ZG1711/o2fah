@@ -72,6 +72,10 @@ struct AddConfirmPage {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
       Column() {
@@ -84,7 +88,7 @@ struct AddConfirmPage {
               this.getUIContext().getRouter().back();
             })
 
-          Text('确认令牌信息')
+          Text($r('app.string.confirm_token_title'))
             .fontSize(17)
             .fontWeight(700)
             .fontColor(this.getColors().textPrimary)
@@ -92,7 +96,7 @@ struct AddConfirmPage {
             .textAlign(TextAlign.Start)
             .margin({ left: 10 })
 
-          Button('保存')
+          Button($r('app.string.button_save'))
             .backgroundColor(this.getColors().successGreen)
             .borderRadius(10)
             .fontSize(14)
@@ -133,7 +137,7 @@ struct AddConfirmPage {
                 style: BorderStyle.Dashed
               })
 
-              Text(this.icon.length > 0 ? '点击更换图标' : '点击选择图标')
+              Text(this.icon.length > 0 ? $r('app.string.manual_change_icon') : $r('app.string.manual_select_icon'))
                 .fontSize(11)
                 .fontColor(this.getColors().textTertiary)
                 .margin({ top: 8 })
@@ -146,7 +150,7 @@ struct AddConfirmPage {
             })
 
             Column() {
-              Text('发行方')
+              Text($r('app.string.field_issuer'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -170,7 +174,7 @@ struct AddConfirmPage {
             .margin({ bottom: 12 })
 
             Column() {
-              Text('账户名')
+              Text($r('app.string.field_account'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -194,7 +198,7 @@ struct AddConfirmPage {
             .margin({ bottom: 12 })
 
             Column() {
-              Text('密钥')
+              Text($r('app.string.field_secret_short'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -236,7 +240,7 @@ struct AddConfirmPage {
             .margin({ bottom: 12 })
 
             Column() {
-              Text('协议信息（自动识别）')
+              Text($r('app.string.protocol_info_auto'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -262,7 +266,7 @@ struct AddConfirmPage {
                   .backgroundColor(this.getColors().buttonGray)
                   .margin({ right: 8, bottom: 4 })
 
-                Text((this.parsedToken.digits > 0 ? this.parsedToken.digits : 6).toString() + '位')
+                Text((this.parsedToken.digits > 0 ? this.parsedToken.digits : 6).toString() + this.str($r('app.string.unit_digits')))
                   .fontSize(12)
                   .fontWeight(500)
                   .fontColor(this.getColors().textPrimary)
@@ -290,7 +294,7 @@ struct AddConfirmPage {
             .margin({ bottom: 12 })
 
             Column() {
-              Text('分类标签')
+              Text($r('app.string.field_tags'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -389,15 +393,15 @@ struct AddConfirmPage {
     const secretTrimmed: string = this.secretKey.trim().toUpperCase();
 
     if (issuerTrimmed.length === 0) {
-      this.showToastMsg('请输入发行方');
+      this.showToastMsg(this.str($r('app.string.toast_enter_issuer')));
       return;
     }
     if (accountTrimmed.length === 0) {
-      this.showToastMsg('请输入账户名');
+      this.showToastMsg(this.str($r('app.string.toast_enter_account')));
       return;
     }
     if (secretTrimmed.length === 0) {
-      this.showToastMsg('密钥不能为空');
+      this.showToastMsg(this.str($r('app.string.toast_secret_empty')));
       return;
     }
 
@@ -421,7 +425,7 @@ struct AddConfirmPage {
 
     TokenStorage.save(token).then((): void => {
       this.loading = false;
-      this.showToastMsg('令牌已添加 ✓');
+      this.showToastMsg(this.str($r('app.string.toast_token_added')));
       setTimeout(() => {
         this.getUIContext().getRouter().back();
       }, 800);
@@ -432,7 +436,7 @@ struct AddConfirmPage {
     const data: pasteboard.PasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, this.secretKey);
     const sysBoard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
     sysBoard.setData(data);
-    this.showToastMsg('密钥已复制 ✓');
+    this.showToastMsg(this.str($r('app.string.toast_secret_copied')));
   }
 
   private getIconColor(issuer: string): string {

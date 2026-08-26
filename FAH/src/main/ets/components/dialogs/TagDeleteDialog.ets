@@ -15,30 +15,33 @@ export struct TagDeleteDialog {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Column() {
-      Text('删除标签')
+      Text($r('app.string.dialog_delete_tag_title'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .textAlign(TextAlign.Center)
         .padding({ top: 22, bottom: 8, left: 20, right: 20 })
 
-      Text('确定删除 "' + this.tagName + '" 标签吗？')
+      Text(this.str($r('app.string.dialog_delete_tag_message')).replace('%s', this.tagName))
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)
         .padding({ left: 20, right: 20, bottom: 6 })
 
-      Text('已标记该标签的 ' + this.tokenCount.toString() +
-        '个令牌 将自动移除该标签，令牌本身不受影响')
+      Text(this.str($r('app.string.dialog_delete_tag_effect')).replace('%d', this.tokenCount.toString()))
         .fontSize(12)
         .fontColor(this.getColors().textTertiary)
         .textAlign(TextAlign.Center)
         .padding({ left: 20, right: 20, bottom: 16 })
 
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -49,7 +52,7 @@ export struct TagDeleteDialog {
             this.controller.close();
           })
 
-        Text('删除')
+        Text($r('app.string.button_delete'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.getColors().dangerRed)

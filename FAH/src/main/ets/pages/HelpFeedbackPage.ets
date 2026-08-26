@@ -26,62 +26,72 @@ struct HelpFeedbackPage {
 
   private feedbackTypes: string[] = ['全部', '功能建议', '问题报告', '其他'];
 
-  private faqItems: FaqItem[] = [
-    {
-      emoji: '🔑',
-      title: '如何添加两步验证令牌？',
-      subtitle: '扫码、相册识别或手动输入密钥',
-      answer: '有三种方式：1. 扫描二维码 — 点击 + 按钮，选择「扫描二维码」 2. 从相册选取 — 通过相册导入 QR 码截图 3. 手动输入 — 手动填写发行方、账户名和密钥。💡 提示：建议直接扫码添加'
-    } as FaqItem,
-    {
-      emoji: '🔄',
-      title: 'TOTP 和 HOTP 有什么区别？',
-      subtitle: '基于时间 vs 基于计数器',
-      answer: 'TOTP (Time-based OTP) 基于当前时间生成验证码，每30或60秒自动刷新。HOTP (HMAC-based OTP) 基于计数器，每次使用后手动触发递增。大多数服务使用 TOTP。'
-    } as FaqItem,
-    {
-      emoji: '💾',
-      title: '如何备份令牌数据？',
-      subtitle: '导出加密备份文件安全存储',
-      answer: '进入设置 > 导出加密备份，设置备份密码后导出 .o2fah 文件。请将备份文件保存在安全位置。建议定期备份以防数据丢失。'
-    } as FaqItem,
-    {
-      emoji: '🔐',
-      title: '生物识别锁定安全吗？',
-      subtitle: '本地加密 + 系统级生物识别保护',
-      answer: 'O2FAH 使用 HarmonyOS 系统级生物识别 API，所有数据存储在本地加密区域。密钥通过系统安全区域保护，不会上传到云端或与其他应用共享。'
-    } as FaqItem,
-    {
-      emoji: '📱',
-      title: '更换手机后如何迁移数据？',
-      subtitle: '旧手机导出备份，新手机导入恢复',
-      answer: '在旧手机上：设置 > 导出加密备份。在新手机上安装 O2FAH：设置 > 导入加密备份，选择备份文件并输入密码即可恢复所有令牌。'
-    } as FaqItem
-  ];
+  private getFaqItems(): FaqItem[] {
+    const items: FaqItem[] = [
+      {
+        emoji: '🔑',
+        title: this.str($r('app.string.faq1_title')),
+        subtitle: this.str($r('app.string.faq1_subtitle')),
+        answer: this.str($r('app.string.faq1_answer'))
+      } as FaqItem,
+      {
+        emoji: '🔄',
+        title: this.str($r('app.string.faq2_title')),
+        subtitle: this.str($r('app.string.faq2_subtitle')),
+        answer: this.str($r('app.string.faq2_answer'))
+      } as FaqItem,
+      {
+        emoji: '💾',
+        title: this.str($r('app.string.faq3_title')),
+        subtitle: this.str($r('app.string.faq3_subtitle')),
+        answer: this.str($r('app.string.faq3_answer'))
+      } as FaqItem,
+      {
+        emoji: '🔐',
+        title: this.str($r('app.string.faq4_title')),
+        subtitle: this.str($r('app.string.faq4_subtitle')),
+        answer: this.str($r('app.string.faq4_answer'))
+      } as FaqItem,
+      {
+        emoji: '📱',
+        title: this.str($r('app.string.faq5_title')),
+        subtitle: this.str($r('app.string.faq5_subtitle')),
+        answer: this.str($r('app.string.faq5_answer'))
+      } as FaqItem
+    ];
+    return items;
+  }
 
-  private guideItems: GuideItem[] = [
-    {
-      emoji: '📖',
-      title: '快速入门指南',
-      content: 'O2FAH 是一款两步验证 (2FA) 令牌管理工具，兼容 TOTP 和 HOTP 协议。\n\n1. 添加令牌：点击主页面右下角 + 按钮，可通过扫描二维码、从相册识别或手动输入密钥三种方式添加。\n\n2. 查看验证码：令牌卡片会实时显示当前验证码及剩余有效时间，点击卡片可快速复制验证码。\n\n3. 整理管理：支持按分类标签筛选、长按拖拽排序、左滑编辑/删除令牌。'
-    } as GuideItem,
-    {
-      emoji: '🏷️',
-      title: '如何使用分类标签',
-      content: '分类标签帮助你更好地组织和查找令牌。\n\n1. 创建标签：在设置 > 管理分类标签中创建自定义标签，可设置名称和颜色。\n\n2. 分配标签：编辑令牌时可为其选择一个或多个标签。\n\n3. 筛选令牌：主页面顶部标签栏可快速按分类筛选，点击「全部」显示所有令牌。'
-    } as GuideItem,
-    {
-      emoji: '🔄',
-      title: '备份与恢复指南',
-      content: '请定期备份令牌数据以防丢失。\n\n1. 导出备份：设置 > 导出加密备份，设置备份密码后生成 .o2fah 加密文件，建议保存到安全位置（如电脑或云盘）。\n\n2. 导入恢复：在新设备上打开设置 > 导入加密备份，选择备份文件并输入密码即可恢复所有令牌。\n\n3. 备份提醒：可在设置中开启定期备份提醒，避免遗忘。'
-    } as GuideItem
-  ];
+  private getGuideItems(): GuideItem[] {
+    const items: GuideItem[] = [
+      {
+        emoji: '📖',
+        title: this.str($r('app.string.guide1_title')),
+        content: this.str($r('app.string.guide1_content'))
+      } as GuideItem,
+      {
+        emoji: '🏷️',
+        title: this.str($r('app.string.guide2_title')),
+        content: this.str($r('app.string.guide2_content'))
+      } as GuideItem,
+      {
+        emoji: '🔄',
+        title: this.str($r('app.string.guide3_title')),
+        content: this.str($r('app.string.guide3_content'))
+      } as GuideItem
+    ];
+    return items;
+  }
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
   }
 
   getInputBg(): string {
@@ -117,7 +127,7 @@ struct HelpFeedbackPage {
           .onClick(() => {
             this.getUIContext().getRouter().back();
           })
-        Text('设置')
+        Text($r('app.string.tab_settings'))
           .fontSize(16)
           .fontColor('#4285F4')
           .padding({ right: 4, top: 8, bottom: 12 })
@@ -125,7 +135,7 @@ struct HelpFeedbackPage {
             this.getUIContext().getRouter().back();
           })
 
-        Text('帮助与反馈')
+        Text($r('app.string.settings_help_feedback'))
           .fontSize(17)
           .fontWeight(700)
           .fontColor(this.getColors().textPrimary)
@@ -142,10 +152,10 @@ struct HelpFeedbackPage {
       Scroll() {
         Column() {
           // ===================== Section 1: FAQ =====================
-          this.SectionHeader('常见问题')
+          this.SectionHeader(this.str($r('app.string.section_faq')))
 
           Column() {
-            ForEach(this.faqItems, (item: FaqItem, index: number) => {
+            ForEach(this.getFaqItems(), (item: FaqItem, index: number) => {
               Column() {
                 // FAQ row
                 Row() {
@@ -196,7 +206,7 @@ struct HelpFeedbackPage {
                 }
 
                 // Divider between items (not after last)
-                if (index < this.faqItems.length - 1) {
+                if (index < this.getFaqItems().length - 1) {
                   Divider()
                     .height(0.5)
                     .color(this.getColors().divider)
@@ -212,10 +222,10 @@ struct HelpFeedbackPage {
           .margin({ top: 6 })
 
           // ===================== Section 2: User Guide =====================
-          this.SectionHeader('使用指南')
+          this.SectionHeader(this.str($r('app.string.section_guide')))
 
           Column() {
-            ForEach(this.guideItems, (item: GuideItem, index: number) => {
+            ForEach(this.getGuideItems(), (item: GuideItem, index: number) => {
               Column() {
                 Row() {
                   Text(item.emoji)
@@ -254,7 +264,7 @@ struct HelpFeedbackPage {
                 }
 
                 // Divider between items (not after last)
-                if (index < this.guideItems.length - 1) {
+                if (index < this.getGuideItems().length - 1) {
                   Divider()
                     .height(0.5)
                     .color(this.getColors().divider)

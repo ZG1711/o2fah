@@ -22,6 +22,10 @@ export struct TagRow {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Row() {
       // Color dot
@@ -40,7 +44,7 @@ export struct TagRow {
         .margin({ left: 12 })
 
       // Token count
-      Text(this.tag.tokenCount.toString() + '个令牌')
+      Text(this.str($r('app.string.tag_token_count')).replace('%d', this.tag.tokenCount.toString()))
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .margin({ right: 4 })

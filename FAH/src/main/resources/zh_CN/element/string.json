@@ -2,11 +2,11 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "O2FAH - Two-factor authentication token manager"
+      "value": "O2FAH - 双因素认证令牌管理应用"
     },
     {
       "name": "FAHAbility_desc",
-      "value": "O2FAH main entry"
+      "value": "O2FAH 主入口"
     },
     {
       "name": "FAHAbility_label",
@@ -14,1135 +14,1135 @@
     },
     {
       "name": "tab_tokens",
-      "value": "Tokens"
+      "value": "令牌"
     },
     {
       "name": "tab_settings",
-      "value": "Settings"
+      "value": "设置"
     },
     {
       "name": "add_token_manual",
-      "value": "Manual entry"
+      "value": "手动输入"
     },
     {
       "name": "add_token_scan",
-      "value": "Scan QR code"
+      "value": "扫描二维码"
     },
     {
       "name": "add_token_title",
-      "value": "Add token"
+      "value": "添加令牌"
     },
     {
       "name": "search_placeholder",
-      "value": "Search tokens"
+      "value": "搜索令牌"
     },
     {
       "name": "empty_tokens_title",
-      "value": "No tokens"
+      "value": "暂无令牌"
     },
     {
       "name": "empty_tokens_desc",
-      "value": "Tap the button in the bottom-right to add your first token"
+      "value": "点击右下角按钮添加您的第一个令牌"
     },
     {
       "name": "confirm_delete_title",
-      "value": "Confirm delete"
+      "value": "确认删除"
     },
     {
       "name": "confirm_delete_desc",
-      "value": "This cannot be undone. Delete this token?"
+      "value": "删除后将无法恢复，确定要删除此令牌吗？"
     },
     {
       "name": "button_cancel",
-      "value": "Cancel"
+      "value": "取消"
     },
     {
       "name": "button_confirm",
-      "value": "Confirm"
+      "value": "确定"
     },
     {
       "name": "button_delete",
-      "value": "Delete"
+      "value": "删除"
     },
     {
       "name": "button_save",
-      "value": "Save"
+      "value": "保存"
     },
     {
       "name": "button_edit",
-      "value": "Edit"
+      "value": "编辑"
     },
     {
       "name": "button_export",
-      "value": "Export"
+      "value": "导出"
     },
     {
       "name": "button_import",
-      "value": "Import"
+      "value": "导入"
     },
     {
       "name": "settings_security",
-      "value": "Security"
+      "value": "安全"
     },
     {
       "name": "settings_biometric",
-      "value": "Biometric authentication"
+      "value": "生物识别验证"
     },
     {
       "name": "settings_auto_lock",
-      "value": "Auto-lock time"
+      "value": "自动锁定时间"
     },
     {
       "name": "settings_theme",
-      "value": "Theme"
+      "value": "主题"
     },
     {
       "name": "settings_theme_follow_system",
-      "value": "Follow system"
+      "value": "跟随系统"
     },
     {
       "name": "settings_theme_light",
-      "value": "Light mode"
+      "value": "浅色模式"
     },
     {
       "name": "settings_theme_dark",
-      "value": "Dark mode"
+      "value": "深色模式"
     },
     {
       "name": "settings_help_feedback",
-      "value": "Help & feedback"
+      "value": "帮助与反馈"
     },
     {
       "name": "settings_about",
-      "value": "About O2FAH"
+      "value": "关于 O2FAH"
     },
     {
       "name": "settings_token_code_length",
-      "value": "Code length"
+      "value": "验证码位数"
     },
     {
       "name": "settings_token_period",
-      "value": "Default refresh period"
+      "value": "默认刷新周期"
     },
     {
       "name": "settings_sort",
-      "value": "Sort order"
+      "value": "排序方式"
     },
     {
       "name": "sort_manual",
-      "value": "Manual sort"
+      "value": "手动排序"
     },
     {
       "name": "sort_name",
-      "value": "Sort by name"
+      "value": "按名称排序"
     },
     {
       "name": "sort_recently_used",
-      "value": "Recently used"
+      "value": "按最近使用"
     },
     {
       "name": "sort_recently_added",
-      "value": "Recently added"
+      "value": "按最近添加"
     },
     {
       "name": "tag_manager_title",
-      "value": "Tag manager"
+      "value": "标签管理"
     },
     {
       "name": "tag_all",
-      "value": "All"
+      "value": "全部"
     },
     {
       "name": "tag_new_tag",
-      "value": "New tag"
+      "value": "新建标签"
     },
     {
       "name": "tag_placeholder",
-      "value": "Enter tag name"
+      "value": "输入标签名称"
     },
     {
       "name": "copied_toast",
-      "value": "Code copied"
+      "value": "验证码已复制"
     },
     {
       "name": "export_success",
-      "value": "Export successful"
+      "value": "导出成功"
     },
     {
       "name": "import_success",
-      "value": "Import successful"
+      "value": "导入成功"
     },
     {
       "name": "token_added",
-      "value": "Token added"
+      "value": "令牌已添加"
     },
     {
       "name": "token_deleted",
-      "value": "Token deleted"
+      "value": "令牌已删除"
     },
     {
       "name": "token_edited",
-      "value": "Token updated"
+      "value": "令牌已更新"
     },
     {
       "name": "about_version",
-      "value": "Version"
+      "value": "版本"
     },
     {
       "name": "about_developer",
-      "value": "Developer"
+      "value": "开发者"
     },
     {
       "name": "about_license",
-      "value": "Open source license"
+      "value": "开源许可"
     },
     {
       "name": "password_placeholder",
-      "value": "Enter backup password"
+      "value": "请输入备份密码"
     },
     {
       "name": "password_confirm_placeholder",
-      "value": "Enter password again"
+      "value": "请再次输入密码"
     },
     {
       "name": "password_not_match",
-      "value": "Passwords do not match"
+      "value": "两次密码不一致"
     },
     {
       "name": "auto_lock_immediately",
-      "value": "Lock immediately"
+      "value": "立即锁定"
     },
     {
       "name": "auto_lock_1min",
-      "value": "1 minute"
+      "value": "1 分钟"
     },
     {
       "name": "auto_lock_5min",
-      "value": "5 minutes"
+      "value": "5 分钟"
     },
     {
       "name": "auto_lock_15min",
-      "value": "15 minutes"
+      "value": "15 分钟"
     },
     {
       "name": "auto_lock_never",
-      "value": "Never lock"
+      "value": "永不锁定"
     },
     {
       "name": "permission_reason_camera",
-      "value": "Used to scan QR codes to add two-step verification tokens"
+      "value": "用于扫描二维码添加两步验证令牌"
     },
     {
       "name": "permission_reason_biometric",
-      "value": "Used to verify identity to unlock O2FAH"
+      "value": "用于验证身份以解锁 O2FAH"
     },
     {
       "name": "set_section_security",
-      "value": "Security"
+      "value": "安全"
     },
     {
       "name": "set_section_categories",
-      "value": "Categories"
+      "value": "分类"
     },
     {
       "name": "set_section_backup",
-      "value": "Data Backup"
+      "value": "数据备份"
     },
     {
       "name": "set_section_preferences",
-      "value": "Preferences"
+      "value": "偏好设置"
     },
     {
       "name": "set_section_other",
-      "value": "Other"
+      "value": "其他"
     },
     {
       "name": "set_biometric",
-      "value": "Biometric Lock"
+      "value": "生物识别锁定"
     },
     {
       "name": "set_auto_lock",
-      "value": "Auto-Lock"
+      "value": "自动锁定"
     },
     {
       "name": "set_manage_tags",
-      "value": "Manage Tags"
+      "value": "管理分类标签"
     },
     {
       "name": "set_export_backup",
-      "value": "Export Encrypted Backup"
+      "value": "导出加密备份"
     },
     {
       "name": "set_export_qr",
-      "value": "Export QR Code"
+      "value": "导出二维码"
     },
     {
       "name": "set_import_backup",
-      "value": "Import Encrypted Backup"
+      "value": "导入加密备份"
     },
     {
       "name": "set_backup_reminder",
-      "value": "Backup Reminder"
+      "value": "备份提醒"
     },
     {
       "name": "set_appearance",
-      "value": "Appearance"
+      "value": "外观"
     },
     {
       "name": "set_default_sort",
-      "value": "Default Sort"
+      "value": "默认排序"
     },
     {
       "name": "set_language",
-      "value": "Language"
+      "value": "语言"
     },
     {
       "name": "set_help_feedback",
-      "value": "Help & Feedback"
+      "value": "帮助与反馈"
     },
     {
       "name": "set_about",
-      "value": "About O2FAH"
+      "value": "关于 O2FAH"
     },
     {
       "name": "set_clear_data",
-      "value": "Clear All Data"
+      "value": "清除所有数据"
     },
     {
       "name": "set_autolock_immediate",
-      "value": "Immediately"
+      "value": "立即"
     },
     {
       "name": "set_autolock_15s",
-      "value": "15 seconds"
+      "value": "15 秒"
     },
     {
       "name": "set_autolock_30s",
-      "value": "30 seconds"
+      "value": "30 秒"
     },
     {
       "name": "set_autolock_1min",
-      "value": "1 minute"
+      "value": "1 分钟"
     },
     {
       "name": "set_autolock_5min",
-      "value": "5 minutes"
+      "value": "5 分钟"
     },
     {
       "name": "set_autolock_immediate_desc",
-      "value": "Lock immediately each time the app goes to background"
+      "value": "每次进入后台立即锁定"
     },
     {
       "name": "set_autolock_15s_desc",
-      "value": "Lock 15 seconds after entering background"
+      "value": "进入后台 15 秒后锁定"
     },
     {
       "name": "set_autolock_30s_desc",
-      "value": "Lock 30 seconds after entering background"
+      "value": "进入后台 30 秒后锁定"
     },
     {
       "name": "set_autolock_1min_desc",
-      "value": "Lock 1 minute after entering background"
+      "value": "进入后台 1 分钟后锁定"
     },
     {
       "name": "set_autolock_5min_desc",
-      "value": "Lock 5 minutes after entering background"
+      "value": "进入后台 5 分钟后锁定"
     },
     {
       "name": "set_reminder_never",
-      "value": "Never"
+      "value": "从不"
     },
     {
       "name": "set_reminder_weekly",
-      "value": "Weekly"
+      "value": "每周"
     },
     {
       "name": "set_reminder_monthly",
-      "value": "Monthly"
+      "value": "每月"
     },
     {
       "name": "set_reminder_quarterly",
-      "value": "Quarterly"
+      "value": "每季度"
     },
     {
       "name": "set_reminder_never_desc",
-      "value": "No reminders, back up manually when needed"
+      "value": "不提醒，需要时手动备份"
     },
     {
       "name": "set_reminder_weekly_desc",
-      "value": "Remind once a week to back up"
+      "value": "每周提醒一次备份"
     },
     {
       "name": "set_reminder_monthly_desc",
-      "value": "Remind once a month to back up"
+      "value": "每月提醒一次备份"
     },
     {
       "name": "set_reminder_quarterly_desc",
-      "value": "Remind once a quarter to back up"
+      "value": "每季度提醒一次备份"
     },
     {
       "name": "set_theme_light",
-      "value": "Light"
+      "value": "浅色"
     },
     {
       "name": "set_theme_dark",
-      "value": "Dark"
+      "value": "深色"
     },
     {
       "name": "set_theme_system",
-      "value": "Follow System"
+      "value": "跟随系统"
     },
     {
       "name": "set_theme_light_desc",
-      "value": "Always use light theme"
+      "value": "始终使用浅色主题"
     },
     {
       "name": "set_theme_dark_desc",
-      "value": "Always use dark theme"
+      "value": "始终使用深色主题"
     },
     {
       "name": "set_theme_system_desc",
-      "value": "Match system dark/light setting"
+      "value": "自动匹配系统深色/浅色设置"
     },
     {
       "name": "set_sort_manual",
-      "value": "Manual Drag"
+      "value": "手动拖动排序"
     },
     {
       "name": "set_sort_name",
-      "value": "By Name A-Z"
+      "value": "按名称 A-Z"
     },
     {
       "name": "set_sort_created",
-      "value": "By Date Added"
+      "value": "按添加时间"
     },
     {
       "name": "set_sort_lastused",
-      "value": "By Last Used"
+      "value": "按最近使用"
     },
     {
       "name": "set_sort_manual_desc",
-      "value": "Sort by sortOrder, drag cards to reorder"
+      "value": "按 sortOrder 字段，长按卡片拖拽调整"
     },
     {
       "name": "set_sort_name_desc",
-      "value": "Alphabetical by issuer"
+      "value": "按发行方字母升序"
     },
     {
       "name": "set_sort_created_desc",
-      "value": "Newest first by date added"
+      "value": "按添加时间倒序（最新在前）"
     },
     {
       "name": "set_sort_lastused_desc",
-      "value": "Most recently used first"
+      "value": "按最近使用倒序（最近复制在前）"
     },
     {
       "name": "set_language_system",
-      "value": "Follow System"
+      "value": "跟随系统"
     },
     {
       "name": "set_language_changed_toast",
-      "value": "Language changed"
+      "value": "语言已切换"
     },
     {
       "name": "set_toast_biometric_enabled",
-      "value": "Biometric lock enabled"
+      "value": "生物识别已开启"
     },
     {
       "name": "set_toast_biometric_unsupported",
-      "value": "Biometric not supported on this device"
+      "value": "设备不支持生物识别"
     },
     {
       "name": "set_toast_no_tokens",
-      "value": "No tokens to export"
+      "value": "暂无令牌可导出"
     },
     {
       "name": "set_toast_backup_exported",
-      "value": "Backup exported ✓"
+      "value": "备份已导出 ✓"
     },
     {
       "name": "set_toast_backup_imported",
-      "value": "Backup imported ✓"
+      "value": "备份已导入 ✓"
     },
     {
       "name": "set_toast_export_failed",
-      "value": "Export failed"
+      "value": "导出失败"
     },
     {
       "name": "set_toast_import_wait",
-      "value": "Please wait 1 minute before retrying"
+      "value": "请等待 1 分钟后再试"
     },
     {
       "name": "set_toast_no_file",
-      "value": "No file selected or file is empty"
+      "value": "未选择文件或文件为空"
     },
     {
       "name": "set_toast_import_locked",
-      "value": "Too many failed attempts. Please wait 1 minute."
+      "value": "密码错误次数过多，请等待 1 分钟"
     },
     {
       "name": "set_toast_wrong_password",
-      "value": "Wrong password, try again (%d attempts left)"
+      "value": "密码错误，请重试 (剩余 %d 次)"
     },
     {
       "name": "set_toast_data_cleared",
-      "value": "All data cleared"
+      "value": "所有数据已清除"
     },
     {
       "name": "set_version_failed",
-      "value": "Failed to get version info"
+      "value": "获取版本信息失败"
     },
     {
       "name": "set_dialog_biometric_title",
-      "value": "Disable Biometric Lock"
+      "value": "关闭生物识别锁定"
     },
     {
       "name": "set_dialog_biometric_message",
-      "value": "After disabling, biometric verification will be skipped and anyone who can unlock your phone can view your tokens. Disable?"
+      "value": "关闭后将跳过生物识别验证，任何能打开手机的人都能查看令牌。确定关闭？"
     },
     {
       "name": "set_dialog_disable",
-      "value": "Disable"
+      "value": "关闭"
     },
     {
       "name": "set_dialog_clear_title",
-      "value": "Clear All Data"
+      "value": "清除所有数据"
     },
     {
       "name": "set_dialog_clear_message",
-      "value": "Clear all tokens and settings? This cannot be undone."
+      "value": "确定要清除所有令牌和设置吗？此操作不可恢复。"
     },
     {
       "name": "set_dialog_clear_confirm",
-      "value": "Clear"
+      "value": "清除"
     },
     {
       "name": "set_picker_appearance",
-      "value": "Appearance"
+      "value": "外观"
     },
     {
       "name": "set_picker_auto_lock",
-      "value": "Auto-Lock"
+      "value": "自动锁定"
     },
     {
       "name": "set_picker_backup_reminder",
-      "value": "Backup Reminder"
+      "value": "备份提醒"
     },
     {
       "name": "set_picker_sort",
-      "value": "Default Sort"
+      "value": "默认排序"
     },
     {
       "name": "set_picker_language",
-      "value": "Language"
+      "value": "语言"
     },
     {
       "name": "action_qr_code",
-      "value": "QR Code"
+      "value": "二维码"
     },
     {
       "name": "action_retry",
-      "value": "Retry"
+      "value": "重试"
     },
     {
       "name": "action_create",
-      "value": "Create"
+      "value": "创建"
     },
     {
       "name": "action_paste",
-      "value": "Paste"
+      "value": "粘贴"
     },
     {
       "name": "toast_backup_imported",
-      "value": "Backup imported"
+      "value": "备份已导入"
     },
     {
       "name": "toast_cannot_read_backup",
-      "value": "Cannot read backup file"
+      "value": "无法读取备份文件"
     },
     {
       "name": "toast_import_locked",
-      "value": "Too many failed attempts, wait 1 minute"
+      "value": "密码错误次数过多，请等待1分钟"
     },
     {
       "name": "toast_wrong_password",
-      "value": "Wrong password, try again (%d attempts left)"
+      "value": "密码错误，请重试 (剩余 %d 次)"
     },
     {
       "name": "banner_backup_reminder",
-      "value": "Not backed up for %d days, export a backup"
+      "value": "已 %d 天未备份令牌数据，建议导出备份"
     },
     {
       "name": "banner_backup_now",
-      "value": "Back up now"
+      "value": "立即备份"
     },
     {
       "name": "toast_sort_saved",
-      "value": "Sort saved ✓"
+      "value": "排序已保存 ✓"
     },
     {
       "name": "toast_copied",
-      "value": "Copied ✓"
+      "value": "已复制 ✓"
     },
     {
       "name": "toast_refreshed_copied",
-      "value": "Refreshed and copied ✓"
+      "value": "已刷新并复制 ✓"
     },
     {
       "name": "toast_token_updated",
-      "value": "Token updated ✓"
+      "value": "令牌已更新 ✓"
     },
     {
       "name": "toast_camera_permission",
-      "value": "Camera permission required to scan QR code"
+      "value": "需要相机权限才能扫描二维码"
     },
     {
       "name": "toast_camera_permission_fail",
-      "value": "Failed to get camera permission"
+      "value": "无法获取相机权限"
     },
     {
       "name": "toast_invalid_token",
-      "value": "No valid token recognized"
+      "value": "未识别到有效令牌"
     },
     {
       "name": "toast_open_album_fail",
-      "value": "Cannot open album"
+      "value": "无法打开相册"
     },
     {
       "name": "lock_verify_title",
-      "value": "Verify Identity"
+      "value": "验证身份"
     },
     {
       "name": "lock_too_many",
-      "value": "Too many attempts, try again in %d seconds"
+      "value": "验证次数过多，请 %d 秒后再试"
     },
     {
       "name": "lock_failed",
-      "value": "Verification failed, try again"
+      "value": "验证失败，请重试"
     },
     {
       "name": "lock_fingerprint_hint",
-      "value": "Verify fingerprint to unlock O2FAH"
+      "value": "请验证指纹以解锁 O2FAH"
     },
     {
       "name": "biometric_auth_title",
-      "value": "Identity verification"
+      "value": "请进行身份认证"
     },
     {
       "name": "add_panel_scan_desc",
-      "value": "Use camera"
+      "value": "相机扫码"
     },
     {
       "name": "add_panel_photo",
-      "value": "From Album"
+      "value": "从相册选取"
     },
     {
       "name": "add_panel_photo_desc",
-      "value": "Recognize QR image"
+      "value": "识别图片QR"
     },
     {
       "name": "add_panel_manual_desc",
-      "value": "Enter secret"
+      "value": "填写密钥"
     },
     {
       "name": "unit_digits",
-      "value": "digits"
+      "value": "位"
     },
     {
       "name": "unit_counter",
-      "value": "counter"
+      "value": "计数"
     },
     {
       "name": "tag_token_count",
-      "value": "%d tokens"
+      "value": "%d个令牌"
     },
     {
       "name": "tag_manager_header",
-      "value": "Manage Tags"
+      "value": "管理分类标签"
     },
     {
       "name": "tag_manager_desc",
-      "value": "Create custom category tags; tokens can be marked with multiple tags for filtering"
+      "value": "创建自定义分类标签，令牌可标记多个标签进行分类筛选"
     },
     {
       "name": "tag_drag_hint",
-      "value": "Long press to drag and reorder"
+      "value": "可长按进行拖拽排序"
     },
     {
       "name": "tag_new_category",
-      "value": "New Category"
+      "value": "新建分类"
     },
     {
       "name": "manual_change_icon",
-      "value": "Change icon"
+      "value": "点击更换图标"
     },
     {
       "name": "manual_select_icon",
-      "value": "Select icon"
+      "value": "点击选择图标"
     },
     {
       "name": "field_issuer",
-      "value": "Issuer"
+      "value": "发行方"
     },
     {
       "name": "placeholder_issuer",
-      "value": "e.g. Google"
+      "value": "例如: Google"
     },
     {
       "name": "field_account",
-      "value": "Account"
+      "value": "账户名"
     },
     {
       "name": "placeholder_account",
-      "value": "e.g. user@example.com"
+      "value": "例如: user@example.com"
     },
     {
       "name": "field_secret",
-      "value": "Secret (Base32)"
+      "value": "密钥 (Base32)"
     },
     {
       "name": "secret_hint",
-      "value": "Base32 characters only (A-Z, 2-7), auto-uppercase"
+      "value": "仅支持 Base32 字符 (A-Z, 2-7)，自动转大写"
     },
     {
       "name": "advanced_options",
-      "value": "Advanced Options"
+      "value": "高级选项"
     },
     {
       "name": "field_protocol",
-      "value": "Protocol"
+      "value": "协议类型"
     },
     {
       "name": "field_algorithm",
-      "value": "Algorithm"
+      "value": "算法"
     },
     {
       "name": "field_digits",
-      "value": "Digits"
+      "value": "验证码位数"
     },
     {
       "name": "field_counter",
-      "value": "Counter"
+      "value": "计数器"
     },
     {
       "name": "field_period",
-      "value": "Period"
+      "value": "时间周期"
     },
     {
       "name": "unit_seconds",
-      "value": "s"
+      "value": "秒"
     },
     {
       "name": "field_tags",
-      "value": "Tags"
+      "value": "分类标签"
     },
     {
       "name": "picker_protocol",
-      "value": "Protocol"
+      "value": "协议类型"
     },
     {
       "name": "picker_algorithm",
-      "value": "Algorithm"
+      "value": "算法"
     },
     {
       "name": "picker_digits",
-      "value": "Digits"
+      "value": "验证码位数"
     },
     {
       "name": "picker_period",
-      "value": "Period"
+      "value": "时间周期"
     },
     {
       "name": "protocol_totp_desc",
-      "value": "Time-based one-time password"
+      "value": "基于时间的动态验证码"
     },
     {
       "name": "protocol_hotp_desc",
-      "value": "Event-based one-time password"
+      "value": "基于事件的动态验证码"
     },
     {
       "name": "algorithm_sha1_desc",
-      "value": "SHA-1 hash algorithm"
+      "value": "SHA-1 哈希算法"
     },
     {
       "name": "algorithm_sha256_desc",
-      "value": "SHA-256 hash algorithm"
+      "value": "SHA-256 哈希算法"
     },
     {
       "name": "algorithm_sha512_desc",
-      "value": "SHA-512 hash algorithm"
+      "value": "SHA-512 哈希算法"
     },
     {
       "name": "digits_6_desc",
-      "value": "Generate 6-digit code"
+      "value": "生成 6 位验证码"
     },
     {
       "name": "digits_8_desc",
-      "value": "Generate 8-digit code"
+      "value": "生成 8 位验证码"
     },
     {
       "name": "period_30_desc",
-      "value": "Refresh every 30 seconds"
+      "value": "每 30 秒刷新一次"
     },
     {
       "name": "period_60_desc",
-      "value": "Refresh every 60 seconds"
+      "value": "每 60 秒刷新一次"
     },
     {
       "name": "toast_enter_issuer",
-      "value": "Please enter issuer"
+      "value": "请输入发行方"
     },
     {
       "name": "toast_enter_account",
-      "value": "Please enter account"
+      "value": "请输入账户名"
     },
     {
       "name": "toast_enter_secret",
-      "value": "Please enter secret"
+      "value": "请输入密钥"
     },
     {
       "name": "toast_invalid_secret",
-      "value": "Invalid secret, Base32 characters only (A-Z, 2-7)"
+      "value": "密钥格式不正确，仅支持 Base32 字符 (A-Z, 2-7)"
     },
     {
       "name": "toast_token_added",
-      "value": "Token added ✓"
+      "value": "令牌已添加 ✓"
     },
     {
       "name": "confirm_token_title",
-      "value": "Confirm Token"
+      "value": "确认令牌信息"
     },
     {
       "name": "field_secret_short",
-      "value": "Secret"
+      "value": "密钥"
     },
     {
       "name": "protocol_info_auto",
-      "value": "Protocol (auto-detected)"
+      "value": "协议信息（自动识别）"
     },
     {
       "name": "toast_secret_empty",
-      "value": "Secret cannot be empty"
+      "value": "密钥不能为空"
     },
     {
       "name": "toast_secret_copied",
-      "value": "Secret copied ✓"
+      "value": "密钥已复制 ✓"
     },
     {
       "name": "export_qr_empty_title",
-      "value": "No tokens to export"
+      "value": "暂无令牌可导出"
     },
     {
       "name": "export_qr_empty_subtitle",
-      "value": "Add a two-step verification token on the tokens page first"
+      "value": "请先在令牌页添加两步验证令牌"
     },
     {
       "name": "export_qr_warning",
-      "value": "⚠️ QR code contains the plaintext secret, do not screenshot or share it"
+      "value": "⚠️ 二维码包含明文密钥，请勿截屏或发送给他人"
     },
     {
       "name": "qr_generate_fail",
-      "value": "Generation failed"
+      "value": "生成失败"
     },
     {
       "name": "toast_partial_export_fail",
-      "value": "Some tokens failed to export"
+      "value": "部分令牌导出失败"
     },
     {
       "name": "dialog_delete_token_title",
-      "value": "Delete Token"
+      "value": "删除令牌"
     },
     {
       "name": "dialog_delete_token_message",
-      "value": "Delete %s?"
+      "value": "确定删除 %s 吗？"
     },
     {
       "name": "dialog_irreversible",
-      "value": "This cannot be undone"
+      "value": "此操作不可恢复"
     },
     {
       "name": "dialog_edit_token_title",
-      "value": "Edit Token"
+      "value": "编辑令牌"
     },
     {
       "name": "dialog_set_backup_password",
-      "value": "Set Backup Password"
+      "value": "设置备份密码"
     },
     {
       "name": "dialog_backup_password_desc",
-      "value": "The backup file will be encrypted with this password. You need the same password to import and restore it"
+      "value": "备份文件将使用此密码加密。导入恢复时需输入相同密码"
     },
     {
       "name": "field_backup_password",
-      "value": "Backup Password"
+      "value": "备份密码"
     },
     {
       "name": "password_hint_8chars",
-      "value": "At least 8 characters, please remember this password"
+      "value": "至少 8 位字符，请牢记此密码"
     },
     {
       "name": "strength_weak",
-      "value": "Weak"
+      "value": "弱"
     },
     {
       "name": "strength_medium",
-      "value": "Medium"
+      "value": "中等"
     },
     {
       "name": "strength_strong",
-      "value": "Strong"
+      "value": "强"
     },
     {
       "name": "strength_very_strong",
-      "value": "Very Strong"
+      "value": "非常强"
     },
     {
       "name": "field_confirm_password",
-      "value": "Confirm Password"
+      "value": "确认密码"
     },
     {
       "name": "placeholder_reenter",
-      "value": "Enter again"
+      "value": "再次输入"
     },
     {
       "name": "dialog_import_merge_title",
-      "value": "Confirm Import"
+      "value": "确认导入备份"
     },
     {
       "name": "stat_total_tokens",
-      "value": "Total tokens"
+      "value": "令牌总数"
     },
     {
       "name": "stat_added",
-      "value": "Added"
+      "value": "新增"
     },
     {
       "name": "stat_skipped",
-      "value": "Duplicates skipped"
+      "value": "重复跳过"
     },
     {
       "name": "stat_total_after",
-      "value": "Total after import"
+      "value": "导入后总数"
     },
     {
       "name": "dialog_import_merge_warning",
-      "value": "Duplicate tokens will be skipped automatically"
+      "value": "重复令牌将被自动跳过"
     },
     {
       "name": "action_confirm_import",
-      "value": "Confirm Import"
+      "value": "确认导入"
     },
     {
       "name": "dialog_input_backup_password",
-      "value": "Enter Backup Password"
+      "value": "输入备份密码"
     },
     {
       "name": "dialog_backup_password_decrypt_desc",
-      "value": "Enter the password you set when exporting to decrypt the backup file"
+      "value": "请输入导出时设置的密码来解密备份文件"
     },
     {
       "name": "dialog_wrong_password",
-      "value": "⚠️ Wrong password, try again"
+      "value": "⚠️ 密码错误，请重试"
     },
     {
       "name": "dialog_edit_tag_title",
-      "value": "Edit Tag"
+      "value": "编辑分类标签"
     },
     {
       "name": "dialog_new_tag_title",
-      "value": "New Tag"
+      "value": "新建分类标签"
     },
     {
       "name": "field_tag_name",
-      "value": "Tag Name"
+      "value": "标签名称"
     },
     {
       "name": "placeholder_tag_name",
-      "value": "e.g. Games"
+      "value": "例如: 游戏"
     },
     {
       "name": "tag_name_hint",
-      "value": "Up to 10 characters, cannot duplicate an existing tag"
+      "value": "最多10个字符，不可与已有标签重复"
     },
     {
       "name": "field_preset_colors",
-      "value": "Preset Colors"
+      "value": "预设颜色"
     },
     {
       "name": "field_more_colors",
-      "value": "More Colors"
+      "value": "其他颜色"
     },
     {
       "name": "dialog_delete_tag_title",
-      "value": "Delete Tag"
+      "value": "删除标签"
     },
     {
       "name": "dialog_delete_tag_message",
-      "value": "Delete \"%s\" tag?"
+      "value": "确定删除 \"%s\" 标签吗？"
     },
     {
       "name": "dialog_delete_tag_effect",
-      "value": "%d tokens marked with this tag will have the tag removed; the tokens themselves are unaffected"
+      "value": "已标记该标签的 %d个令牌 将自动移除该标签，令牌本身不受影响"
     },
     {
       "name": "section_faq",
-      "value": "FAQ"
+      "value": "常见问题"
     },
     {
       "name": "section_guide",
-      "value": "User Guide"
+      "value": "使用指南"
     },
     {
       "name": "faq1_title",
-      "value": "How to add a two-step verification token?"
+      "value": "如何添加两步验证令牌？"
     },
     {
       "name": "faq1_subtitle",
-      "value": "Scan, recognize from album, or enter secret manually"
+      "value": "扫码、相册识别或手动输入密钥"
     },
     {
       "name": "faq1_answer",
-      "value": "There are three ways: 1. Scan QR code — tap the + button and choose \"Scan QR code\". 2. From album — import a QR screenshot via the album. 3. Manual entry — fill in issuer, account and secret. 💡 Tip: scanning is recommended"
+      "value": "有三种方式：1. 扫描二维码 — 点击 + 按钮，选择「扫描二维码」 2. 从相册选取 — 通过相册导入 QR 码截图 3. 手动输入 — 手动填写发行方、账户名和密钥。💡 提示：建议直接扫码添加"
     },
     {
       "name": "faq2_title",
-      "value": "What is the difference between TOTP and HOTP?"
+      "value": "TOTP 和 HOTP 有什么区别？"
     },
     {
       "name": "faq2_subtitle",
-      "value": "Time-based vs counter-based"
+      "value": "基于时间 vs 基于计数器"
     },
     {
       "name": "faq2_answer",
-      "value": "TOTP (Time-based OTP) generates codes based on the current time and refreshes every 30 or 60 seconds. HOTP (HMAC-based OTP) is counter-based and requires a manual trigger to increment after each use. Most services use TOTP."
+      "value": "TOTP (Time-based OTP) 基于当前时间生成验证码，每30或60秒自动刷新。HOTP (HMAC-based OTP) 基于计数器，每次使用后手动触发递增。大多数服务使用 TOTP。"
     },
     {
       "name": "faq3_title",
-      "value": "How to back up token data?"
+      "value": "如何备份令牌数据？"
     },
     {
       "name": "faq3_subtitle",
-      "value": "Export an encrypted backup file for safe storage"
+      "value": "导出加密备份文件安全存储"
     },
     {
       "name": "faq3_answer",
-      "value": "Go to Settings > Export Encrypted Backup, set a backup password and export the .o2fah file. Store the backup file in a safe place. Regular backups are recommended to prevent data loss."
+      "value": "进入设置 > 导出加密备份，设置备份密码后导出 .o2fah 文件。请将备份文件保存在安全位置。建议定期备份以防数据丢失。"
     },
     {
       "name": "faq4_title",
-      "value": "Is biometric lock secure?"
+      "value": "生物识别锁定安全吗？"
     },
     {
       "name": "faq4_subtitle",
-      "value": "Local encryption + system-level biometric protection"
+      "value": "本地加密 + 系统级生物识别保护"
     },
     {
       "name": "faq4_answer",
-      "value": "O2FAH uses HarmonyOS system-level biometric APIs, and all data is stored in an encrypted local area. Secrets are protected by the system secure area and are never uploaded to the cloud or shared with other apps."
+      "value": "O2FAH 使用 HarmonyOS 系统级生物识别 API，所有数据存储在本地加密区域。密钥通过系统安全区域保护，不会上传到云端或与其他应用共享。"
     },
     {
       "name": "faq5_title",
-      "value": "How to migrate data after changing phones?"
+      "value": "更换手机后如何迁移数据？"
     },
     {
       "name": "faq5_subtitle",
-      "value": "Export on the old phone, import on the new one"
+      "value": "旧手机导出备份，新手机导入恢复"
     },
     {
       "name": "faq5_answer",
-      "value": "On the old phone: Settings > Export Encrypted Backup. On the new phone, install O2FAH: Settings > Import Encrypted Backup, select the backup file and enter the password to restore all tokens."
+      "value": "在旧手机上：设置 > 导出加密备份。在新手机上安装 O2FAH：设置 > 导入加密备份，选择备份文件并输入密码即可恢复所有令牌。"
     },
     {
       "name": "guide1_title",
-      "value": "Quick Start Guide"
+      "value": "快速入门指南"
     },
     {
       "name": "guide1_content",
-      "value": "O2FAH is a two-step verification (2FA) token manager compatible with TOTP and HOTP.\n\n1. Add token: tap the + button at the bottom-right of the home page to scan a QR code, recognize from album, or enter the secret manually.\n\n2. View codes: the token card shows the current code and remaining validity in real time; tap the card to quickly copy the code.\n\n3. Organize: filter by category tags, long-press to drag and reorder, swipe left to edit/delete tokens."
+      "value": "O2FAH 是一款两步验证 (2FA) 令牌管理工具，兼容 TOTP 和 HOTP 协议。\n\n1. 添加令牌：点击主页面右下角 + 按钮，可通过扫描二维码、从相册识别或手动输入密钥三种方式添加。\n\n2. 查看验证码：令牌卡片会实时显示当前验证码及剩余有效时间，点击卡片可快速复制验证码。\n\n3. 整理管理：支持按分类标签筛选、长按拖拽排序、左滑编辑/删除令牌。"
     },
     {
       "name": "guide2_title",
-      "value": "How to use category tags"
+      "value": "如何使用分类标签"
     },
     {
       "name": "guide2_content",
-      "value": "Tags help you organize and find tokens.\n\n1. Create: create custom tags in Settings > Manage Tags, with a name and color.\n\n2. Assign: select one or more tags when editing a token.\n\n3. Filter: the tag bar at the top of the home page filters by category; tap \"All\" to show all tokens."
+      "value": "分类标签帮助你更好地组织和查找令牌。\n\n1. 创建标签：在设置 > 管理分类标签中创建自定义标签，可设置名称和颜色。\n\n2. 分配标签：编辑令牌时可为其选择一个或多个标签。\n\n3. 筛选令牌：主页面顶部标签栏可快速按分类筛选，点击「全部」显示所有令牌。"
     },
     {
       "name": "guide3_title",
-      "value": "Backup & Restore Guide"
+      "value": "备份与恢复指南"
     },
     {
       "name": "guide3_content",
-      "value": "Back up your token data regularly to prevent loss.\n\n1. Export: Settings > Export Encrypted Backup, set a password to generate an encrypted .o2fah file; store it somewhere safe (e.g. computer or cloud drive).\n\n2. Restore: on a new device open Settings > Import Encrypted Backup, select the backup file and enter the password to restore all tokens.\n\n3. Reminder: enable periodic backup reminders in settings to avoid forgetting."
+      "value": "请定期备份令牌数据以防丢失。\n\n1. 导出备份：设置 > 导出加密备份，设置备份密码后生成 .o2fah 加密文件，建议保存到安全位置（如电脑或云盘）。\n\n2. 导入恢复：在新设备上打开设置 > 导入加密备份，选择备份文件并输入密码即可恢复所有令牌。\n\n3. 备份提醒：可在设置中开启定期备份提醒，避免遗忘。"
     },
     {
       "name": "about_app_desc",
-      "value": "An open-source HarmonyOS 2FA app"
+      "value": "一款开源的鸿蒙2FA应用"
     },
     {
       "name": "about_section_app_info",
-      "value": "App Info"
+      "value": "应用信息"
     },
     {
       "name": "about_app_name",
-      "value": "App Name"
+      "value": "应用名称"
     },
     {
       "name": "about_version_label",
-      "value": "Version"
+      "value": "版本号"
     },
     {
       "name": "about_section_tech",
-      "value": "Technical Info"
+      "value": "技术信息"
     },
     {
       "name": "about_protocol",
-      "value": "Protocol"
+      "value": "认证协议"
     },
     {
       "name": "about_hash_algo",
-      "value": "Hash Algorithm"
+      "value": "哈希算法"
     },
     {
       "name": "about_data_storage",
-      "value": "Data Storage"
+      "value": "数据存储"
     },
     {
       "name": "about_storage_local",
-      "value": "Local encrypted storage"
+      "value": "纯本地加密存储"
     },
     {
       "name": "about_network",
-      "value": "Network"
+      "value": "网络权限"
     },
     {
       "name": "about_network_none",
-      "value": "None"
+      "value": "无"
     },
     {
       "name": "about_section_libs",
-      "value": "Libraries"
+      "value": "依赖库"
     },
     {
       "name": "about_lib_sdk_desc",
-      "value": "System framework and API"
+      "value": "系统框架与API"
     },
     {
       "name": "about_footer",
-      "value": "❤️ · Your data is fully under your control"
+      "value": "❤️ · 数据完全由您掌控"
     },
     {
       "name": "about_pack_failed",
-      "value": "Failed to get package info"
+      "value": "获取包信息失败"
     },
     {
       "name": "icon_search_placeholder",
-      "value": "Search icon name"
+      "value": "搜索图标名称，不支持中文搜索"
     },
     {
       "name": "icon_picker_title",
-      "value": "Select Icon"
+      "value": "选择图标"
     }
   ]
 }

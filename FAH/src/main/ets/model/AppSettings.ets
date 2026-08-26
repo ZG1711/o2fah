@@ -4,5 +4,6 @@ export class AppSettings {
   backupReminder: string = 'never';
   themeMode: string = 'system';
   defaultSort: string = 'manual';
+  language: string = '';
   lastBackupTime: number = 0;
 }

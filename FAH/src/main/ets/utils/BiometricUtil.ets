@@ -3,6 +3,12 @@ import { cryptoFramework } from '@kit.CryptoArchitectureKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 export class BiometricUtil {
+  private static storedContext: Context | undefined = undefined;
+
+  static init(ctx: Context): void {
+    BiometricUtil.storedContext = ctx;
+  }
+
   static checkAvailability(): boolean {
     const authTypes: userAuth.UserAuthType[] = [
       userAuth.UserAuthType.FINGERPRINT,
@@ -37,7 +43,7 @@ export class BiometricUtil {
         };
 
         const widgetParam: userAuth.WidgetParam = {
-          title: '请进行身份认证'
+          title: BiometricUtil.getAuthTitle()
         };
 
         const userAuthInstance: userAuth.UserAuthInstance = userAuth.getUserAuthInstance(
@@ -61,5 +67,12 @@ export class BiometricUtil {
         resolve(false);
       }
     });
+  }
+
+  private static getAuthTitle(): string {
+    if (BiometricUtil.storedContext !== undefined) {
+      return BiometricUtil.storedContext.resourceManager.getStringSync($r('app.string.biometric_auth_title').id);
+    }
+    return 'Identity verification';
   }
 }

@@ -70,7 +70,7 @@ export struct IconGrid {
 
   build() {
     Column() {
-      TextInput({ placeholder: '搜索图标名称，不支持中文搜索', text: this.searchText })
+      TextInput({ placeholder: $r('app.string.icon_search_placeholder'), text: this.searchText })
         .fontSize(14)
         .backgroundColor(this.getColors().pageBackground)
         .borderRadius(10)
@@ -147,7 +147,7 @@ export struct IconPickerPanel {
           })
 
         Column() {
-          Text('选择图标')
+          Text($r('app.string.icon_picker_title'))
             .fontSize(16)
             .fontWeight(700)
             .fontColor(this.getColors().textPrimary)
@@ -167,7 +167,7 @@ export struct IconPickerPanel {
             }
           })
 
-          Text('取消')
+          Text($r('app.string.button_cancel'))
             .fontSize(15)
             .fontWeight(500)
             .fontColor(this.getColors().textSecondary)

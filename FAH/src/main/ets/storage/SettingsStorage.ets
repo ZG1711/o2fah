@@ -67,6 +67,9 @@ export class SettingsStorage {
     if (raw['defaultSort'] !== undefined) {
       settings.defaultSort = (raw['defaultSort']) as string;
     }
+    if (raw['language'] !== undefined) {
+      settings.language = (raw['language']) as string;
+    }
     if (raw['lastBackupTime'] !== undefined) {
       settings.lastBackupTime = (raw['lastBackupTime']) as number;
     }

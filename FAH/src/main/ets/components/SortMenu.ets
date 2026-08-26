@@ -9,12 +9,6 @@ export interface SortOption {
 @Component
 export struct SortMenu {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
-  options: SortOption[] = [
-    { key: 'manual', label: '手动拖动排序' },
-    { key: 'name', label: '按名称 A-Z' },
-    { key: 'created', label: '按添加时间' },
-    { key: 'lastUsed', label: '按最近使用' }
-  ];
   @Prop selectedSort: string = 'manual';
   @Prop visible: boolean = false;
   onSelectSort?: (sortKey: string) => void;
@@ -25,6 +19,20 @@ export struct SortMenu {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private buildOptions(): SortOption[] {
+    const options: SortOption[] = [
+      { key: 'manual', label: this.str($r('app.string.set_sort_manual')) },
+      { key: 'name', label: this.str($r('app.string.set_sort_name')) },
+      { key: 'created', label: this.str($r('app.string.set_sort_created')) },
+      { key: 'lastUsed', label: this.str($r('app.string.set_sort_lastused')) }
+    ];
+    return options;
   }
 
   build() {
@@ -43,14 +51,14 @@ export struct SortMenu {
 
         // Menu card
         Column() {
-          Text('排序方式')
+          Text($r('app.string.settings_sort'))
             .fontSize(12)
             .fontWeight(600)
             .fontColor(this.getColors().textSecondary)
             .padding({ top: 8, bottom: 8, left: 16, right: 16 })
             .width('100%')
 
-          ForEach(this.options, (option: SortOption) => {
+          ForEach(this.buildOptions(), (option: SortOption) => {
             Row() {
               Text(option.label)
                 .fontSize(15)

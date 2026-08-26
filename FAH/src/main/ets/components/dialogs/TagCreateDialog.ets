@@ -63,20 +63,20 @@ export struct TagCreateDialog {
 
   build() {
     Column() {
-      Text(this.isEdit ? '编辑分类标签' : '新建分类标签')
+      Text(this.isEdit ? $r('app.string.dialog_edit_tag_title') : $r('app.string.dialog_new_tag_title'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .textAlign(TextAlign.Center)
         .padding({ top: 22, bottom: 10, left: 20, right: 20 })
 
-      Text('标签名称')
+      Text($r('app.string.field_tag_name'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
         .padding({ left: 22, right: 20, bottom: 6 })
 
-      TextInput({ placeholder: '例如: 游戏', text: this.inputName })
+      TextInput({ placeholder: $r('app.string.placeholder_tag_name'), text: this.inputName })
         .fontSize(15)
         .backgroundColor(this.getColors().pageBackground)
         .borderRadius(10)
@@ -87,12 +87,12 @@ export struct TagCreateDialog {
           this.inputName = value;
         })
 
-      Text('最多10个字符，不可与已有标签重复')
+      Text($r('app.string.tag_name_hint'))
         .fontSize(10)
         .fontColor(this.getColors().textTertiary)
         .padding({ left: 22, right: 20, top: 4, bottom: 10 })
 
-      Text('预设颜色')
+      Text($r('app.string.field_preset_colors'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
@@ -117,7 +117,7 @@ export struct TagCreateDialog {
       .width('100%')
       .padding({ left: 20, right: 20, bottom: 12 })
 
-      Text('其他颜色')
+      Text($r('app.string.field_more_colors'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
@@ -175,7 +175,7 @@ export struct TagCreateDialog {
       }
 
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -186,7 +186,7 @@ export struct TagCreateDialog {
             this.controller.close();
           })
 
-        Text(this.isEdit ? '保存' : '创建')
+        Text(this.isEdit ? $r('app.string.button_save') : $r('app.string.action_create'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.inputName.trim().length > 0 ? this.getColors().accentBlue : this.getColors().textTertiary)

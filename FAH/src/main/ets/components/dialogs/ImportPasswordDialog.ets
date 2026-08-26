@@ -21,21 +21,21 @@ export struct ImportPasswordDialog {
   build() {
     Column() {
       // Title + description
-      Text('输入备份密码')
+      Text($r('app.string.dialog_input_backup_password'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .textAlign(TextAlign.Center)
         .margin({ top: 24, bottom: 6 })
 
-      Text('请输入导出时设置的密码来解密备份文件')
+      Text($r('app.string.dialog_backup_password_decrypt_desc'))
         .fontSize(12)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)
         .padding({ left: 20, right: 20 })
 
       // Password input label
-      Text('备份密码')
+      Text($r('app.string.field_backup_password'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
@@ -60,7 +60,7 @@ export struct ImportPasswordDialog {
 
       // Error area
       if (this.showError) {
-        Text('⚠️ 密码错误，请重试')
+        Text($r('app.string.dialog_wrong_password'))
           .fontSize(10)
           .fontColor(this.getColors().dangerRed)
           .padding({ left: 22, top: 8 })
@@ -68,7 +68,7 @@ export struct ImportPasswordDialog {
 
       // Buttons
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -79,7 +79,7 @@ export struct ImportPasswordDialog {
             this.controller.close();
           })
 
-        Text('确认导入')
+        Text($r('app.string.action_confirm_import'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.getColors().accentBlue)

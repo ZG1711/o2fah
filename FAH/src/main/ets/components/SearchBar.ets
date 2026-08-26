@@ -23,7 +23,7 @@ export struct SearchBar {
           .width(16)
           .height(16)
           .fillColor(this.getColors().tabUnselected)
-        TextInput({ placeholder: '搜索令牌…', text: this.searchText })
+        TextInput({ placeholder: $r('app.string.search_placeholder'), text: this.searchText })
           .placeholderColor(this.getColors().tabUnselected)
           .fontSize(15)
           .backgroundColor(Color.Transparent)

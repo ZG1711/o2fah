@@ -5,6 +5,7 @@ import { ThemeManager } from '../common/ThemeManager';
 import { SettingsStorage } from '../storage/SettingsStorage';
 import { AppSettings } from '../model/AppSettings';
 import { BiometricUtil } from '../utils/BiometricUtil';
+import { LanguageManager } from '../common/LanguageManager';
 
 const DOMAIN = 0x0000;
 const BIOMETRIC_AUTH_KEY: string = 'requireBiometricAuth';
@@ -17,6 +18,7 @@ export default class FAHAbility extends UIAbility {
 
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     SettingsStorage.init(this.context);
+    BiometricUtil.init(this.context);
     const systemColorMode: number = this.context.config.colorMode ?? ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET;
     ThemeManager.init(systemColorMode);
     try {
@@ -89,6 +91,7 @@ export default class FAHAbility extends UIAbility {
     SettingsStorage.get().then((settings: AppSettings): void => {
       AppStorage.set(CACHED_BIOMETRIC_ENABLED, settings.biometricEnabled);
       AppStorage.set(CACHED_AUTO_LOCK_TIMEOUT, settings.autoLockTimeout);
+      LanguageManager.applyStartup(settings.language);
     });
   }
 

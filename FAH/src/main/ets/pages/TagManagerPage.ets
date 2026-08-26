@@ -89,7 +89,7 @@ struct TagManagerPage {
             this.getUIContext().getRouter().back();
           })
 
-        Text('管理分类标签')
+        Text($r('app.string.tag_manager_header'))
           .fontSize(17)
           .fontWeight(700)
           .fontColor(this.getColors().textPrimary)
@@ -99,7 +99,7 @@ struct TagManagerPage {
       .alignItems(VerticalAlign.Center)
 
       // Description
-      Text('创建自定义分类标签，令牌可标记多个标签进行分类筛选')
+      Text($r('app.string.tag_manager_desc'))
         .fontSize(12)
         .fontColor(this.getColors().textSecondary)
         .width('100%')
@@ -141,7 +141,7 @@ struct TagManagerPage {
           this.persistTagSortOrder();
         })
         ListItem(){
-          Text('可长按进行拖拽排序')
+          Text($r('app.string.tag_drag_hint'))
             .fontSize(12)
             .fontColor(this.getColors().textSecondary)
             .width('100%')
@@ -156,7 +156,7 @@ struct TagManagerPage {
               .height(18)
               .fillColor(this.getColors().accentBlue)
 
-            Text('新建分类')
+            Text($r('app.string.tag_new_category'))
               .fontSize(14)
               .fontWeight(600)
               .fontColor(this.getColors().accentBlue)
@@ -201,7 +201,7 @@ struct TagManagerPage {
   SwipeActionBuilder(): void {
     Row() {
       Button() {
-        Text('编辑')
+        Text($r('app.string.button_edit'))
           .fontSize(12)
           .fontWeight(600)
           .fontColor(this.getColors().white)
@@ -218,7 +218,7 @@ struct TagManagerPage {
       })
 
       Button() {
-        Text('删除')
+        Text($r('app.string.button_delete'))
           .fontSize(12)
           .fontWeight(600)
           .fontColor(this.getColors().white)

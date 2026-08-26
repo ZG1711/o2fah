@@ -63,7 +63,7 @@ export struct EditTokenDialog {
         })
 
       Column() {
-        Text('编辑令牌')
+        Text($r('app.string.dialog_edit_token_title'))
           .fontSize(17)
           .fontWeight(700)
           .fontColor(this.getColors().textPrimary)
@@ -96,7 +96,7 @@ export struct EditTokenDialog {
                 style: this.editIcon.length > 0 ? BorderStyle.Dashed : BorderStyle.Solid
               })
 
-              Text(this.editIcon.length > 0 ? '点击更换图标' : '点击选择图标')
+              Text(this.editIcon.length > 0 ? $r('app.string.manual_change_icon') : $r('app.string.manual_select_icon'))
                 .fontSize(11)
                 .fontColor(this.getColors().textTertiary)
                 .margin({ top: 8 })
@@ -108,7 +108,7 @@ export struct EditTokenDialog {
               this.showIconPicker = true;
             })
 
-            Text('发行方')
+            Text($r('app.string.field_issuer'))
               .fontSize(12)
               .fontWeight(600)
               .fontColor(this.getColors().textSecondary)
@@ -124,7 +124,7 @@ export struct EditTokenDialog {
                 this.editIssuer = value;
               })
 
-            Text('账户名')
+            Text($r('app.string.field_account'))
               .fontSize(12)
               .fontWeight(600)
               .fontColor(this.getColors().textSecondary)
@@ -141,7 +141,7 @@ export struct EditTokenDialog {
               })
 
             if (this.tagNames.length > 0) {
-              Text('分类标签')
+              Text($r('app.string.field_tags'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -179,7 +179,7 @@ export struct EditTokenDialog {
         .scrollBar(BarState.Off)
 
         Row() {
-          Text('取消')
+          Text($r('app.string.button_cancel'))
             .fontSize(15)
             .fontWeight(500)
             .fontColor(this.getColors().textSecondary)
@@ -190,7 +190,7 @@ export struct EditTokenDialog {
               this.controller.close();
             })
 
-          Text('保存')
+          Text($r('app.string.button_save'))
             .fontSize(15)
             .fontWeight(600)
             .fontColor(this.getColors().accentBlue)

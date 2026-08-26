@@ -23,7 +23,7 @@ export struct ImportMergeDialog {
   build() {
     Column() {
       // Title
-      Text('确认导入备份')
+      Text($r('app.string.dialog_import_merge_title'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
@@ -33,7 +33,7 @@ export struct ImportMergeDialog {
       // Stats row
       Column({ space: 8 }) {
         Row() {
-          Text('令牌总数')
+          Text($r('app.string.stat_total_tokens'))
             .fontSize(14)
             .fontColor(this.getColors().textSecondary)
             .layoutWeight(1)
@@ -48,7 +48,7 @@ export struct ImportMergeDialog {
         Divider().height(0.5).color(this.getColors().divider)
 
         Row() {
-          Text('新增')
+          Text($r('app.string.stat_added'))
             .fontSize(14)
             .fontColor(this.getColors().textSecondary)
             .layoutWeight(1)
@@ -63,7 +63,7 @@ export struct ImportMergeDialog {
         Divider().height(0.5).color(this.getColors().divider)
 
         Row() {
-          Text('重复跳过')
+          Text($r('app.string.stat_skipped'))
             .fontSize(14)
             .fontColor(this.getColors().textSecondary)
             .layoutWeight(1)
@@ -78,7 +78,7 @@ export struct ImportMergeDialog {
         Divider().height(0.5).color(this.getColors().divider)
 
         Row() {
-          Text('导入后总数')
+          Text($r('app.string.stat_total_after'))
             .fontSize(14)
             .fontColor(this.getColors().textSecondary)
             .layoutWeight(1)
@@ -98,7 +98,7 @@ export struct ImportMergeDialog {
 
       // Warning
       Row() {
-        Text('重复令牌将被自动跳过')
+        Text($r('app.string.dialog_import_merge_warning'))
           .fontSize(11)
           .fontColor('#B45309')
       }
@@ -111,7 +111,7 @@ export struct ImportMergeDialog {
 
       // Buttons
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -122,7 +122,7 @@ export struct ImportMergeDialog {
             this.controller.close();
           })
 
-        Text('确认导入')
+        Text($r('app.string.action_confirm_import'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.getColors().accentBlue)

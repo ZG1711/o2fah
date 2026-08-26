@@ -42,6 +42,10 @@ struct ExportQrPage {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
       Column() {
@@ -59,7 +63,7 @@ struct ExportQrPage {
           .layoutWeight(1)
           .justifyContent(FlexAlign.Center)
         } else if (this.tokens.length === 0) {
-          EmptyState({ title: '暂无令牌可导出', subtitle: '请先在令牌页添加两步验证令牌' })
+          EmptyState({ title: this.str($r('app.string.export_qr_empty_title')), subtitle: this.str($r('app.string.export_qr_empty_subtitle')) })
             .width('100%')
             .layoutWeight(1)
         } else {
@@ -124,7 +128,7 @@ struct ExportQrPage {
           this.getUIContext().getRouter().back();
         })
 
-      Text('导出二维码')
+      Text($r('app.string.set_export_qr'))
         .fontSize(16)
         .fontColor('#4285F4')
         .padding({ right: 4, top: 8, bottom: 12 })
@@ -138,7 +142,7 @@ struct ExportQrPage {
   @Builder
   WarningBar(): void {
     Row() {
-      Text('⚠️ 二维码包含明文密钥，请勿截屏或发送给他人')
+      Text($r('app.string.export_qr_warning'))
         .fontSize(12)
         .fontWeight(500)
         .fontColor('#B45309')
@@ -177,11 +181,11 @@ struct ExportQrPage {
             .objectFit(ImageFit.Contain)
         } else if (this.qrStatus[index] === 'error') {
           Column({ space: 12 }) {
-            Text('生成失败')
+            Text($r('app.string.qr_generate_fail'))
               .fontSize(15)
               .fontWeight(600)
               .fontColor(this.getColors().textSecondary)
-            Button('重试')
+            Button($r('app.string.action_retry'))
               .fontSize(14)
               .fontWeight(600)
               .fontColor(this.getColors().white)
@@ -298,7 +302,7 @@ struct ExportQrPage {
       }
       this.qrStatus[index] = 'error';
       this.refreshQrState();
-      this.showToast('部分令牌导出失败');
+      this.showToast(this.str($r('app.string.toast_partial_export_fail')));
       return;
     }
 

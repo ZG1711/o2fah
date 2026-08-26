@@ -15,6 +15,10 @@ export struct DeleteTokenDialog {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Column() {
       // Trash icon circle
@@ -32,24 +36,24 @@ export struct DeleteTokenDialog {
       .alignItems(HorizontalAlign.Center)
       .margin({ bottom: 14 })
 
-      Text('删除令牌')
+      Text($r('app.string.dialog_delete_token_title'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .margin({ bottom: 6 })
 
-      Text('确定删除 ' + this.tokenName + ' 吗？')
+      Text(this.str($r('app.string.dialog_delete_token_message')).replace('%s', this.tokenName))
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)
         .margin({ bottom: 2 })
 
-      Text('此操作不可恢复')
+      Text($r('app.string.dialog_irreversible'))
         .fontSize(11)
         .fontColor(this.getColors().textTertiary)
 
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -60,7 +64,7 @@ export struct DeleteTokenDialog {
             this.controller.close();
           })
 
-        Text('删除')
+        Text($r('app.string.button_delete'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.getColors().dangerRed)

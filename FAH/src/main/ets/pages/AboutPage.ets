@@ -20,9 +20,10 @@ struct AboutPage {
 
   aboutToAppear(): void {
     this.getBundleInfoForSelf()
+    this.libItems[0].desc = this.str($r('app.string.about_lib_sdk_desc'));
   }
   private libItems: LibInfo[] = [
-    { name: 'HarmonyOS SDK', desc: '系统框架与API', license: '-' } as LibInfo
+    { name: 'HarmonyOS SDK', desc: '', license: '-' } as LibInfo
   ];
 
   getColors(): ThemeColors {
@@ -30,6 +31,10 @@ struct AboutPage {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
   }
 
   getCapsuleBgLight(): string {
@@ -85,8 +90,8 @@ struct AboutPage {
         this.targetVersion = bundleInfo.targetVersion;
       })
       .catch(() => {
-        this.version = "获取版本信息失败";
-        this.packName = "获取包信息失败";
+        this.version = this.str($r('app.string.set_version_failed'));
+        this.packName = this.str($r('app.string.about_pack_failed'));
       });
   }
 
@@ -109,7 +114,7 @@ struct AboutPage {
           .onClick(() => {
             this.getUIContext().getRouter().back();
           })
-        Text('设置')
+        Text($r('app.string.tab_settings'))
           .fontSize(16)
           .fontColor('#4285F4')
           .padding({ right: 4, top: 8, bottom: 12 })
@@ -117,7 +122,7 @@ struct AboutPage {
             this.getUIContext().getRouter().back();
           })
 
-        Text('关于 O2FAH')
+        Text($r('app.string.settings_about'))
           .fontSize(17)
           .fontWeight(700)
           .fontColor(this.getColors().textPrimary)
@@ -158,7 +163,7 @@ struct AboutPage {
               .fontColor('#1D1D1F')
               .margin({ top: 14 })
 
-            Text('一款开源的鸿蒙2FA应用')
+            Text($r('app.string.about_app_desc'))
               .fontSize(12)
               .fontColor('#AEAEB2')
               .margin({ top: 2 })
@@ -168,11 +173,11 @@ struct AboutPage {
           .padding({ top: 28, bottom: 24 })
 
           // ===================== Group 1: 应用信息 =====================
-          this.SectionHeader('应用信息')
+          this.SectionHeader(this.str($r('app.string.about_section_app_info')))
           Column() {
-            this.InfoRow('应用名称', 'O2FAH', true)
+            this.InfoRow(this.str($r('app.string.about_app_name')), 'O2FAH', true)
             if (this.version)
-              this.InfoRow('版本号', this.version, true)
+              this.InfoRow(this.str($r('app.string.about_version_label')), this.version, true)
             this.InfoRow('Github', "https://github.com/ZG1711/o2fah", true)
             this.InfoRow('Gitee',"https://gitee.com/ZG1711/o2fah", true)
           }
@@ -182,11 +187,11 @@ struct AboutPage {
           .margin({ top: 6 })
 
           // ===================== Group 2: 技术信息 =====================
-          this.SectionHeader('技术信息')
+          this.SectionHeader(this.str($r('app.string.about_section_tech')))
           Column() {
             // 认证协议
             Row() {
-              Text('认证协议')
+              Text(this.str($r('app.string.about_protocol')))
                 .fontSize(15)
                 .fontColor(this.getColors().textPrimary)
                 .layoutWeight(1)
@@ -203,7 +208,7 @@ struct AboutPage {
 
             // 哈希算法
             Row() {
-              Text('哈希算法')
+              Text(this.str($r('app.string.about_hash_algo')))
                 .fontSize(15)
                 .fontColor(this.getColors().textPrimary)
                 .layoutWeight(1)
@@ -221,12 +226,12 @@ struct AboutPage {
 
             // 数据存储
             Row() {
-              Text('数据存储')
+              Text(this.str($r('app.string.about_data_storage')))
                 .fontSize(15)
                 .fontColor(this.getColors().textPrimary)
                 .layoutWeight(1)
 
-              Text('纯本地加密存储')
+              Text(this.str($r('app.string.about_storage_local')))
                 .fontSize(15)
                 .fontColor(this.getColors().textSecondary)
             }
@@ -237,12 +242,12 @@ struct AboutPage {
 
             // 网络权限
             Row() {
-              Text('网络权限')
+              Text(this.str($r('app.string.about_network')))
                 .fontSize(15)
                 .fontColor(this.getColors().textPrimary)
                 .layoutWeight(1)
 
-              Text('无')
+              Text(this.str($r('app.string.about_network_none')))
                 .fontSize(12)
                 .fontColor(this.getGrayCapsuleText())
                 .backgroundColor(this.getGrayCapsuleBg())
@@ -258,7 +263,7 @@ struct AboutPage {
           .margin({ top: 6 })
 
           // ===================== Group 3: 第三方开源库 =====================
-          this.SectionHeader('依赖库')
+          this.SectionHeader(this.str($r('app.string.about_section_libs')))
           Column() {
             ForEach(this.libItems, (item: LibInfo, index: number) => {
               Column() {
@@ -296,7 +301,7 @@ struct AboutPage {
 
           // ===================== Footer =====================
           Column() {
-            Text('❤️ · 数据完全由您掌控')
+            Text($r('app.string.about_footer'))
               .fontSize(13)
               .fontColor(this.getFooterPrimary())
               .width('100%')

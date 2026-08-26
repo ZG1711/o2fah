@@ -4,14 +4,18 @@ import { ThemeManager, ThemeColors } from '../common/ThemeManager';
 @Component
 export struct EmptyState {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
-  @Prop title: string = '还没有令牌';
-  @Prop subtitle: string = '点击右下角 + 按钮添加你的第一个两步验证令牌';
+  @Prop title: string = '';
+  @Prop subtitle: string = '';
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
   }
 
   build() {
@@ -30,12 +34,12 @@ export struct EmptyState {
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
 
-      Text(this.title)
+      Text(this.title.length > 0 ? this.title : this.str($r('app.string.empty_tokens_title')))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
 
-      Text(this.subtitle)
+      Text(this.subtitle.length > 0 ? this.subtitle : this.str($r('app.string.empty_tokens_desc')))
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)

@@ -21,6 +21,10 @@ export struct TokenCard {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Column({ space: 0 }) {
       Row() {
@@ -190,9 +194,9 @@ export struct TokenCard {
   }
 
   private getProtocolText(): string {
-    let text: string = this.token.type + ' · ' + this.token.algorithm + ' · ' + this.token.digits.toString() + '位';
+    let text: string = this.token.type + ' · ' + this.token.algorithm + ' · ' + this.token.digits.toString() + this.str($r('app.string.unit_digits'));
     if (this.token.type === 'HOTP') {
-      text = text + ' · 计数' + this.token.counter.toString();
+      text = text + ' · ' + this.str($r('app.string.unit_counter')) + this.token.counter.toString();
     }
     return text;
   }

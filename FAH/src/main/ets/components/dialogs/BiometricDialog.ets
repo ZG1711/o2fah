@@ -32,20 +32,20 @@ export struct BiometricDialog {
       .margin({ bottom: 20 })
 
       // Title
-      Text('验证身份')
+      Text($r('app.string.lock_verify_title'))
         .fontSize(18)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .margin({ bottom: 6 })
 
       // Subtitle
-      Text('请验证指纹以解锁 O2FAH')
+      Text($r('app.string.lock_fingerprint_hint'))
         .fontSize(13)
         .fontColor(this.getColors().textSecondary)
         .margin({ bottom: 24 })
 
       // Cancel button
-      Text('取消')
+      Text($r('app.string.button_cancel'))
         .fontSize(15)
         .fontWeight(500)
         .fontColor(this.getColors().textPrimary)

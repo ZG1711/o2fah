@@ -72,7 +72,7 @@ struct Index {
   private lockPushed: boolean = false;
   private editingTokenId: string = '';
   private deletingTokenId: string = '';
-  private tabTitles: string[] = ['令牌', '设置'];
+  private tabTitles: Resource[] = [$r('app.string.tab_tokens'), $r('app.string.tab_settings')];
   private displayTokensCache: TokenModel[] = [];
   private cacheTokensRef: TokenModel[] | undefined = undefined;
   private cacheDisplayTagsRef: TagItem[] | undefined = undefined;
@@ -80,7 +80,7 @@ struct Index {
   private cacheSelectedTagIndex: number = -1;
   private cacheSelectedSort: string = '';
 
-  @State displayTags: TagItem[] = [{ id: 'all', name: '全部', color: '#6B7280' }];
+  @State displayTags: TagItem[] = [{ id: 'all', name: '', color: '#6B7280' }];
 
   private editDialogController: CustomDialogController = new CustomDialogController({
     builder: EditTokenDialog({
@@ -140,7 +140,7 @@ struct Index {
       mergeResult: this.mergeResult,
       isDark: this.isDarkMode,
       confirm: (): void => {
-        this.toastMessage = '备份已导入';
+        this.toastMessage = this.str($r('app.string.toast_backup_imported'));
         this.toastType = 'success';
         this.toastVisible = true;
         setTimeout((): void => {
@@ -225,11 +225,13 @@ struct Index {
     if (AppStorage.get('showAppearancePicker') === true ||
         AppStorage.get('showAutoLockPicker') === true ||
         AppStorage.get('showBackupReminderPicker') === true ||
-        AppStorage.get('showDefaultSortPicker') === true) {
+        AppStorage.get('showDefaultSortPicker') === true ||
+        AppStorage.get('showLanguagePicker') === true) {
       AppStorage.set('showAppearancePicker', false);
       AppStorage.set('showAutoLockPicker', false);
       AppStorage.set('showBackupReminderPicker', false);
       AppStorage.set('showDefaultSortPicker', false);
+      AppStorage.set('showLanguagePicker', false);
       return true;
     }
     return false;
@@ -246,7 +248,7 @@ struct Index {
     AppStorage.set('pendingImportUri', '');
     BackupImporter.performImportFromUri(uri, password).then((result: MergeResult): void => {
       if (result.newTokens.length === 0 && result.skippedCount === 0) {
-        this.toastMessage = '无法读取备份文件';
+        this.toastMessage = this.str($r('app.string.toast_cannot_read_backup'));
         this.toastType = 'error';
         this.toastVisible = true;
         setTimeout((): void => { this.toastVisible = false; }, 2000);
@@ -260,7 +262,7 @@ struct Index {
       this.importRetryCount++;
       if (this.importRetryCount >= 3) {
         this.importLocked = true;
-        this.toastMessage = '密码错误次数过多，请等待1分钟';
+        this.toastMessage = this.str($r('app.string.toast_import_locked'));
         this.toastType = 'error';
         this.toastVisible = true;
         setTimeout((): void => { this.toastVisible = false; }, 3000);
@@ -269,7 +271,7 @@ struct Index {
           this.importRetryCount = 0;
         }, 60000);
       } else {
-        this.toastMessage = '密码错误，请重试 (剩余 ' + (3 - this.importRetryCount).toString() + ' 次)';
+        this.toastMessage = this.str($r('app.string.toast_wrong_password')).replace('%d', (3 - this.importRetryCount).toString());
         this.toastType = 'error';
         this.toastVisible = true;
         setTimeout((): void => { this.toastVisible = false; }, 3000);
@@ -282,6 +284,10 @@ struct Index {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
   }
 
   build() {
@@ -316,14 +322,14 @@ struct Index {
                 if (this.showBackupBanner) {
                   Row() {
                     Row() {
-                      Text('已 ' + this.daysSinceBackup.toString() + ' 天未备份令牌数据，建议导出备份')
+                      Text(this.str($r('app.string.banner_backup_reminder')).replace('%d', this.daysSinceBackup.toString()))
                         .fontSize(12)
                         .fontColor('#B45309')
                         .layoutWeight(1)
                         .maxLines(2)
                         .textOverflow({ overflow: TextOverflow.Ellipsis })
 
-                      Text('立即备份')
+                      Text($r('app.string.banner_backup_now'))
                         .fontSize(12)
                         .fontWeight(600)
                         .fontColor('#2563EB')
@@ -406,7 +412,7 @@ struct Index {
                       }
                       this.tokens = newTokens;
                       TokenStorage.saveAll(newTokens);
-                      this.showToast('排序已保存 ✓', 'success');
+                      this.showToast(this.str($r('app.string.toast_sort_saved')), 'success');
                     })
                   }
                   .width('100%')
@@ -565,7 +571,7 @@ struct Index {
 
   private async loadTags(): Promise<void> {
     const savedTags: TagModel[] = await TagStorage.getAll();
-    const tagItems: TagItem[] = [{ id: 'all', name: '全部', color: '#6B7280' }];
+    const tagItems: TagItem[] = [{ id: 'all', name: this.str($r('app.string.tag_all')), color: '#6B7280' }];
     const colorMap: Record<string, string> = {};
     for (let i: number = 0; i < savedTags.length; i++) {
       tagItems.push({ id: savedTags[i].name, name: savedTags[i].name, color: savedTags[i].color });
@@ -678,7 +684,7 @@ struct Index {
 
   private copyCode(code: string): void {
     ClipboardUtil.copy(code);
-    this.showToast('已复制 ✓', 'success');
+    this.showToast(this.str($r('app.string.toast_copied')), 'success');
   }
 
   // --- HOTP refresh ---
@@ -693,7 +699,7 @@ struct Index {
     this.tokens = [...this.tokens];
     await TokenStorage.update(token);
     ClipboardUtil.copy(code);
-    this.showToast('已刷新并复制 ✓', 'success');
+    this.showToast(this.str($r('app.string.toast_refreshed_copied')), 'success');
   }
 
   // --- Edit / Delete ---
@@ -739,7 +745,7 @@ struct Index {
       token.version = token.version + 1;
       this.tokens = [...this.tokens];
       await TokenStorage.update(token);
-      this.showToast('令牌已更新 ✓', 'success');
+      this.showToast(this.str($r('app.string.toast_token_updated')), 'success');
     }
   }
 
@@ -761,7 +767,7 @@ struct Index {
     }
     this.codeMap = newCodeMap;
     this.remainingMap = newRemaining;
-    this.showToast('令牌已删除', 'warning');
+    this.showToast(this.str($r('app.string.token_deleted')), 'warning');
   }
 
   // --- Camera QR scan ---
@@ -774,11 +780,11 @@ struct Index {
         if (data.authResults.length > 0 && data.authResults[0] === 0) {
           this.launchScan();
         } else {
-          this.showToast('需要相机权限才能扫描二维码', 'warning');
+          this.showToast(this.str($r('app.string.toast_camera_permission')), 'warning');
         }
       })
       .catch((): void => {
-        this.showToast('无法获取相机权限', 'warning');
+        this.showToast(this.str($r('app.string.toast_camera_permission_fail')), 'warning');
       });
   }
 
@@ -798,7 +804,7 @@ struct Index {
             params: { uri: value }
           });
         } else {
-          this.showToast('未识别到有效令牌', 'warning');
+          this.showToast(this.str($r('app.string.toast_invalid_token')), 'warning');
         }
       })
       .catch((): void => {
@@ -835,7 +841,7 @@ struct Index {
         detectBarcode.decode(inputImage, scanOpts)
           .then((results: Array<scanBarcode.ScanResult>): void => {
             if (results.length === 0) {
-              this.showToast('未识别到有效令牌', 'warning');
+              this.showToast(this.str($r('app.string.toast_invalid_token')), 'warning');
               return;
             }
             const value: string = results[0].originalValue;
@@ -845,15 +851,15 @@ struct Index {
                 params: { uri: value }
               });
             } else {
-              this.showToast('未识别到有效令牌', 'warning');
+              this.showToast(this.str($r('app.string.toast_invalid_token')), 'warning');
             }
           })
           .catch((): void => {
-            this.showToast('未识别到有效令牌', 'warning');
+            this.showToast(this.str($r('app.string.toast_invalid_token')), 'warning');
           });
       })
       .catch((): void => {
-        this.showToast('无法打开相册', 'warning');
+        this.showToast(this.str($r('app.string.toast_open_album_fail')), 'warning');
       });
   }
 
@@ -919,7 +925,7 @@ struct Index {
   SwipeActionsBuilder(): void {
     Row() {
       Button() {
-        Text('二维码')
+        Text($r('app.string.action_qr_code'))
           .fontSize(12)
           .fontWeight(600)
           .fontColor(this.getColors().white)
@@ -939,7 +945,7 @@ struct Index {
       })
 
       Button() {
-        Text('编辑')
+        Text($r('app.string.button_edit'))
           .fontSize(12)
           .fontWeight(600)
           .fontColor(this.getColors().white)
@@ -956,7 +962,7 @@ struct Index {
       })
 
       Button() {
-        Text('删除')
+        Text($r('app.string.button_delete'))
           .fontSize(12)
           .fontWeight(600)
           .fontColor(this.getColors().white)

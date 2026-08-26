@@ -8,27 +8,6 @@ import { TagModel } from '../model/TagModel';
 import { ClipboardUtil } from '../utils/ClipboardUtil';
 import { PickerPanel, PickerOption } from '../components/PickerPanel';
 
-const PROTOCOL_OPTIONS: PickerOption[] = [
-  { label: 'TOTP', value: 'TOTP', description: '基于时间的动态验证码' },
-  { label: 'HOTP', value: 'HOTP', description: '基于事件的动态验证码' }
-];
-
-const ALGORITHM_OPTIONS: PickerOption[] = [
-  { label: 'SHA-1', value: 'SHA-1', description: 'SHA-1 哈希算法' },
-  { label: 'SHA-256', value: 'SHA-256', description: 'SHA-256 哈希算法' },
-  { label: 'SHA-512', value: 'SHA-512', description: 'SHA-512 哈希算法' }
-];
-
-const DIGITS_OPTIONS: PickerOption[] = [
-  { label: '6 位', value: '6', description: '生成 6 位验证码' },
-  { label: '8 位', value: '8', description: '生成 8 位验证码' }
-];
-
-const PERIOD_OPTIONS: PickerOption[] = [
-  { label: '30 秒', value: '30', description: '每 30 秒刷新一次' },
-  { label: '60 秒', value: '60', description: '每 60 秒刷新一次' }
-];
-
 @Entry
 @Component
 struct AddManualPage {
@@ -58,6 +37,43 @@ struct AddManualPage {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private buildProtocolOptions(): PickerOption[] {
+    const options: PickerOption[] = [
+      { label: 'TOTP', value: 'TOTP', description: this.str($r('app.string.protocol_totp_desc')) },
+      { label: 'HOTP', value: 'HOTP', description: this.str($r('app.string.protocol_hotp_desc')) }
+    ];
+    return options;
+  }
+
+  private buildAlgorithmOptions(): PickerOption[] {
+    const options: PickerOption[] = [
+      { label: 'SHA-1', value: 'SHA-1', description: this.str($r('app.string.algorithm_sha1_desc')) },
+      { label: 'SHA-256', value: 'SHA-256', description: this.str($r('app.string.algorithm_sha256_desc')) },
+      { label: 'SHA-512', value: 'SHA-512', description: this.str($r('app.string.algorithm_sha512_desc')) }
+    ];
+    return options;
+  }
+
+  private buildDigitsOptions(): PickerOption[] {
+    const options: PickerOption[] = [
+      { label: '6 ' + this.str($r('app.string.unit_digits')), value: '6', description: this.str($r('app.string.digits_6_desc')) },
+      { label: '8 ' + this.str($r('app.string.unit_digits')), value: '8', description: this.str($r('app.string.digits_8_desc')) }
+    ];
+    return options;
+  }
+
+  private buildPeriodOptions(): PickerOption[] {
+    const options: PickerOption[] = [
+      { label: '30 ' + this.str($r('app.string.unit_seconds')), value: '30', description: this.str($r('app.string.period_30_desc')) },
+      { label: '60 ' + this.str($r('app.string.unit_seconds')), value: '60', description: this.str($r('app.string.period_60_desc')) }
+    ];
+    return options;
   }
 
   aboutToAppear(): void {
@@ -100,7 +116,7 @@ struct AddManualPage {
               this.getUIContext().getRouter().back();
             })
 
-          Text('手动输入')
+          Text($r('app.string.add_token_manual'))
             .fontSize(17)
             .fontWeight(700)
             .fontColor(this.getColors().textPrimary)
@@ -108,7 +124,7 @@ struct AddManualPage {
             .textAlign(TextAlign.Start)
             .margin({ left: 10 })
 
-          Text('保存')
+          Text($r('app.string.button_save'))
             .fontSize(15)
             .fontWeight(600)
             .fontColor(this.getColors().accentBlue)
@@ -146,7 +162,7 @@ struct AddManualPage {
                 style: BorderStyle.Dashed
               })
 
-              Text(this.icon.length > 0 ? '点击更换图标' : '点击选择图标')
+              Text(this.icon.length > 0 ? $r('app.string.manual_change_icon') : $r('app.string.manual_select_icon'))
                 .fontSize(11)
                 .fontColor(this.getColors().textTertiary)
                 .margin({ top: 8 })
@@ -160,7 +176,7 @@ struct AddManualPage {
 
             Column() {
               Row() {
-                Text('发行方')
+                Text($r('app.string.field_issuer'))
                   .fontSize(12)
                   .fontWeight(600)
                   .fontColor(this.getColors().textSecondary)
@@ -171,7 +187,7 @@ struct AddManualPage {
               .padding({ left: 4 })
               .margin({ bottom: 6 })
 
-              TextInput({ placeholder: '例如: Google', text: this.issuer })
+              TextInput({ placeholder: $r('app.string.placeholder_issuer'), text: this.issuer })
                 .width('100%')
                 .backgroundColor(this.getColors().cardBackground)
                 .borderRadius(12)
@@ -189,7 +205,7 @@ struct AddManualPage {
 
             Column() {
               Row() {
-                Text('账户名')
+                Text($r('app.string.field_account'))
                   .fontSize(12)
                   .fontWeight(600)
                   .fontColor(this.getColors().textSecondary)
@@ -200,7 +216,7 @@ struct AddManualPage {
               .padding({ left: 4 })
               .margin({ bottom: 6 })
 
-              TextInput({ placeholder: '例如: user@example.com', text: this.account })
+              TextInput({ placeholder: $r('app.string.placeholder_account'), text: this.account })
                 .width('100%')
                 .backgroundColor(this.getColors().cardBackground)
                 .borderRadius(12)
@@ -218,7 +234,7 @@ struct AddManualPage {
 
             Column() {
               Row() {
-                Text('密钥 (Base32)')
+                Text($r('app.string.field_secret'))
                   .fontSize(12)
                   .fontWeight(600)
                   .fontColor(this.getColors().textSecondary)
@@ -243,12 +259,12 @@ struct AddManualPage {
                 })
 
               Row() {
-                Text('仅支持 Base32 字符 (A-Z, 2-7)，自动转大写')
+                Text($r('app.string.secret_hint'))
                   .fontSize(10)
                   .fontColor(this.getColors().textTertiary)
                   .layoutWeight(1)
 
-                Text('粘贴')
+                Text($r('app.string.action_paste'))
                   .fontSize(10)
                   .fontColor(this.getColors().accentBlue)
                   .fontWeight(600)
@@ -264,7 +280,7 @@ struct AddManualPage {
 
             Column() {
               Row() {
-                Text('高级选项')
+                Text($r('app.string.advanced_options'))
                   .fontSize(13)
                   .fontWeight(600)
                   .fontColor(this.getColors().accentBlue)
@@ -274,7 +290,7 @@ struct AddManualPage {
 
               Column() {
                 Row() {
-                  Text('协议类型')
+                  Text($r('app.string.field_protocol'))
                     .fontSize(13)
                     .fontColor(this.getColors().textSecondary)
                     .layoutWeight(1)
@@ -297,7 +313,7 @@ struct AddManualPage {
                 .border({ width: { bottom: 1 }, color: this.getColors().divider })
 
                 Row() {
-                  Text('算法')
+                  Text($r('app.string.field_algorithm'))
                     .fontSize(13)
                     .fontColor(this.getColors().textSecondary)
                     .layoutWeight(1)
@@ -320,13 +336,13 @@ struct AddManualPage {
                 .border({ width: { bottom: 1 }, color: this.getColors().divider })
 
                 Row() {
-                  Text('验证码位数')
+                  Text($r('app.string.field_digits'))
                     .fontSize(13)
                     .fontColor(this.getColors().textSecondary)
                     .layoutWeight(1)
 
                   Row({ space: 4 }) {
-                    Text(this.digits + '位')
+                    Text(this.digits + this.str($r('app.string.unit_digits')))
                       .fontSize(13)
                       .fontWeight(600)
                       .fontColor(this.getColors().textPrimary)
@@ -343,13 +359,13 @@ struct AddManualPage {
                 .border({ width: { bottom: 1 }, color: this.getColors().divider })
 
                 Row() {
-                  Text(this.protocolType === 'HOTP' ? '计数器' : '时间周期')
+                  Text(this.protocolType === 'HOTP' ? $r('app.string.field_counter') : $r('app.string.field_period'))
                     .fontSize(13)
                     .fontColor(this.getColors().textSecondary)
                     .layoutWeight(1)
 
                   Row({ space: 4 }) {
-                    Text(this.protocolType === 'HOTP' ? '0' : (this.period + '秒'))
+                    Text(this.protocolType === 'HOTP' ? '0' : (this.period + this.str($r('app.string.unit_seconds'))))
                       .fontSize(13)
                       .fontWeight(600)
                       .fontColor(this.getColors().textPrimary)
@@ -378,7 +394,7 @@ struct AddManualPage {
             .margin({ bottom: 14 })
 
             Column() {
-              Text('分类标签')
+              Text($r('app.string.field_tags'))
                 .fontSize(12)
                 .fontWeight(600)
                 .fontColor(this.getColors().textSecondary)
@@ -425,10 +441,10 @@ struct AddManualPage {
 
       // Protocol Picker
       PickerPanel({
-        title: '协议类型',
+        title: this.str($r('app.string.picker_protocol')),
         visible: this.showProtocolPicker,
         selectedValue: this.protocolType,
-        options: PROTOCOL_OPTIONS,
+        options: this.buildProtocolOptions(),
         onSelect: (value: string): void => {
           this.protocolType = value;
           this.showProtocolPicker = false;
@@ -440,10 +456,10 @@ struct AddManualPage {
 
       // Algorithm Picker
       PickerPanel({
-        title: '算法',
+        title: this.str($r('app.string.picker_algorithm')),
         visible: this.showAlgorithmPicker,
         selectedValue: this.algorithm,
-        options: ALGORITHM_OPTIONS,
+        options: this.buildAlgorithmOptions(),
         onSelect: (value: string): void => {
           this.algorithm = value;
           this.showAlgorithmPicker = false;
@@ -455,10 +471,10 @@ struct AddManualPage {
 
       // Digits Picker
       PickerPanel({
-        title: '验证码位数',
+        title: this.str($r('app.string.picker_digits')),
         visible: this.showDigitsPicker,
         selectedValue: this.digits,
-        options: DIGITS_OPTIONS,
+        options: this.buildDigitsOptions(),
         onSelect: (value: string): void => {
           this.digits = value;
           this.showDigitsPicker = false;
@@ -470,10 +486,10 @@ struct AddManualPage {
 
       // Period Picker
       PickerPanel({
-        title: '时间周期',
+        title: this.str($r('app.string.picker_period')),
         visible: this.showPeriodPicker,
         selectedValue: this.period,
-        options: PERIOD_OPTIONS,
+        options: this.buildPeriodOptions(),
         onSelect: (value: string): void => {
           this.period = value;
           this.showPeriodPicker = false;
@@ -523,21 +539,21 @@ struct AddManualPage {
     const secretTrimmed: string = this.secretKey.trim().toUpperCase();
 
     if (issuerTrimmed.length === 0) {
-      this.showToastMsg('请输入发行方');
+      this.showToastMsg(this.str($r('app.string.toast_enter_issuer')));
       return;
     }
     if (accountTrimmed.length === 0) {
-      this.showToastMsg('请输入账户名');
+      this.showToastMsg(this.str($r('app.string.toast_enter_account')));
       return;
     }
     if (secretTrimmed.length === 0) {
-      this.showToastMsg('请输入密钥');
+      this.showToastMsg(this.str($r('app.string.toast_enter_secret')));
       return;
     }
 
     const base32Regex: RegExp = /^[A-Z2-7]+=*$/;
     if (!base32Regex.test(secretTrimmed)) {
-      this.showToastMsg('密钥格式不正确，仅支持 Base32 字符 (A-Z, 2-7)');
+      this.showToastMsg(this.str($r('app.string.toast_invalid_secret')));
       return;
     }
 
@@ -559,7 +575,7 @@ struct AddManualPage {
     token.iconColor = this.getIconColor(issuerTrimmed);
 
     TokenStorage.save(token).then((): void => {
-      this.showToastMsg('令牌已添加 ✓');
+      this.showToastMsg(this.str($r('app.string.toast_token_added')));
       setTimeout(() => {
         this.getUIContext().getRouter().back();
       }, 800);

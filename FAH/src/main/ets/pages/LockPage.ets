@@ -47,6 +47,10 @@ struct LockPage {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   build() {
     Column() {
       Column({ space: 16 }) {
@@ -63,26 +67,26 @@ struct LockPage {
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
 
-        Text('验证身份')
+        Text($r('app.string.lock_verify_title'))
           .fontSize(18)
           .fontWeight(700)
           .fontColor(this.getColors().textPrimary)
 
         if (this.showLocked) {
-          Text('验证次数过多，请 ' + this.remainingSeconds.toString() + ' 秒后再试')
+          Text(this.str($r('app.string.lock_too_many')).replace('%d', this.remainingSeconds.toString()))
             .fontSize(13)
             .fontColor(this.getColors().dangerRed)
         } else if (this.authFailed) {
-          Text('验证失败，请重试')
+          Text($r('app.string.lock_failed'))
             .fontSize(13)
             .fontColor(this.getColors().dangerRed)
         } else {
-          Text('请验证指纹以解锁 O2FAH')
+          Text($r('app.string.lock_fingerprint_hint'))
             .fontSize(13)
             .fontColor(this.getColors().textSecondary)
         }
 
-        Button(this.showLocked ? this.remainingSeconds.toString() + 's' : '重试')
+        Button(this.showLocked ? this.remainingSeconds.toString() + 's' : this.str($r('app.string.action_retry')))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.showLocked ? this.getColors().textTertiary : this.getColors().accentBlue)

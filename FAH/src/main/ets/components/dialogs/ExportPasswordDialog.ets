@@ -20,6 +20,10 @@ export struct ExportPasswordDialog {
     return ThemeManager.getLightColors();
   }
 
+  private str(res: Resource): string {
+    return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
   calculateStrength(pwd: string): number {
     if (pwd.length === 0) {
       return 0;
@@ -51,15 +55,15 @@ export struct ExportPasswordDialog {
 
   getStrengthLabel(level: number): string {
     if (level === 0) {
-      return '弱';
+      return this.str($r('app.string.strength_weak'));
     }
     if (level === 1) {
-      return '中等';
+      return this.str($r('app.string.strength_medium'));
     }
     if (level === 2) {
-      return '强';
+      return this.str($r('app.string.strength_strong'));
     }
-    return '非常强';
+    return this.str($r('app.string.strength_very_strong'));
   }
 
   getStrengthColor(level: number): string {
@@ -85,20 +89,20 @@ export struct ExportPasswordDialog {
   build() {
     Column() {
       // Title + description
-      Text('设置备份密码')
+      Text($r('app.string.dialog_set_backup_password'))
         .fontSize(17)
         .fontWeight(700)
         .fontColor(this.getColors().textPrimary)
         .textAlign(TextAlign.Center)
         .margin({ bottom: 6 })
 
-      Text('备份文件将使用此密码加密。导入恢复时需输入相同密码')
+      Text($r('app.string.dialog_backup_password_desc'))
         .fontSize(12)
         .fontColor(this.getColors().textSecondary)
         .textAlign(TextAlign.Center)
 
       // Password input label
-      Text('备份密码')
+      Text($r('app.string.field_backup_password'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
@@ -121,7 +125,7 @@ export struct ExportPasswordDialog {
       .backgroundColor(this.getColors().pageBackground)
       .borderRadius(10)
 
-      Text('至少 8 位字符，请牢记此密码')
+      Text($r('app.string.password_hint_8chars'))
         .fontSize(10)
         .fontColor(this.getColors().textTertiary)
         .padding({ left: 2, top: 4 })
@@ -145,7 +149,7 @@ export struct ExportPasswordDialog {
         .textAlign(TextAlign.End)
 
       // Confirm password label
-      Text('确认密码')
+      Text($r('app.string.field_confirm_password'))
         .fontSize(12)
         .fontWeight(600)
         .fontColor(this.getColors().textSecondary)
@@ -153,7 +157,7 @@ export struct ExportPasswordDialog {
 
       // Confirm password input
       Row() {
-        TextInput({ placeholder: '再次输入', text: this.confirmPassword })
+        TextInput({ placeholder: $r('app.string.placeholder_reenter'), text: this.confirmPassword })
           .type(this.confirmVisible ? InputType.Normal : InputType.Password)
           .fontSize(17)
           .letterSpacing(4)
@@ -170,7 +174,7 @@ export struct ExportPasswordDialog {
       .borderRadius(10)
 
       if (this.showError) {
-        Text('两次密码不一致')
+        Text($r('app.string.password_not_match'))
           .fontSize(10)
           .fontColor(this.getColors().dangerRed)
           .padding({ left: 2, top: 4 })
@@ -178,7 +182,7 @@ export struct ExportPasswordDialog {
 
       // Buttons
       Row() {
-        Text('取消')
+        Text($r('app.string.button_cancel'))
           .fontSize(15)
           .fontWeight(500)
           .fontColor(this.getColors().textSecondary)
@@ -189,7 +193,7 @@ export struct ExportPasswordDialog {
             this.controller.close();
           })
 
-        Text('导出')
+        Text($r('app.string.button_export'))
           .fontSize(15)
           .fontWeight(600)
           .fontColor(this.getColors().successGreen)
