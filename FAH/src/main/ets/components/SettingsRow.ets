@@ -54,10 +54,11 @@ export struct SettingsRow {
         Row({ space: 4 }) {
           if (this.hasToggle) {
             Toggle({ type: ToggleType.Switch, isOn: this.toggleOn })
-              .onClick((): void => {
+              .onTouchIntercept((): HitTestMode => {
                 if (this.onToggle !== undefined) {
                   this.onToggle();
                 }
+                return HitTestMode.None;
               })
           }
           if (this.value.length > 0) {
