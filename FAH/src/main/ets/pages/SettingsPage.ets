@@ -83,6 +83,7 @@ export struct SettingsPage {
     const ctx: Context = this.getUIContext().getHostContext()!;
     SettingsStorage.init(ctx);
     TokenStorage.init(ctx);
+    TagStorage.init(ctx);
     this.loadSettings();
   }
 

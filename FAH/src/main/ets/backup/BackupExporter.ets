@@ -1,6 +1,8 @@
 import { TokenStorage } from '../storage/TokenStorage';
+import { TagStorage } from '../storage/TagStorage';
 import { EncryptionHelper } from '../storage/EncryptionHelper';
 import { TokenModel } from '../model/TokenModel';
+import { TagModel } from '../model/TagModel';
 import { AppSettings } from '../model/AppSettings';
 import { SettingsStorage } from '../storage/SettingsStorage';
 import { picker, fileIo } from '@kit.CoreFileKit';
@@ -11,16 +13,19 @@ export interface BackupPayload {
   version: string;
   exportedAt: number;
   tokens: TokenModel[];
+  tags: TagModel[];
 }
 
 export class BackupExporter {
   static async exportData(password: string, context: Context): Promise<void> {
     const allTokens: TokenModel[] = await TokenStorage.getAll();
+    const allTags: TagModel[] = await TagStorage.getAll();
 
     const payload: BackupPayload = {
-      version: '1.0.0',
+      version: '1.1.0',
       exportedAt: Date.now(),
-      tokens: allTokens
+      tokens: allTokens,
+      tags: allTags
     };
 
     const payloadJson: string = JSON.stringify(payload);

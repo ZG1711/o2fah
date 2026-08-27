@@ -1,6 +1,8 @@
 import { TokenStorage } from '../storage/TokenStorage';
+import { TagStorage } from '../storage/TagStorage';
 import { EncryptionHelper } from '../storage/EncryptionHelper';
 import { TokenModel } from '../model/TokenModel';
+import { TagModel } from '../model/TagModel';
 import { picker, fileIo } from '@kit.CoreFileKit';
 import { util } from '@kit.ArkTS';
 import { BusinessError } from '@kit.BasicServicesKit';
@@ -9,6 +11,12 @@ export interface BackupPayload {
   version: string;
   exportedAt: number;
   tokens: TokenModel[];
+  tags?: TagModel[];
+}
+
+export interface DecryptedBackup {
+  tokens: TokenModel[];
+  tags: TagModel[];
 }
 
 export interface MergeResult {
@@ -19,25 +27,25 @@ export interface MergeResult {
 }
 
 export class BackupImporter {
-  static async importFile(password: string, context: Context): Promise<TokenModel[]> {
+  static async importFile(password: string, context: Context): Promise<DecryptedBackup> {
     let uri: string = '';
     const selectOptions: picker.DocumentSelectOptions = new picker.DocumentSelectOptions();
     selectOptions.maxSelectNumber = 1;
     const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(context);
     const selectResult: string[] = await documentPicker.select(selectOptions);
     if (selectResult.length === 0) {
-      return [];
+      const empty: DecryptedBackup = { tokens: [], tags: [] };
+      return empty;
     }
     uri = selectResult[0];
     return await BackupImporter.readAndDecrypt(uri, password);
   }
 
-  static async importFromUri(uri: string, password: string): Promise<TokenModel[]> {
+  static async importFromUri(uri: string, password: string): Promise<DecryptedBackup> {
     return await BackupImporter.readAndDecrypt(uri, password);
   }
 
-  private static async readAndDecrypt(uri: string, password: string): Promise<TokenModel[]> {
-
+  private static async readAndDecrypt(uri: string, password: string): Promise<DecryptedBackup> {
     const file: fileIo.File = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
     const stat: fileIo.Stat = fileIo.statSync(file.fd);
     const buf: ArrayBuffer = new ArrayBuffer(stat.size);
@@ -49,7 +57,15 @@ export class BackupImporter {
     const content: string = decoder.decodeToString(view, { stream: false });
     const decrypted: string = await EncryptionHelper.decrypt(content, password);
     const payload: BackupPayload = JSON.parse(decrypted) as BackupPayload;
-    return payload.tokens;
+    let tags: TagModel[] = [];
+    if (payload.tags !== undefined) {
+      tags = payload.tags;
+    }
+    const result: DecryptedBackup = {
+      tokens: payload.tokens,
+      tags: tags
+    };
+    return result;
   }
 
   static mergeTokens(existing: TokenModel[], imported: TokenModel[]): MergeResult {
@@ -71,29 +87,18 @@ export class BackupImporter {
       if (isDuplicate) {
         skippedCount = skippedCount + 1;
       } else {
-        const newToken: TokenModel = new TokenModel();
-        newToken.id = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-        newToken.issuer = importedToken.issuer;
-        newToken.account = importedToken.account;
-        newToken.secret = importedToken.secret;
-        newToken.type = importedToken.type;
-        newToken.algorithm = importedToken.algorithm;
-        newToken.digits = importedToken.digits;
-        newToken.period = importedToken.period;
-        newToken.counter = importedToken.counter;
-        newToken.tags = importedToken.tags;
-        newToken.icon = importedToken.icon;
-        newToken.iconColor = importedToken.iconColor;
+        const newToken: TokenModel = BackupImporter.cloneToken(importedToken);
+        newToken.id = BackupImporter.generateId();
         newToken.createdAt = Date.now();
         newToken.sortOrder = Date.now();
         newToken.lastUsedAt = 0;
+        newToken.version = 0;
         newTokens.push(newToken);
         addedCount = addedCount + 1;
       }
     }
 
     const totalAfter: number = existing.length + addedCount;
-
     const result: MergeResult = {
       newTokens: newTokens,
       skippedCount: skippedCount,
@@ -103,17 +108,39 @@ export class BackupImporter {
     return result;
   }
 
+  static mergeTags(existing: TagModel[], imported: TagModel[]): TagModel[] {
+    const toAdd: TagModel[] = [];
+    for (let i: number = 0; i < imported.length; i++) {
+      const importedTag: TagModel = imported[i];
+      let exists: boolean = false;
+      for (let j: number = 0; j < existing.length; j++) {
+        if (existing[j].name === importedTag.name) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        const newTag: TagModel = BackupImporter.cloneTag(importedTag);
+        newTag.id = BackupImporter.generateId();
+        newTag.sortOrder = existing.length + toAdd.length;
+        newTag.tokenCount = 0;
+        toAdd.push(newTag);
+      }
+    }
+    return toAdd;
+  }
+
   static async performImport(password: string, context: Context): Promise<MergeResult> {
-    const importedTokens: TokenModel[] = await BackupImporter.importFile(password, context);
-    return await BackupImporter.mergeAndSave(importedTokens);
+    const decrypted: DecryptedBackup = await BackupImporter.importFile(password, context);
+    return await BackupImporter.mergeAndSave(decrypted.tokens, decrypted.tags);
   }
 
   static async performImportFromUri(uri: string, password: string): Promise<MergeResult> {
-    const importedTokens: TokenModel[] = await BackupImporter.importFromUri(uri, password);
-    return await BackupImporter.mergeAndSave(importedTokens);
+    const decrypted: DecryptedBackup = await BackupImporter.importFromUri(uri, password);
+    return await BackupImporter.mergeAndSave(decrypted.tokens, decrypted.tags);
   }
 
-  private static async mergeAndSave(importedTokens: TokenModel[]): Promise<MergeResult> {
+  private static async mergeAndSave(importedTokens: TokenModel[], importedTags: TagModel[]): Promise<MergeResult> {
     if (importedTokens.length === 0) {
       const emptyResult: MergeResult = {
         newTokens: [],
@@ -131,6 +158,41 @@ export class BackupImporter {
       await TokenStorage.save(mergeResult.newTokens[i]);
     }
 
+    await BackupImporter.importTags(importedTags);
+
     return mergeResult;
+  }
+
+  private static async importTags(importedTags: TagModel[]): Promise<void> {
+    if (importedTags.length === 0) {
+      return;
+    }
+    const existingTags: TagModel[] = await TagStorage.getAll();
+    const toAdd: TagModel[] = BackupImporter.mergeTags(existingTags, importedTags);
+    if (toAdd.length === 0) {
+      return;
+    }
+    const combined: TagModel[] = [];
+    for (let i: number = 0; i < existingTags.length; i++) {
+      combined.push(existingTags[i]);
+    }
+    for (let i: number = 0; i < toAdd.length; i++) {
+      combined.push(toAdd[i]);
+    }
+    await TagStorage.saveAll(combined);
+  }
+
+  private static cloneToken(source: TokenModel): TokenModel {
+    const json: string = JSON.stringify(source);
+    return JSON.parse(json) as TokenModel;
+  }
+
+  private static cloneTag(source: TagModel): TagModel {
+    const json: string = JSON.stringify(source);
+    return JSON.parse(json) as TagModel;
+  }
+
+  private static generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
   }
 }
