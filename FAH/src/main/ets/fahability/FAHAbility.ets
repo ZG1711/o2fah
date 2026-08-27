@@ -80,7 +80,9 @@ export default class FAHAbility extends UIAbility {
 
   onBackground(): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onBackground');
-    this.lastBackgroundTimestamp = Date.now();
+    const now: number = Date.now();
+    this.lastBackgroundTimestamp = now;
+    SettingsStorage.saveLastBackgroundTime(now);
     const biometricEnabled: boolean = AppStorage.get<boolean>(CACHED_BIOMETRIC_ENABLED) ?? true;
     const autoLockTimeout: number = AppStorage.get<number>(CACHED_AUTO_LOCK_TIMEOUT) ?? 0;
     if (biometricEnabled && autoLockTimeout === 0) {
@@ -109,13 +111,17 @@ export default class FAHAbility extends UIAbility {
       return;
     }
 
-    if (this.lastBackgroundTimestamp === 0) {
+    let lastBackground: number = this.lastBackgroundTimestamp;
+    if (lastBackground === 0) {
+      lastBackground = SettingsStorage.getLastBackgroundTime();
+    }
+    if (lastBackground === 0) {
       AppStorage.set(BIOMETRIC_AUTH_KEY, false);
       return;
     }
 
     const now: number = Date.now();
-    const elapsed: number = now - this.lastBackgroundTimestamp;
+    const elapsed: number = now - lastBackground;
     const timeoutMs: number = autoLockTimeout * 1000;
 
     if (elapsed >= timeoutMs) {
