@@ -3,6 +3,7 @@ import { AppSettings } from '../model/AppSettings';
 
 const STORE_NAME: string = 'o2fah_settings';
 const KEY_SETTINGS: string = 'settings';
+const KEY_LAST_BACKGROUND: string = 'lastBackgroundTime';
 
 export class SettingsStorage {
   private static storedContext: Context | undefined = undefined;
@@ -25,6 +26,19 @@ export class SettingsStorage {
     const jsonStr: string = JSON.stringify(settings);
     prefs.putSync(KEY_SETTINGS, jsonStr);
     await prefs.flush();
+  }
+
+  static saveLastBackgroundTime(timestamp: number): void {
+    const ctx: Context = SettingsStorage.getContext();
+    const prefs: preferences.Preferences = SettingsStorage.getPrefsSync(ctx);
+    prefs.putSync(KEY_LAST_BACKGROUND, timestamp);
+    prefs.flush();
+  }
+
+  static getLastBackgroundTime(): number {
+    const ctx: Context = SettingsStorage.getContext();
+    const prefs: preferences.Preferences = SettingsStorage.getPrefsSync(ctx);
+    return prefs.getSync(KEY_LAST_BACKGROUND, 0) as number;
   }
 
   static async clear(): Promise<void> {
