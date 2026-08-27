@@ -1,7 +1,6 @@
 {
   "app": {
     "bundleName": "com.xjsjdwg.o2fah",
-    "vendor": "example",
     "versionCode": 1200000,
     "versionName": "1.2.0",
     "buildVersion": "3",
