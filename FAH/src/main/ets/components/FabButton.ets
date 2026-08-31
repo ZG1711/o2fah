@@ -24,7 +24,7 @@ export struct FabButton {
     .borderRadius(28)
     .backgroundColor(this.getColors().accentBlue)
     .shadow(this.isDarkMode ? {
-      radius: 0,
+      radius: -1,
       color: 'transparent',
       offsetY: 0
     } : {

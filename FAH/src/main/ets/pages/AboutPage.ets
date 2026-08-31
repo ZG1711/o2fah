@@ -23,7 +23,8 @@ struct AboutPage {
     this.libItems[0].desc = this.str($r('app.string.about_lib_sdk_desc'));
   }
   private libItems: LibInfo[] = [
-    { name: 'HarmonyOS SDK', desc: '', license: '-' } as LibInfo
+    { name: 'HarmonyOS SDK', desc: '', license: '-' } as LibInfo,
+    { name: "Simple-icons", desc: 'Icon SVG', license: 'CC0-1.0' } as LibInfo
   ];
 
   getColors(): ThemeColors {

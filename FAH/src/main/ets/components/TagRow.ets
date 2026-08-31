@@ -60,7 +60,7 @@ export struct TagRow {
       color: 'rgba(0,0,0,0.14)',
       offsetY: 6
     } : {
-      radius: 0,
+      radius: -1,
       color: 'transparent',
       offsetY: 0
     })

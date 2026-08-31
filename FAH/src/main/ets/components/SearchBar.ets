@@ -46,6 +46,7 @@ export struct SearchBar {
           .height(20)
           .borderRadius(10)
           .backgroundColor('rgba(174,174,178,0.2)')
+          .responseRegion(undefined)
           .onClick(() => {
             this.searchText = '';
             if (this.onChange !== undefined) {

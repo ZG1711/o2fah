@@ -13,11 +13,12 @@ import { TokenModel } from '../model/TokenModel';
 import { AppSettings } from '../model/AppSettings';
 import { BiometricUtil } from '../utils/BiometricUtil';
 import { LanguageManager, LANG_SYSTEM, LANG_ZH_CN, LANG_EN, LANG_ZH_TW } from '../common/LanguageManager';
-import { promptAction } from '@kit.ArkUI';
+import { PromptAction } from '@kit.ArkUI';
 import { bundleManager } from '@kit.AbilityKit';
 
 @Component
 export struct SettingsPage {
+  promptAction: PromptAction = this.getUIContext().getPromptAction();
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @StorageLink('themeMode') themeMode: string = 'system';
   @State toastMessage: string = '';
@@ -622,22 +623,29 @@ export struct SettingsPage {
   private handleBiometricToggle(): void {
     if (this.biometricEnabled) {
       // Disabling: show confirmation dialog
-      promptAction.showDialog({
+      this.promptAction.showDialog({
         title: this.str($r('app.string.set_dialog_biometric_title')),
         message: this.str($r('app.string.set_dialog_biometric_message')),
         buttons: [
           { text: this.str($r('app.string.button_cancel')), color: '#86868B' },
           { text: this.str($r('app.string.set_dialog_disable')), color: '#FF3B30' }
         ]
-      }).then((data: promptAction.ShowDialogSuccessResponse): void => {
+      }).then((data): void => {
         if (data.index === 1) {
           this.saveSettings({ biometricEnabled: false });
         }
+      }).catch(() => {
+        // TODO: Implement error handling.
       });
     } else {
       const available: boolean = BiometricUtil.checkAvailability();
       if (!available) {
-        promptAction.showToast({ message: this.str($r('app.string.set_toast_biometric_unsupported')), duration: 2000 });
+        try {
+          this.promptAction.showToast(
+            { message: this.str($r('app.string.set_toast_biometric_unsupported')), duration: 2000 });
+        } catch (error) {
+          // TODO: Implement error handling.
+        }
         return;
       }
       BiometricUtil.authenticate().then((success: boolean): void => {
@@ -665,7 +673,11 @@ export struct SettingsPage {
     const ctx: Context = this.getUIContext().getHostContext()!;
     BackupExporter.exportData(password, ctx).then((): void => {
       this.showToast(this.str($r('app.string.set_toast_backup_exported')), 2000);
-      promptAction.showToast({ message: this.str($r('app.string.set_toast_backup_exported')), duration: 2000 });
+      try {
+        this.promptAction.showToast({ message: this.str($r('app.string.set_toast_backup_exported')), duration: 2000 });
+      } catch (error) {
+        // TODO: Implement error handling.
+      }
     }).catch((): void => {
       this.showToast(this.str($r('app.string.set_toast_export_failed')), 2000);
     });
@@ -705,7 +717,7 @@ export struct SettingsPage {
   // --- Clear data ---
 
   private handleClearData(): void {
-    promptAction.showDialog({
+    this.promptAction.showDialog({
       title: this.str($r('app.string.set_dialog_clear_title')),
       message: this.str($r('app.string.set_dialog_clear_message')),
       buttons: [
@@ -714,7 +726,7 @@ export struct SettingsPage {
           text: this.str($r('app.string.set_dialog_clear_confirm')), color: '#FF3B30',
         }
       ]
-    }).then((data: promptAction.ShowDialogSuccessResponse): void => {
+    }).then((data): void => {
       if (data.index === 1) {
         LanguageManager.apply(LANG_SYSTEM);
         TokenStorage.clear().then((): void => {
@@ -726,6 +738,8 @@ export struct SettingsPage {
           });
         });
       }
+    }).catch(() => {
+      // TODO: Implement error handling.
     });
   }
 
