@@ -378,9 +378,12 @@ struct HelpFeedbackPage {
             .height(40)
         }
         .width('100%')
+        .height("100%")
         .padding({ left: 20, right: 20 })
+
       }
       .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
     }
     .width('100%')
     .height('100%')

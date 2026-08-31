@@ -158,10 +158,10 @@ struct AboutPage {
               offsetY: 4
             })
 
-            Text('O2FAH')
+            Text($r("app.string.app_name"))
               .fontSize(22)
               .fontWeight(700)
-              .fontColor('#1D1D1F')
+              .fontColor(this.getColors().textPrimary)
               .margin({ top: 14 })
 
             Text($r('app.string.about_app_desc'))
@@ -323,6 +323,7 @@ struct AboutPage {
       }
       .layoutWeight(1)
       .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
     }
     .width('100%')
     .height('100%')
