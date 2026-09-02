@@ -12,8 +12,6 @@ export class IconConstants {
   // Operations
   static readonly IC_SEARCH: Resource = $r('app.media.ic_search');
   static readonly IC_SORT: Resource = $r('app.media.ic_sort');
-  static readonly IC_VIEW_COMPACT: Resource = $r('app.media.ic_view_compact');
-  static readonly IC_VIEW_DETAIL: Resource = $r('app.media.ic_view_detail');
   static readonly IC_COPY: Resource = $r('app.media.ic_copy');
   static readonly IC_REFRESH: Resource = $r('app.media.ic_refresh');
   static readonly IC_ADD: Resource = $r('app.media.ic_add');

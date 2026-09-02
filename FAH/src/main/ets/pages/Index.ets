@@ -1002,10 +1002,16 @@ struct Index {
   SwipeActionsBuilder(): void {
     Row() {
       Button() {
-        Text($r('app.string.action_qr_code'))
-          .fontSize(12)
-          .fontWeight(600)
-          .fontColor(this.getColors().white)
+        Column(){
+          SymbolGlyph($r("sys.symbol.qrcode"))
+            .fontSize(24)
+            .fontColor([this.getColors().white])
+            .margin({ bottom: 5})
+          Text($r('app.string.action_qr_code'))
+            .fontSize(12)
+            .fontWeight(600)
+            .fontColor(this.getColors().white)
+        }
       }
       .width(56)
       .height('100%')
@@ -1022,10 +1028,16 @@ struct Index {
       })
 
       Button() {
-        Text($r('app.string.button_edit'))
-          .fontSize(12)
-          .fontWeight(600)
-          .fontColor(this.getColors().white)
+        Column(){
+          SymbolGlyph($r("sys.symbol.edit_badge_star"))
+            .fontSize(24)
+            .fontColor([this.getColors().white])
+            .margin({ bottom: 5})
+          Text($r('app.string.button_edit'))
+            .fontSize(12)
+            .fontWeight(600)
+            .fontColor(this.getColors().white)
+        }
       }
       .width(56)
       .height('100%')
@@ -1039,10 +1051,18 @@ struct Index {
       })
 
       Button() {
-        Text($r('app.string.button_delete'))
-          .fontSize(12)
-          .fontWeight(600)
-          .fontColor(this.getColors().white)
+        Column(){
+          SymbolGlyph($r("sys.symbol.trash"))
+            .fontSize(24)
+            .fontColor([this.getColors().white])
+            .margin({ bottom: 5})
+
+          Text($r('app.string.button_delete'))
+            .fontSize(12)
+            .fontWeight(600)
+            .fontColor(this.getColors().white)
+        }
+
       }
       .width(56)
       .height('100%')
@@ -1055,6 +1075,7 @@ struct Index {
         }
       })
     }
+    .borderRadius(10)
   }
 
 }
