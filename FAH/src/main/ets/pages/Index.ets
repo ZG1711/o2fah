@@ -482,6 +482,9 @@ struct Index {
             this.loadDefaultSort();
           }
         })
+        .onAnimationStart((index: number, targetIndex: number, _extraInfo: TabsAnimationEvent): void => {
+          this.currentTabIndex = targetIndex;
+        })
         .width('100%')
         .layoutWeight(1)
         .backgroundColor(this.getColors().tabBarBackground)
