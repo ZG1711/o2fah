@@ -6,4 +6,6 @@ export class AppSettings {
   defaultSort: string = 'manual';
   language: string = '';
   lastBackupTime: number = 0;
+  codesHidden: boolean = false;
+  cardCompact: boolean = true;
 }

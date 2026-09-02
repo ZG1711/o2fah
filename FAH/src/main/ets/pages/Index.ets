@@ -34,6 +34,8 @@ struct Index {
   @StorageLink('navigateToTokens') @Watch('onNavigateToTokens') navigateToTokens: boolean = false;
   @StorageLink('requireBiometricAuth') @Watch('onRequireAuthChanged') requireBiometricAuth: boolean = false;
   @StorageLink('appIsLocked') @Watch('onAppLockedChanged') appIsLocked: boolean = false;
+  @StorageLink('codesHidden') codesHidden: boolean = false;
+  @StorageLink('cardCompact') cardCompact: boolean = false;
   @State currentTabIndex: number = 0;
   @State searchText: string = '';
   @State selectedTagIndex: number = 0;
@@ -46,6 +48,7 @@ struct Index {
   @State tokens: TokenModel[] = [];
   @State codeMap: Record<string, string> = {};
   @State remainingMap: Record<string, number> = {};
+  @State ownHiddenIds: string[] = [];
   @State swipedTokenId: string = '';
   @State editDialogIssuer: string = '';
   @State editDialogAccount: string = '';
@@ -175,6 +178,7 @@ struct Index {
     this.loadTokens();
     this.loadTags();
     this.loadDefaultSort();
+    this.loadViewPrefs();
     if (this.pendingImportUri.length > 0) {
       this.fileImportDialogController.open();
     }
@@ -299,11 +303,15 @@ struct Index {
             Column() {
               // Search bar
               SearchBar({
+                codesHidden: this.codesHidden,
                 onChange: (text: string) => {
                   this.searchText = text;
                 },
                 onSortClick: () => {
                   this.showSortMenu = !this.showSortMenu;
+                },
+                onToggleCodesHidden: (): void => {
+                  this.toggleCodesHiddenGlobal();
                 }
               })
 
@@ -363,11 +371,16 @@ struct Index {
                           remainingSeconds: this.remainingMap[item.id] ?? 0,
                           isDragging: this.dragItemId === item.id,
                           tagColorMap: this.tagColorMap,
+                          hideCode: this.isCodeHidden(item.id),
+                          compactMode: this.cardCompact,
                           onCardClick: (): void => {
                             this.copyCode(this.codeMap[item.id] ?? '');
                           },
                           onRefreshClick: (): void => {
                             this.handleHotpRefresh(item);
+                          },
+                          onToggleHide: (): void => {
+                            this.toggleCardHidden(item.id);
                           }
                         })
                       }
@@ -483,12 +496,20 @@ struct Index {
         SortMenu({
           selectedSort: this.selectedSort,
           visible: true,
+          codesHidden: this.codesHidden,
+          compactMode: this.cardCompact,
           onSelectSort: (sortKey: string) => {
             this.selectedSort = sortKey;
             this.showSortMenu = false;
           },
           onClose: () => {
             this.showSortMenu = false;
+          },
+          onToggleCodesHidden: (): void => {
+            this.toggleCodesHiddenGlobal();
+          },
+          onToggleCardMode: (): void => {
+            this.toggleCardMode();
           }
         })
       }
@@ -584,6 +605,52 @@ struct Index {
   private async loadDefaultSort(): Promise<void> {
     const settings: AppSettings = await SettingsStorage.get();
     this.selectedSort = settings.defaultSort;
+  }
+
+  private async loadViewPrefs(): Promise<void> {
+    const settings: AppSettings = await SettingsStorage.get();
+    this.codesHidden = settings.codesHidden;
+    this.cardCompact = settings.cardCompact;
+    this.ownHiddenIds = [];
+  }
+
+  private async persistViewPrefs(): Promise<void> {
+    const settings: AppSettings = await SettingsStorage.get();
+    settings.codesHidden = this.codesHidden;
+    settings.cardCompact = this.cardCompact;
+    await SettingsStorage.save(settings);
+  }
+
+  private toggleCodesHiddenGlobal(): void {
+    this.codesHidden = !this.codesHidden;
+    this.ownHiddenIds = [];
+    this.persistViewPrefs();
+  }
+
+  private toggleCardMode(): void {
+    this.cardCompact = !this.cardCompact;
+    this.persistViewPrefs();
+  }
+
+  private toggleCardHidden(tokenId: string): void {
+    const newIds: string[] = [...this.ownHiddenIds];
+    const index: number = newIds.indexOf(tokenId);
+    if (index >= 0) {
+      newIds.splice(index, 1);
+    } else {
+      newIds.push(tokenId);
+    }
+    this.ownHiddenIds = newIds;
+  }
+
+  // Per-card override: when codesHidden is on, an id in ownHiddenIds means "shown";
+  // when codesHidden is off, an id in ownHiddenIds means "hidden".
+  private isCodeHidden(tokenId: string): boolean {
+    const overridden: boolean = this.ownHiddenIds.indexOf(tokenId) >= 0;
+    if (this.codesHidden) {
+      return !overridden;
+    }
+    return overridden;
   }
 
   private updateCountdown(): void {
@@ -767,6 +834,13 @@ struct Index {
     }
     this.codeMap = newCodeMap;
     this.remainingMap = newRemaining;
+    const newHiddenIds: string[] = [];
+    for (let i: number = 0; i < newTokens.length; i++) {
+      if (this.ownHiddenIds.indexOf(newTokens[i].id) >= 0) {
+        newHiddenIds.push(newTokens[i].id);
+      }
+    }
+    this.ownHiddenIds = newHiddenIds;
     this.showToast(this.str($r('app.string.token_deleted')), 'warning');
   }
 

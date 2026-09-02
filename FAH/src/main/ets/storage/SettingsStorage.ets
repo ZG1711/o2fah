@@ -87,6 +87,12 @@ export class SettingsStorage {
     if (raw['lastBackupTime'] !== undefined) {
       settings.lastBackupTime = (raw['lastBackupTime']) as number;
     }
+    if (raw['codesHidden'] !== undefined) {
+      settings.codesHidden = (raw['codesHidden']) as boolean;
+    }
+    if (raw['cardCompact'] !== undefined) {
+      settings.cardCompact = (raw['cardCompact']) as boolean;
+    }
     return settings;
   }
 }

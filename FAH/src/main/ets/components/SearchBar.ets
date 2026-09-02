@@ -5,8 +5,10 @@ import { ThemeManager, ThemeColors } from '../common/ThemeManager';
 export struct SearchBar {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @State searchText: string = '';
+  @Prop codesHidden: boolean = false;
   onChange?: (text: string) => void;
   onSortClick?: () => void;
+  onToggleCodesHidden?: () => void;
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -60,6 +62,22 @@ export struct SearchBar {
       .borderRadius(13)
       .padding({ left: 14, right: this.searchText.length > 0 ? 8 : 14 })
       .layoutWeight(1)
+
+      // Code visibility toggle button
+      Button() {
+        Image(this.codesHidden ? IconConstants.IC_EYE_OFF : IconConstants.IC_EYE)
+          .width(18)
+          .height(18)
+      }
+      .width(38)
+      .height(38)
+      .borderRadius(12)
+      .backgroundColor(this.getColors().searchBarBackground)
+      .onClick(() => {
+        if (this.onToggleCodesHidden !== undefined) {
+          this.onToggleCodesHidden();
+        }
+      })
 
       // Sort button
       Button() {

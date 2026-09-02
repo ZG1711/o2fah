@@ -11,8 +11,12 @@ export struct SortMenu {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @Prop selectedSort: string = 'manual';
   @Prop visible: boolean = false;
+  @Prop codesHidden: boolean = false;
+  @Prop compactMode: boolean = false;
   onSelectSort?: (sortKey: string) => void;
   onClose?: () => void;
+  onToggleCodesHidden?: () => void;
+  onToggleCardMode?: () => void;
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -55,7 +59,7 @@ export struct SortMenu {
             .fontSize(12)
             .fontWeight(600)
             .fontColor(this.getColors().textSecondary)
-            .padding({ top: 8, bottom: 8, left: 16, right: 16 })
+            .padding({ top: 10, bottom: 6, left: 16, right: 16 })
             .width('100%')
 
           ForEach(this.buildOptions(), (option: SortOption) => {
@@ -73,15 +77,86 @@ export struct SortMenu {
               }
             }
             .width('100%')
-            .padding({ top: 13, bottom: 13, left: 16, right: 16 })
+            .padding({ top: 11, bottom: 11, left: 16, right: 16 })
             .onClick(() => {
               if (this.onSelectSort !== undefined) {
                 this.onSelectSort(option.key);
               }
             })
           }, (option: SortOption) => option.key)
+
+          Divider()
+            .width('100%')
+            .color(this.getColors().divider)
+            .margin({ top: 6, bottom: 4 })
+
+          Text($r('app.string.menu_display'))
+            .fontSize(12)
+            .fontWeight(600)
+            .fontColor(this.getColors().textSecondary)
+            .padding({ top: 6, bottom: 4, left: 16, right: 16 })
+            .width('100%')
+
+          Row() {
+            Text($r('app.string.menu_hide_codes'))
+              .fontSize(15)
+              .fontWeight(this.codesHidden ? 600 : 400)
+              .fontColor(this.getColors().textPrimary)
+              .layoutWeight(1)
+            Toggle({ type: ToggleType.Switch, isOn: this.codesHidden })
+              .selectedColor(this.getColors().accentBlue)
+              .onChange((checked: boolean): void => {
+                if (this.onToggleCodesHidden !== undefined) {
+                  this.onToggleCodesHidden();
+                }
+              })
+          }
+          .width('100%')
+          .padding({ top: 6, bottom: 6, left: 16, right: 12 })
+
+          Row() {
+            Text($r('app.string.menu_card_detail'))
+              .fontSize(15)
+              .fontWeight(!this.compactMode ? 600 : 400)
+              .fontColor(this.getColors().textPrimary)
+              .layoutWeight(1)
+            if (!this.compactMode) {
+              Image(IconConstants.IC_CHECK)
+                .width(16)
+                .height(16)
+                .fillColor(this.getColors().accentBlue)
+            }
+          }
+          .width('100%')
+          .padding({ top: 9, bottom: 9, left: 16, right: 16 })
+          .onClick(() => {
+            if (this.onToggleCardMode !== undefined) {
+              this.onToggleCardMode();
+            }
+          })
+
+          Row() {
+            Text($r('app.string.menu_card_compact'))
+              .fontSize(15)
+              .fontWeight(this.compactMode ? 600 : 400)
+              .fontColor(this.getColors().textPrimary)
+              .layoutWeight(1)
+            if (this.compactMode) {
+              Image(IconConstants.IC_CHECK)
+                .width(16)
+                .height(16)
+                .fillColor(this.getColors().accentBlue)
+            }
+          }
+          .width('100%')
+          .padding({ top: 9, bottom: 10, left: 16, right: 16 })
+          .onClick(() => {
+            if (this.onToggleCardMode !== undefined) {
+              this.onToggleCardMode();
+            }
+          })
         }
-        .width(200)
+        .width(216)
         .borderRadius(14)
         .backgroundColor(this.getColors().cardBackground)
         .shadow(this.isDarkMode ? undefined : ({ radius: 20, color: 'rgba(0,0,0,0.12)', offsetY: 4 } as ShadowOptions))

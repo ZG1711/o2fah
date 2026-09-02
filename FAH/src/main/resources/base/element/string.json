@@ -129,6 +129,22 @@
       "value": "Sort order"
     },
     {
+      "name": "menu_display",
+      "value": "Display"
+    },
+    {
+      "name": "menu_hide_codes",
+      "value": "Hide codes"
+    },
+    {
+      "name": "menu_card_detail",
+      "value": "Detailed cards"
+    },
+    {
+      "name": "menu_card_compact",
+      "value": "Compact cards"
+    },
+    {
       "name": "sort_manual",
       "value": "Manual sort"
     },

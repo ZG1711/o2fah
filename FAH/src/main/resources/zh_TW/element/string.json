@@ -129,6 +129,23 @@
       "value": "排序方式"
     },
     {
+      "name": "menu_display",
+      "value": "顯示"
+    },
+    {
+      "name": "menu_hide_codes",
+      "value": "隱藏驗證碼"
+    },
+    {
+      "name": "menu_card_detail",
+      "value": "詳細卡片"
+    },
+    {
+      "name": "menu_card_compact",
+      "value": "簡約卡片"
+    },
+
+    {
       "name": "sort_manual",
       "value": "手動排序"
     },
