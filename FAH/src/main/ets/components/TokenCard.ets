@@ -3,6 +3,8 @@ import { CountdownRing } from './CountdownRing';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
 import { TokenModel } from '../model/TokenModel';
 
+const SMOOTH_INTERVAL_MS: number = 50;
+
 function drawRoundedOutline(c: CanvasRenderingContext2D, w: number, h: number, rad: number, frac: number): void {
   const halfT: number = w / 2 - rad;
   const side: number = h - 2 * rad;
@@ -139,7 +141,7 @@ export struct TokenCard {
   @Prop isDragging: boolean = false;
   @Prop tagColorMap: Record<string, string> = {};
   @Prop hideCode: boolean = false;
-  @Prop compactMode: boolean = false;
+  @Prop @Watch('onCompactModeChange') compactMode: boolean = false;
   onCardClick?: () => void;
   onRefreshClick?: () => void;
   onToggleHide?: () => void;
@@ -148,6 +150,8 @@ export struct TokenCard {
   @State borderW: number = 0;
   @State borderH: number = 0;
   private redrawTimer: number = -1;
+  private smoothTimer: number = -1;
+  @State isOnScreen: boolean = false;
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -175,6 +179,7 @@ export struct TokenCard {
       this.borderH = h;
       this.requestRedraw();
     }
+    this.updateSmoothLoop();
   }
 
   private requestRedraw(): void {
@@ -191,6 +196,10 @@ export struct TokenCard {
       clearTimeout(this.redrawTimer);
       this.redrawTimer = -1;
     }
+    if (this.smoothTimer >= 0) {
+      clearInterval(this.smoothTimer);
+      this.smoothTimer = -1;
+    }
   }
 
   private redrawBorder(): void {
@@ -206,7 +215,7 @@ export struct TokenCard {
     const h: number = this.borderH - strokeInset * 2;
     const rad: number = 16.5;
     const total: number = this.token.period > 0 ? this.token.period : 30;
-    const ratio: number = total > 0 ? this.remainingSeconds / total : 0;
+    const ratio: number = total > 0 ? this.getSmoothRemaining(total) / total : 0;
     ctx.save();
     ctx.translate(strokeInset, strokeInset);
     ctx.strokeStyle = this.getRingTrackColor();
@@ -229,6 +238,41 @@ export struct TokenCard {
     return '#E5E5E5';
   }
 
+  private getSmoothRemaining(period: number): number {
+    if (period <= 0) {
+      return 0;
+    }
+    const periodMs: number = period * 1000;
+    const elapsedMs: number = Date.now() % periodMs;
+    return period - elapsedMs / 1000;
+  }
+
+  private onCompactModeChange(): void {
+    this.updateSmoothLoop();
+  }
+
+  private onVisibleChange(isVisible: boolean): void {
+    if (this.isOnScreen !== isVisible) {
+      this.isOnScreen = isVisible;
+      this.updateSmoothLoop();
+    }
+  }
+
+  private updateSmoothLoop(): void {
+    const wantLoop: boolean = this.compactMode && this.token.type === 'TOTP' &&
+      this.borderW > 0 && this.borderH > 0 && this.isOnScreen;
+    if (wantLoop) {
+      if (this.smoothTimer < 0) {
+        this.smoothTimer = setInterval(() => {
+          this.redrawBorder();
+        }, SMOOTH_INTERVAL_MS);
+      }
+    } else if (this.smoothTimer >= 0) {
+      clearInterval(this.smoothTimer);
+      this.smoothTimer = -1;
+    }
+  }
+
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
       if (this.compactMode) {
@@ -243,10 +287,14 @@ export struct TokenCard {
           .hitTestBehavior(HitTestMode.Transparent)
           .onReady(() => {
             this.requestRedraw();
+            this.updateSmoothLoop();
           })
       }
     }
     .width('100%')
+    .onVisibleAreaChange([0.3], (isVisible: boolean, _currentRatio: number) => {
+      this.onVisibleChange(isVisible);
+    })
   }
 
   @Builder
