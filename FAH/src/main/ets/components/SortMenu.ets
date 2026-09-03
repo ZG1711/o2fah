@@ -11,11 +11,9 @@ export struct SortMenu {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @Prop selectedSort: string = 'manual';
   @Prop visible: boolean = false;
-  @Prop codesHidden: boolean = false;
   @Prop compactMode: boolean = false;
   onSelectSort?: (sortKey: string) => void;
   onClose?: () => void;
-  onToggleCodesHidden?: () => void;
   onToggleCardMode?: () => void;
 
   getColors(): ThemeColors {
@@ -96,23 +94,6 @@ export struct SortMenu {
             .fontColor(this.getColors().textSecondary)
             .padding({ top: 6, bottom: 4, left: 16, right: 16 })
             .width('100%')
-
-          Row() {
-            Text($r('app.string.menu_hide_codes'))
-              .fontSize(15)
-              .fontWeight(this.codesHidden ? 600 : 400)
-              .fontColor(this.getColors().textPrimary)
-              .layoutWeight(1)
-            Toggle({ type: ToggleType.Switch, isOn: this.codesHidden })
-              .selectedColor(this.getColors().accentBlue)
-              .onChange((checked: boolean): void => {
-                if (this.onToggleCodesHidden !== undefined) {
-                  this.onToggleCodesHidden();
-                }
-              })
-          }
-          .width('100%')
-          .padding({ top: 6, bottom: 6, left: 16, right: 12 })
 
           Row() {
             Text($r('app.string.menu_card_detail'))
