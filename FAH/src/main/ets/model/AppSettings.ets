@@ -8,4 +8,6 @@ export class AppSettings {
   lastBackupTime: number = 0;
   codesHidden: boolean = false;
   cardCompact: boolean = true;
+  developerMode: boolean = false;
+  mockDataEnabled: boolean = false;
 }

@@ -93,6 +93,12 @@ export class SettingsStorage {
     if (raw['cardCompact'] !== undefined) {
       settings.cardCompact = (raw['cardCompact']) as boolean;
     }
+    if (raw['developerMode'] !== undefined) {
+      settings.developerMode = (raw['developerMode']) as boolean;
+    }
+    if (raw['mockDataEnabled'] !== undefined) {
+      settings.mockDataEnabled = (raw['mockDataEnabled']) as boolean;
+    }
     return settings;
   }
 }

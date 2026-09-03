@@ -1,6 +1,10 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { SettingsRow } from '../components/SettingsRow';
+import { SettingsStorage } from '../storage/SettingsStorage';
+import { AppSettings } from '../model/AppSettings';
 import { bundleManager } from '@kit.AbilityKit';
+import { PromptAction } from '@kit.ArkUI';
 
 interface LibInfo {
   name: string;
@@ -12,15 +16,20 @@ interface LibInfo {
 @Component
 struct AboutPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('developerMode') developerMode: boolean = false;
+  @StorageLink('devMockEnabled') mockDataEnabled: boolean = false;
   @State clickCount: number = 0;
   @State version: string = ""
   @State packName: string = ""
   @State minCompatibleVersionCode: number = 0
   @State targetVersion: number = 0
+  private promptAction: PromptAction = this.getUIContext().getPromptAction();
+  private tapResetTimer: number = -1;
 
   aboutToAppear(): void {
     this.getBundleInfoForSelf()
     this.libItems[0].desc = this.str($r('app.string.about_lib_sdk_desc'));
+    this.syncDevFlags();
   }
   private libItems: LibInfo[] = [
     { name: 'HarmonyOS SDK', desc: '', license: '-' } as LibInfo,
@@ -94,6 +103,90 @@ struct AboutPage {
         this.version = this.str($r('app.string.set_version_failed'));
         this.packName = this.str($r('app.string.about_pack_failed'));
       });
+  }
+
+  private syncDevFlags(): void {
+    SettingsStorage.get().then((settings: AppSettings): void => {
+      if (AppStorage.get<boolean>('developerMode') !== settings.developerMode) {
+        AppStorage.set('developerMode', settings.developerMode);
+      }
+      if (AppStorage.get<boolean>('devMockEnabled') !== settings.mockDataEnabled) {
+        AppStorage.set('devMockEnabled', settings.mockDataEnabled);
+      }
+    }).catch((): void => {
+    });
+  }
+
+  private showToast(message: string): void {
+    try {
+      this.promptAction.showToast({ message: message, duration: 2000 });
+    } catch (error) {
+      // ignore
+    }
+  }
+
+  private handleVersionTap(): void {
+    if (this.developerMode) {
+      return;
+    }
+    this.clickCount = this.clickCount + 1;
+    if (this.tapResetTimer >= 0) {
+      clearTimeout(this.tapResetTimer);
+    }
+    this.tapResetTimer = setTimeout((): void => {
+      this.clickCount = 0;
+      this.tapResetTimer = -1;
+    }, 3000);
+    if (this.clickCount >= 5) {
+      this.clickCount = 0;
+      if (this.tapResetTimer >= 0) {
+        clearTimeout(this.tapResetTimer);
+        this.tapResetTimer = -1;
+      }
+      AppStorage.set('developerMode', true);
+      SettingsStorage.get().then((settings: AppSettings): void => {
+        settings.developerMode = true;
+        SettingsStorage.save(settings).catch((): void => {
+        });
+      }).catch((): void => {
+      });
+      this.showToast(this.str($r('app.string.dev_toast_enabled')));
+    } else {
+      const remain: number = 5 - this.clickCount;
+      this.showToast(this.str($r('app.string.dev_toast_remaining')).replace('%d', remain.toString()));
+    }
+  }
+
+  private handleMockDataToggle(): void {
+    const next: boolean = !this.mockDataEnabled;
+    AppStorage.set('devMockEnabled', next);
+    SettingsStorage.get().then((settings: AppSettings): void => {
+      settings.mockDataEnabled = next;
+      SettingsStorage.save(settings).catch((): void => {
+      });
+    }).catch((): void => {
+    });
+    this.showToast(this.str(next ? $r('app.string.mock_toast_enabled') : $r('app.string.mock_toast_disabled')));
+  }
+
+  private handleDisableDeveloperMode(): void {
+    this.clickCount = 0;
+    if (this.tapResetTimer >= 0) {
+      clearTimeout(this.tapResetTimer);
+      this.tapResetTimer = -1;
+    }
+    AppStorage.set('developerMode', false);
+    if (this.mockDataEnabled) {
+      AppStorage.set('devMockEnabled', false);
+    }
+    SettingsStorage.get().then((settings: AppSettings): void => {
+      settings.developerMode = false;
+      settings.mockDataEnabled = false;
+      SettingsStorage.save(settings).catch((): void => {
+      });
+    }).catch((): void => {
+    });
+    this.showToast(this.str($r('app.string.dev_toast_disabled')));
   }
 
   getTagBgColor(): string {
@@ -178,7 +271,9 @@ struct AboutPage {
           Column() {
             this.InfoRow(this.str($r('app.string.about_app_name')), 'O2FAH', true)
             if (this.version)
-              this.InfoRow(this.str($r('app.string.about_version_label')), this.version, true)
+              this.InfoRow(this.str($r('app.string.about_version_label')), this.version, true, (): void => {
+                this.handleVersionTap();
+              })
             this.InfoRow('Github', "https://github.com/ZG1711/o2fah", true)
             this.InfoRow('Gitee',"https://gitee.com/ZG1711/o2fah", true)
           }
@@ -186,6 +281,40 @@ struct AboutPage {
           .backgroundColor(this.getColors().cardBackground)
           .borderRadius(12)
           .margin({ top: 6 })
+
+          // ===================== Developer section (hidden until dev mode) =====================
+          if (this.developerMode) {
+            this.SectionHeader(this.str($r('app.string.about_developer')))
+            Column() {
+              SettingsRow({
+                iconEmoji: '🧪',
+                iconBgColor: '#FFF3E0',
+                label: this.str($r('app.string.dev_mock_label')),
+                value: this.mockDataEnabled ? this.str($r('app.string.dev_mock_on_value')) : this.str($r('app.string.dev_mock_off_value')),
+                hasToggle: true,
+                toggleOn: this.mockDataEnabled,
+                showArrow: false,
+                showDivider: true,
+                onToggle: (): void => {
+                  this.handleMockDataToggle();
+                }
+              })
+              Divider().height(0.5).color(this.getColors().divider).width('100%').margin({ left: 56 })
+              SettingsRow({
+                label: this.str($r('app.string.dev_disable_row')),
+                isDestructive: true,
+                showArrow: false,
+                showDivider: false,
+                onRowClick: (): void => {
+                  this.handleDisableDeveloperMode();
+                }
+              })
+            }
+            .width('100%')
+            .backgroundColor(this.getColors().cardBackground)
+            .borderRadius(12)
+            .margin({ top: 6 })
+          }
 
           // ===================== Group 2: 技术信息 =====================
           this.SectionHeader(this.str($r('app.string.about_section_tech')))
@@ -342,7 +471,7 @@ struct AboutPage {
   }
 
   @Builder
-  InfoRow(label: string, value: string, showDivider: boolean): void {
+  InfoRow(label: string, value: string, showDivider: boolean, onTap?: () => void): void {
     Column() {
       Row() {
         Text(label)
@@ -356,6 +485,11 @@ struct AboutPage {
       }
       .width('100%')
       .padding({ left: 16, right: 16, top: 14, bottom: 14 })
+      .onClick(() => {
+        if (onTap !== undefined) {
+          onTap();
+        }
+      })
 
       if (showDivider) {
         Divider().height(0.5).color(this.getColors().divider).width('100%')

@@ -21,6 +21,7 @@ export struct SettingsPage {
   promptAction: PromptAction = this.getUIContext().getPromptAction();
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @StorageLink('themeMode') themeMode: string = 'system';
+  @StorageLink('devMockEnabled') devMockEnabled: boolean = false;
   @State toastMessage: string = '';
   @State toastVisible: boolean = false;
   @State autoLockValue: number = 0;
@@ -164,6 +165,10 @@ export struct SettingsPage {
                 showArrow: true,
                 showDivider: true,
                 onRowClick: () => {
+                  if (this.devMockEnabled) {
+                    this.showToast(this.str($r('app.string.mock_readonly_toast')), 2000);
+                    return;
+                  }
                   this.exportDialogController.open();
                 }
               })
@@ -175,6 +180,10 @@ export struct SettingsPage {
                 showArrow: true,
                 showDivider: true,
                 onRowClick: () => {
+                  if (this.devMockEnabled) {
+                    this.showToast(this.str($r('app.string.mock_readonly_toast')), 2000);
+                    return;
+                  }
                   this.handleExportQr();
                 }
               })
@@ -186,6 +195,10 @@ export struct SettingsPage {
                 showArrow: true,
                 showDivider: true,
                 onRowClick: () => {
+                  if (this.devMockEnabled) {
+                    this.showToast(this.str($r('app.string.mock_readonly_toast')), 2000);
+                    return;
+                  }
                   this.importDialogController.open();
                 }
               })
@@ -431,6 +444,9 @@ export struct SettingsPage {
       this.defaultSort = settings.defaultSort;
       this.language = settings.language;
       this.biometricEnabled = settings.biometricEnabled;
+      if (AppStorage.get<boolean>('devMockEnabled') !== settings.mockDataEnabled) {
+        AppStorage.set('devMockEnabled', settings.mockDataEnabled);
+      }
     } catch (_e) {
     }
   }
@@ -717,6 +733,10 @@ export struct SettingsPage {
   // --- Clear data ---
 
   private handleClearData(): void {
+    if (this.devMockEnabled) {
+      this.showToast(this.str($r('app.string.mock_readonly_toast')), 2000);
+      return;
+    }
     this.promptAction.showDialog({
       title: this.str($r('app.string.set_dialog_clear_title')),
       message: this.str($r('app.string.set_dialog_clear_message')),
