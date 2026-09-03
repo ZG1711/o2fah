@@ -144,7 +144,6 @@
       "name": "menu_card_compact",
       "value": "简约卡片"
     },
-
     {
       "name": "sort_manual",
       "value": "手动排序"
@@ -1160,6 +1159,50 @@
     {
       "name": "icon_picker_title",
       "value": "选择图标"
+    },
+    {
+      "name": "dev_toast_enabled",
+      "value": "开发者模式已开启"
+    },
+    {
+      "name": "dev_toast_remaining",
+      "value": "再点击 %d 次开启开发者模式"
+    },
+    {
+      "name": "dev_toast_disabled",
+      "value": "开发者模式已关闭"
+    },
+    {
+      "name": "dev_mock_label",
+      "value": "模拟数据"
+    },
+    {
+      "name": "dev_mock_on_value",
+      "value": "已开启"
+    },
+    {
+      "name": "dev_mock_off_value",
+      "value": "已关闭"
+    },
+    {
+      "name": "dev_disable_row",
+      "value": "关闭开发者模式"
+    },
+    {
+      "name": "mock_toast_enabled",
+      "value": "已开启模拟数据（1,200 条，仅内存）"
+    },
+    {
+      "name": "mock_toast_disabled",
+      "value": "已关闭模拟数据"
+    },
+    {
+      "name": "mock_mode_banner",
+      "value": "模拟数据 · 1,200 条 · 只读"
+    },
+    {
+      "name": "mock_readonly_toast",
+      "value": "模拟数据模式下不可用"
     }
   ]
 }

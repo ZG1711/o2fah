@@ -144,7 +144,6 @@
       "name": "menu_card_compact",
       "value": "簡約卡片"
     },
-
     {
       "name": "sort_manual",
       "value": "手動排序"
@@ -1160,6 +1159,50 @@
     {
       "name": "icon_picker_title",
       "value": "選擇圖示"
+    },
+    {
+      "name": "dev_toast_enabled",
+      "value": "開發者模式已開啟"
+    },
+    {
+      "name": "dev_toast_remaining",
+      "value": "再點擊 %d 次開啟開發者模式"
+    },
+    {
+      "name": "dev_toast_disabled",
+      "value": "開發者模式已關閉"
+    },
+    {
+      "name": "dev_mock_label",
+      "value": "模擬資料"
+    },
+    {
+      "name": "dev_mock_on_value",
+      "value": "已開啟"
+    },
+    {
+      "name": "dev_mock_off_value",
+      "value": "已關閉"
+    },
+    {
+      "name": "dev_disable_row",
+      "value": "關閉開發者模式"
+    },
+    {
+      "name": "mock_toast_enabled",
+      "value": "已開啟模擬資料（1,200 筆，僅記憶體）"
+    },
+    {
+      "name": "mock_toast_disabled",
+      "value": "已關閉模擬資料"
+    },
+    {
+      "name": "mock_mode_banner",
+      "value": "模擬資料 · 1,200 筆 · 唯讀"
+    },
+    {
+      "name": "mock_readonly_toast",
+      "value": "模擬資料模式下不可用"
     }
   ]
 }

@@ -145,6 +145,7 @@ export struct TokenCard {
   onCardClick?: () => void;
   onRefreshClick?: () => void;
   onToggleHide?: () => void;
+  onCodeExpire?: () => void;
 
   private borderCtx: CanvasRenderingContext2D = new CanvasRenderingContext2D(new RenderingContextSettings(true));
   @State borderW: number = 0;
@@ -152,6 +153,8 @@ export struct TokenCard {
   private redrawTimer: number = -1;
   private smoothTimer: number = -1;
   @State isOnScreen: boolean = false;
+  private lastRemaining: number = 0;
+  private lastSmoothRemaining: number = -1;
 
   getColors(): ThemeColors {
     if (this.isDarkMode) {
@@ -165,7 +168,19 @@ export struct TokenCard {
   }
 
   private onRemainingChange(): void {
+    if (this.onCodeExpire !== undefined && this.token.type === 'TOTP') {
+      if (this.remainingSeconds > this.lastRemaining && this.lastRemaining > 0) {
+        this.onCodeExpire();
+      }
+    }
+    this.lastRemaining = this.remainingSeconds;
     this.requestRedraw();
+  }
+
+  aboutToAppear(): void {
+    if (this.onCodeExpire !== undefined && this.token.type === 'TOTP' && this.code.length === 0) {
+      this.onCodeExpire();
+    }
   }
 
   private onCardAreaChange(_oldValue: Area, newValue: Area): void {
@@ -263,14 +278,27 @@ export struct TokenCard {
       this.borderW > 0 && this.borderH > 0 && this.isOnScreen;
     if (wantLoop) {
       if (this.smoothTimer < 0) {
+        this.lastSmoothRemaining = -1;
         this.smoothTimer = setInterval(() => {
-          this.redrawBorder();
+          this.onSmoothTick();
         }, SMOOTH_INTERVAL_MS);
       }
     } else if (this.smoothTimer >= 0) {
       clearInterval(this.smoothTimer);
       this.smoothTimer = -1;
     }
+  }
+
+  private onSmoothTick(): void {
+    const total: number = this.token.period > 0 ? this.token.period : 30;
+    const nowRemaining: number = this.getSmoothRemaining(total);
+    if (this.lastSmoothRemaining >= 0 &&
+      nowRemaining > this.lastSmoothRemaining + total / 2 &&
+      this.onCodeExpire !== undefined) {
+      this.onCodeExpire();
+    }
+    this.lastSmoothRemaining = nowRemaining;
+    this.redrawBorder();
   }
 
   build() {

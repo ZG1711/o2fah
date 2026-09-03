@@ -1159,6 +1159,50 @@
     {
       "name": "icon_picker_title",
       "value": "Select Icon"
+    },
+    {
+      "name": "dev_toast_enabled",
+      "value": "Developer mode enabled"
+    },
+    {
+      "name": "dev_toast_remaining",
+      "value": "Tap %d more times to enable developer mode"
+    },
+    {
+      "name": "dev_toast_disabled",
+      "value": "Developer mode disabled"
+    },
+    {
+      "name": "dev_mock_label",
+      "value": "Mock data"
+    },
+    {
+      "name": "dev_mock_on_value",
+      "value": "On"
+    },
+    {
+      "name": "dev_mock_off_value",
+      "value": "Off"
+    },
+    {
+      "name": "dev_disable_row",
+      "value": "Turn off developer mode"
+    },
+    {
+      "name": "mock_toast_enabled",
+      "value": "Mock data enabled (1,200 in-memory tokens)"
+    },
+    {
+      "name": "mock_toast_disabled",
+      "value": "Mock data disabled"
+    },
+    {
+      "name": "mock_mode_banner",
+      "value": "Mock data · 1,200 tokens · read-only"
+    },
+    {
+      "name": "mock_readonly_toast",
+      "value": "Unavailable while mock data is on"
     }
   ]
 }

@@ -23,6 +23,8 @@ import { SettingsStorage } from '../storage/SettingsStorage';
 import { TagStorage } from '../storage/TagStorage';
 import { TagModel } from '../model/TagModel';
 import { AppSettings } from '../model/AppSettings';
+import { TokenListDataSource } from '../components/TokenListDataSource';
+import { MockTokenProvider } from '../dev/MockTokenProvider';
 import { detectBarcode, scanBarcode, scanCore } from '@kit.ScanKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { abilityAccessCtrl, PermissionRequestResult } from '@kit.AbilityKit';
@@ -36,16 +38,17 @@ struct Index {
   @StorageLink('appIsLocked') @Watch('onAppLockedChanged') appIsLocked: boolean = false;
   @StorageLink('codesHidden') codesHidden: boolean = false;
   @StorageLink('cardCompact') cardCompact: boolean = false;
+  @StorageLink('devMockEnabled') @Watch('onDevMockChange') devMockEnabled: boolean = false;
   @State currentTabIndex: number = 0;
-  @State searchText: string = '';
-  @State selectedTagIndex: number = 0;
-  @State selectedSort: string = 'manual';
+  @State @Watch('onListCriteriaChange') searchText: string = '';
+  @State @Watch('onListCriteriaChange') selectedTagIndex: number = 0;
+  @State @Watch('onListCriteriaChange') selectedSort: string = 'manual';
   @State showSortMenu: boolean = false;
   @State showAddPanel: boolean = false;
   @State toastMessage: string = '';
   @State toastType: string = 'success';
   @State toastVisible: boolean = false;
-  @State tokens: TokenModel[] = [];
+  @State @Watch('onTokensChange') tokens: TokenModel[] = [];
   @State codeMap: Record<string, string> = {};
   @State remainingMap: Record<string, number> = {};
   @State ownHiddenIds: string[] = [];
@@ -82,6 +85,11 @@ struct Index {
   private cacheSearchText: string = '';
   private cacheSelectedTagIndex: number = -1;
   private cacheSelectedSort: string = '';
+  private tokenSource: TokenListDataSource = new TokenListDataSource();
+  private mockQueue: string[] = [];
+  private mockPending: Set<string> = new Set<string>();
+  private mockDraining: boolean = false;
+  private mockGenCounter: Record<string, number> = {};
 
   @State displayTags: TagItem[] = [];
 
@@ -164,6 +172,10 @@ struct Index {
     ThemeManager.loadSavedMode();
     const hintFlag: boolean | undefined = AppStorage.get<boolean>('dragSortHintShown');
     this.dragHintShown = hintFlag ?? false;
+    this.tokenSource.setAccessCallback((t: TokenModel): void => {
+      this.ensureMockCode(t);
+    });
+    this.syncDevFlags();
     this.checkBackupReminder();
     this.timerId = setInterval(() => {
       this.updateCountdown();
@@ -324,6 +336,21 @@ struct Index {
                 }
               })
 
+              // Mock data indicator
+              if (this.devMockEnabled) {
+                Row() {
+                  Text('🧪')
+                    .fontSize(12)
+                  Text(this.str($r('app.string.mock_mode_banner')))
+                    .fontSize(11)
+                    .fontColor(this.getColors().textSecondary)
+                    .margin({ left: 6 })
+                }
+                .width('100%')
+                .padding({ left: 20, right: 20 })
+                .margin({ top: 4, bottom: 4 })
+              }
+
               // Token list area with FAB
               Stack({ alignContent: Alignment.BottomEnd }) {
                 // Backup reminder banner
@@ -363,83 +390,38 @@ struct Index {
                 }
                 if (this.tokens.length > 0) {
                   List({ space: 10 }) {
-                    ForEach(this.getDisplayTokens(), (item: TokenModel) => {
-                      ListItem() {
-                        TokenCard({
-                          token: item,
-                          code: this.codeMap[item.id] ?? '',
-                          remainingSeconds: this.remainingMap[item.id] ?? 0,
-                          isDragging: this.dragItemId === item.id,
-                          tagColorMap: this.tagColorMap,
-                          hideCode: this.isCodeHidden(item.id),
-                          compactMode: this.cardCompact,
-                          onCardClick: (): void => {
-                            this.copyCode(this.codeMap[item.id] ?? '');
-                          },
-                          onRefreshClick: (): void => {
-                            this.handleHotpRefresh(item);
-                          },
-                          onToggleHide: (): void => {
-                            this.toggleCardHidden(item.id);
-                          }
+                    if (this.devMockEnabled) {
+                      LazyForEach(this.tokenSource, (item: TokenModel) => {
+                        this.MockTokenListItem(item)
+                      }, (item: TokenModel) => item.id + '_' + item.version.toString())
+                    } else {
+                      LazyForEach(this.tokenSource, (item: TokenModel) => {
+                        this.TokenListItem(item)
+                      }, (item: TokenModel) => item.id + '_' + item.version.toString())
+                        .onMove((from: number, to: number): void => {
+                          this.handleListMove(from, to);
                         })
-                      }
-                      .onTouch((event: TouchEvent) => {
-                        if (event.type === TouchType.Down) {
-                          this.swipedTokenId = item.id;
-                        }
-                      })
-                      .swipeAction({
-                        end: {
-                          builder: (): void => {
-                            this.SwipeActionsBuilder();
-                          },
-                          onAction: (): void => {
-                          },
-                          actionAreaDistance: 168
-                        }
-                      } as SwipeActionOptions)
-                    }, (item: TokenModel) => item.id + '_' + item.version.toString())
-                    .onMove((from: number, to: number): void => {
-                      if (from === to) {
-                        return;
-                      }
-                      const displayed: TokenModel[] = this.computeDisplayTokens();
-                      const moved: TokenModel = displayed.splice(from, 1)[0];
-                      displayed.splice(to, 0, moved);
-                      const newTokens: TokenModel[] = [...displayed];
-                      for (let i: number = 0; i < this.tokens.length; i++) {
-                        let found: boolean = false;
-                        for (let j: number = 0; j < displayed.length; j++) {
-                          if (this.tokens[i].id === displayed[j].id) {
-                            found = true;
-                            break;
-                          }
-                        }
-                        if (!found) {
-                          newTokens.push(this.tokens[i]);
-                        }
-                      }
-                      for (let i: number = 0; i < newTokens.length; i++) {
-                        newTokens[i].sortOrder = i;
-                      }
-                      this.tokens = newTokens;
-                      TokenStorage.saveAll(newTokens);
-                      this.showToast(this.str($r('app.string.toast_sort_saved')), 'success');
-                    })
+                    }
                   }
                   .width('100%')
                   .height('100%')
                   .padding({ left: 20, right: 20, top: 6 })
+                  .cachedCount(8)
                   .scrollBar(BarState.Off)
                   .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
                   .onItemDragStart((_event: ItemDragInfo, itemIndex: number): void => {
+                    if (this.devMockEnabled) {
+                      return;
+                    }
                     const displayed: TokenModel[] = this.getDisplayTokens();
                     if (itemIndex >= 0 && itemIndex < displayed.length) {
                       this.dragItemId = displayed[itemIndex].id;
                     }
                   })
                   .onItemDrop((): void => {
+                    if (this.devMockEnabled) {
+                      return;
+                    }
                     this.dragItemId = '';
                     if (!this.dragHintShown) {
                       this.dragHintShown = true;
@@ -452,11 +434,13 @@ struct Index {
 
 
 
-                // FAB button
-                Column() {
-                  FabButton({ onFabClick: () => { this.showAddPanel = true; } })
+                // FAB button (hidden in mock data mode)
+                if (!this.devMockEnabled) {
+                  Column() {
+                    FabButton({ onFabClick: () => { this.showAddPanel = true; } })
+                  }
+                  .padding({ right: 20, bottom: 20 })
                 }
-                .padding({ right: 20, bottom: 20 })
               }
               .layoutWeight(1)
               .width('100%')
@@ -499,7 +483,6 @@ struct Index {
         SortMenu({
           selectedSort: this.selectedSort,
           visible: true,
-          codesHidden: this.codesHidden,
           compactMode: this.cardCompact,
           onSelectSort: (sortKey: string) => {
             this.selectedSort = sortKey;
@@ -507,9 +490,6 @@ struct Index {
           },
           onClose: () => {
             this.showSortMenu = false;
-          },
-          onToggleCodesHidden: (): void => {
-            this.toggleCodesHiddenGlobal();
           },
           onToggleCardMode: (): void => {
             this.toggleCardMode();
@@ -568,7 +548,48 @@ struct Index {
 
   // --- Data loading and timer ---
 
+  private syncDevFlags(): void {
+    SettingsStorage.get().then((settings: AppSettings): void => {
+      if (AppStorage.get<boolean>('developerMode') !== settings.developerMode) {
+        AppStorage.set('developerMode', settings.developerMode);
+      }
+      if (AppStorage.get<boolean>('devMockEnabled') !== settings.mockDataEnabled) {
+        AppStorage.set('devMockEnabled', settings.mockDataEnabled);
+      }
+    }).catch((): void => {
+    });
+  }
+
+  private onDevMockChange(): void {
+    if (!this.devMockEnabled) {
+      this.mockQueue = [];
+      this.mockPending = new Set<string>();
+      this.mockGenCounter = {};
+    } else {
+      MockTokenProvider.invalidate();
+    }
+    this.selectedTagIndex = 0;
+    this.loadTokens();
+    this.loadTags();
+  }
+
+  private onTokensChange(): void {
+    this.updateSource();
+  }
+
+  private onListCriteriaChange(): void {
+    this.updateSource();
+  }
+
+  private updateSource(): void {
+    this.tokenSource.setData(this.getDisplayTokens());
+  }
+
   private async loadTokens(): Promise<void> {
+    if (this.devMockEnabled) {
+      this.loadMockTokens();
+      return;
+    }
     const all: TokenModel[] = await TokenStorage.getAll();
     this.tokens = all;
     const codeMapCopy: Record<string, string> = {};
@@ -593,7 +614,30 @@ struct Index {
     this.tokens = [...all];
   }
 
+  private loadMockTokens(): void {
+    const all: TokenModel[] = MockTokenProvider.get();
+    const codeMapCopy: Record<string, string> = {};
+    const remainingCopy: Record<string, number> = {};
+    for (let i: number = 0; i < all.length; i++) {
+      const t: TokenModel = all[i];
+      if (t.type === 'TOTP') {
+        remainingCopy[t.id] = TotpEngine.getRemainingSeconds(t.period);
+      }
+    }
+    this.mockQueue = [];
+    this.mockPending = new Set<string>();
+    this.mockGenCounter = {};
+    this.codeMap = codeMapCopy;
+    this.remainingMap = remainingCopy;
+    this.tokens = [...all];
+  }
+
   private async loadTags(): Promise<void> {
+    if (this.devMockEnabled) {
+      this.displayTags = [{ id: 'all', name: this.str($r('app.string.tag_all')), color: '#6B7280' }];
+      this.tagColorMap = {};
+      return;
+    }
     const savedTags: TagModel[] = await TagStorage.getAll();
     const tagItems: TagItem[] = [{ id: 'all', name: this.str($r('app.string.tag_all')), color: '#6B7280' }];
     const colorMap: Record<string, string> = {};
@@ -663,7 +707,8 @@ struct Index {
       if (t.type === 'TOTP') {
         const remaining: number = TotpEngine.getRemainingSeconds(t.period);
         newRemaining[t.id] = remaining;
-        if (remaining === t.period - 1 || this.codeMap[t.id] === undefined) {
+        if (!this.devMockEnabled &&
+          (remaining === t.period - 1 || this.codeMap[t.id] === undefined)) {
           TotpEngine.generateWithToken(t).then((code: string): void => {
             this.codeMap[t.id] = code;
           });
@@ -671,6 +716,75 @@ struct Index {
       }
     }
     this.remainingMap = newRemaining;
+  }
+
+  private ensureMockCode(token: TokenModel): void {
+    if (!this.devMockEnabled || token.type !== 'TOTP') {
+      return;
+    }
+    const periodMs: number = token.period > 0 ? token.period * 1000 : 30000;
+    const targetCounter: number = Math.floor(Date.now() / periodMs);
+    if (this.mockGenCounter[token.id] === targetCounter) {
+      return;
+    }
+    if (this.mockPending.has(token.id)) {
+      return;
+    }
+    this.mockPending.add(token.id);
+    this.mockQueue.push(token.id);
+    this.kickMockDrain();
+  }
+
+  private ensureRealTokenCode(token: TokenModel): void {
+    if (this.devMockEnabled || token.type !== 'TOTP') {
+      return;
+    }
+    TotpEngine.generateWithToken(token).then((code: string): void => {
+      if (!this.devMockEnabled) {
+        this.codeMap[token.id] = code;
+      }
+    }).catch((): void => {
+    });
+  }
+
+  private kickMockDrain(): void {
+    if (this.mockDraining) {
+      return;
+    }
+    this.mockDraining = true;
+    this.mockDrainLoop();
+  }
+
+  private async mockDrainLoop(): Promise<void> {
+    while (this.mockQueue.length > 0 && this.devMockEnabled) {
+      const first: string | undefined = this.mockQueue.shift();
+      if (first === undefined) {
+        break;
+      }
+      const id: string = first;
+      if (!this.mockPending.has(id)) {
+        continue;
+      }
+      const token: TokenModel | undefined = this.findTokenById(id);
+      if (token === undefined) {
+        this.mockPending.delete(id);
+        continue;
+      }
+      try {
+        const code: string = await TotpEngine.generateWithToken(token);
+        if (!this.devMockEnabled) {
+          this.mockPending.delete(id);
+          break;
+        }
+        this.codeMap[token.id] = code;
+        const periodMs: number = token.period > 0 ? token.period * 1000 : 30000;
+        this.mockGenCounter[token.id] = Math.floor(Date.now() / periodMs);
+      } catch (_e) {
+      } finally {
+        this.mockPending.delete(id);
+      }
+    }
+    this.mockDraining = false;
   }
 
   // --- Filtering and sorting ---
@@ -748,6 +862,36 @@ struct Index {
       });
     }
     return result;
+  }
+
+  // --- Drag reorder ---
+
+  private handleListMove(from: number, to: number): void {
+    if (this.devMockEnabled || from === to) {
+      return;
+    }
+    const displayed: TokenModel[] = this.computeDisplayTokens();
+    const moved: TokenModel = displayed.splice(from, 1)[0];
+    displayed.splice(to, 0, moved);
+    const newTokens: TokenModel[] = [...displayed];
+    for (let i: number = 0; i < this.tokens.length; i++) {
+      let found: boolean = false;
+      for (let j: number = 0; j < displayed.length; j++) {
+        if (this.tokens[i].id === displayed[j].id) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        newTokens.push(this.tokens[i]);
+      }
+    }
+    for (let i: number = 0; i < newTokens.length; i++) {
+      newTokens[i].sortOrder = i;
+    }
+    this.tokens = newTokens;
+    TokenStorage.saveAll(newTokens);
+    this.showToast(this.str($r('app.string.toast_sort_saved')), 'success');
   }
 
   // --- Copy code ---
@@ -980,6 +1124,64 @@ struct Index {
   }
 
   // --- Builders ---
+
+  @Builder
+  MockTokenListItem(item: TokenModel): void {
+    ListItem() {
+      this.TokenCardView(item, true)
+    }
+  }
+
+  @Builder
+  TokenListItem(item: TokenModel): void {
+    ListItem() {
+      this.TokenCardView(item, false)
+    }
+    .onTouch((event: TouchEvent) => {
+      if (event.type === TouchType.Down) {
+        this.swipedTokenId = item.id;
+      }
+    })
+    .swipeAction({
+      end: {
+        builder: (): void => {
+          this.SwipeActionsBuilder();
+        },
+        onAction: (): void => {
+        },
+        actionAreaDistance: 168
+      }
+    } as SwipeActionOptions)
+  }
+
+  @Builder
+  TokenCardView(item: TokenModel, isMock: boolean): void {
+    TokenCard({
+      token: item,
+      code: this.codeMap[item.id] ?? '',
+      remainingSeconds: this.remainingMap[item.id] ?? 0,
+      isDragging: !isMock && this.dragItemId === item.id,
+      tagColorMap: this.tagColorMap,
+      hideCode: this.isCodeHidden(item.id),
+      compactMode: this.cardCompact,
+      onCardClick: (): void => {
+        this.copyCode(this.codeMap[item.id] ?? '');
+      },
+      onRefreshClick: (): void => {
+        this.handleHotpRefresh(item);
+      },
+      onToggleHide: (): void => {
+        this.toggleCardHidden(item.id);
+      },
+      onCodeExpire: (): void => {
+        if (isMock) {
+          this.ensureMockCode(item);
+        } else {
+          this.ensureRealTokenCode(item);
+        }
+      }
+    })
+  }
 
   @Builder
   TabBarBuilder(idx: number): void {
