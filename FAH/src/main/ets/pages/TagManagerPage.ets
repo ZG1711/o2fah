@@ -126,7 +126,8 @@ struct TagManagerPage {
             }
           } as SwipeActionOptions)
           .margin({ left: 20, right: 20, bottom: 8 })
-        }, (tag: TagRowData) => tag.id)
+        }, (tag: TagRowData) => tag.id + '_' + tag.name + '_' + tag.color + '_' +
+          tag.tokenCount.toString() + '_' + tag.isDragging.toString())
         .onMove((from: number, to: number): void => {
           if (from === to) {
             return;
@@ -397,6 +398,8 @@ struct TagManagerPage {
 
         if (oldName !== trimmedName) {
           this.renameTagInAllTokens(oldName, trimmedName);
+        } else {
+          this.bumpVersionForTag(trimmedName);
         }
         break;
       }
@@ -439,6 +442,7 @@ struct TagManagerPage {
       }
       if (found) {
         token.tags = newTags;
+        token.version = token.version + 1;
         await TokenStorage.update(token);
       }
     }
@@ -460,6 +464,25 @@ struct TagManagerPage {
       }
       if (found) {
         token.tags = newTags;
+        token.version = token.version + 1;
+        await TokenStorage.update(token);
+      }
+    }
+  }
+
+  private async bumpVersionForTag(tagName: string): Promise<void> {
+    const allTokens: TokenModel[] = await TokenStorage.getAll();
+    for (let i: number = 0; i < allTokens.length; i++) {
+      const token: TokenModel = allTokens[i];
+      let found: boolean = false;
+      for (let j: number = 0; j < token.tags.length; j++) {
+        if (token.tags[j] === tagName) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        token.version = token.version + 1;
         await TokenStorage.update(token);
       }
     }
