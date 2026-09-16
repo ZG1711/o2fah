@@ -12,6 +12,9 @@ export class TokenStorage {
   private static prefsCache: preferences.Preferences | undefined = undefined;
   private static cachedTokens: TokenModel[] | undefined = undefined;
   private static decryptFailedFlag: boolean = false;
+  // 解密失败期间锁定写入：此时内存里的令牌集合是空的（非真实数据），
+  // 任何 save 都会用空集合覆盖 tokens_v2，导致原始密文永久丢失。
+  private static writeLocked: boolean = false;
 
   static init(ctx: Context): void {
     TokenStorage.storedContext = ctx;
@@ -22,6 +25,11 @@ export class TokenStorage {
     const failed: boolean = TokenStorage.decryptFailedFlag;
     TokenStorage.decryptFailedFlag = false;
     return failed;
+  }
+
+  /** 解密失败后是否为「只读保护」状态 */
+  static isWriteLocked(): boolean {
+    return TokenStorage.writeLocked;
   }
 
   static async getAll(): Promise<TokenModel[]> {
@@ -35,9 +43,11 @@ export class TokenStorage {
       try {
         const tokens: TokenModel[] = await TokenStorage.readEncrypted(encrypted);
         TokenStorage.cachedTokens = tokens;
+        TokenStorage.writeLocked = false;
         return tokens;
       } catch (e) {
         TokenStorage.decryptFailedFlag = true;
+        TokenStorage.writeLocked = true;
         TokenStorage.cachedTokens = [];
         return [];
       }
@@ -67,6 +77,9 @@ export class TokenStorage {
   }
 
   static async saveAll(tokens: TokenModel[]): Promise<void> {
+    if (TokenStorage.writeLocked) {
+      throw new Error('token storage is locked: existing data could not be decrypted');
+    }
     const ctx: Context = TokenStorage.getContext();
     const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
     await TokenStorage.writeEncrypted(prefs, tokens);
@@ -102,6 +115,8 @@ export class TokenStorage {
     prefs.deleteSync(KEY_TOKENS_LEGACY);
     await prefs.flush();
     TokenStorage.cachedTokens = undefined;
+    TokenStorage.decryptFailedFlag = false;
+    TokenStorage.writeLocked = false;
   }
 
   private static async readEncrypted(encrypted: string): Promise<TokenModel[]> {
