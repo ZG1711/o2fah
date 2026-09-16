@@ -461,6 +461,10 @@
       "value": "语言已切换"
     },
     {
+      "name": "storage_decrypt_failed_toast",
+      "value": "本地数据解密失败，请从加密备份恢复"
+    },
+    {
       "name": "set_toast_biometric_enabled",
       "value": "生物识别已开启"
     },

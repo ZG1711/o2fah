@@ -591,6 +591,13 @@ struct Index {
       return;
     }
     const all: TokenModel[] = await TokenStorage.getAll();
+    if (TokenStorage.consumeDecryptFailed()) {
+      this.toastMessage = this.str($r('app.string.storage_decrypt_failed_toast'));
+      this.toastVisible = true;
+      setTimeout((): void => {
+        this.toastVisible = false;
+      }, 3000);
+    }
     this.tokens = all;
     const codeMapCopy: Record<string, string> = {};
     const remainingCopy: Record<string, number> = {};

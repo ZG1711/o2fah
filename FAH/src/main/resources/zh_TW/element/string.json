@@ -461,6 +461,10 @@
       "value": "語言已切換"
     },
     {
+      "name": "storage_decrypt_failed_toast",
+      "value": "本機資料解密失敗，請從加密備份還原"
+    },
+    {
       "name": "set_toast_biometric_enabled",
       "value": "生物辨識已開啟"
     },
