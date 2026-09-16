@@ -1,40 +1,76 @@
 import { preferences } from '@kit.ArkData';
 import { TokenModel } from '../model/TokenModel';
+import { HuksStore } from './HuksStore';
+import { TokenPayloadCodec } from './TokenPayloadCodec';
 
 const STORE_NAME: string = 'o2fah_tokens';
-const KEY_TOKENS: string = 'tokens';
+const KEY_TOKENS_V2: string = 'tokens_v2';
+const KEY_TOKENS_LEGACY: string = 'tokens';
 
 export class TokenStorage {
   private static storedContext: Context | undefined = undefined;
   private static prefsCache: preferences.Preferences | undefined = undefined;
+  private static cachedTokens: TokenModel[] | undefined = undefined;
+  private static decryptFailedFlag: boolean = false;
 
   static init(ctx: Context): void {
     TokenStorage.storedContext = ctx;
   }
 
+  /** 读取并重置「解密失败」标志（供 UI 层提示一次） */
+  static consumeDecryptFailed(): boolean {
+    const failed: boolean = TokenStorage.decryptFailedFlag;
+    TokenStorage.decryptFailedFlag = false;
+    return failed;
+  }
+
   static async getAll(): Promise<TokenModel[]> {
+    if (TokenStorage.cachedTokens !== undefined) {
+      return TokenStorage.cachedTokens;
+    }
     const ctx: Context = TokenStorage.getContext();
     const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    const jsonStr: string = prefs.getSync(KEY_TOKENS, '[]') as string;
-    return TokenStorage.parseTokens(jsonStr);
+    const encrypted: string = prefs.getSync(KEY_TOKENS_V2, '') as string;
+    if (encrypted !== '') {
+      try {
+        const tokens: TokenModel[] = await TokenStorage.readEncrypted(encrypted);
+        TokenStorage.cachedTokens = tokens;
+        return tokens;
+      } catch (e) {
+        TokenStorage.decryptFailedFlag = true;
+        TokenStorage.cachedTokens = [];
+        return [];
+      }
+    }
+    const legacy: string = prefs.getSync(KEY_TOKENS_LEGACY, '') as string;
+    if (legacy !== '' && legacy !== '[]') {
+      const tokens: TokenModel[] = TokenStorage.parseTokens(legacy);
+      await TokenStorage.writeEncrypted(prefs, tokens);
+      const verify: TokenModel[] = await TokenStorage.readEncrypted(
+        prefs.getSync(KEY_TOKENS_V2, '') as string);
+      if (verify.length !== tokens.length) {
+        throw new Error('token migration verify failed');
+      }
+      prefs.deleteSync(KEY_TOKENS_LEGACY);
+      await prefs.flush();
+      TokenStorage.cachedTokens = tokens;
+      return tokens;
+    }
+    TokenStorage.cachedTokens = [];
+    return [];
   }
 
   static async save(token: TokenModel): Promise<void> {
     const tokens: TokenModel[] = await TokenStorage.getAll();
     tokens.push(token);
-    const ctx: Context = TokenStorage.getContext();
-    const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    const jsonStr: string = JSON.stringify(tokens);
-    prefs.putSync(KEY_TOKENS, jsonStr);
-    await prefs.flush();
+    await TokenStorage.saveAll(tokens);
   }
 
   static async saveAll(tokens: TokenModel[]): Promise<void> {
     const ctx: Context = TokenStorage.getContext();
     const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    const jsonStr: string = JSON.stringify(tokens);
-    prefs.putSync(KEY_TOKENS, jsonStr);
-    await prefs.flush();
+    await TokenStorage.writeEncrypted(prefs, tokens);
+    TokenStorage.cachedTokens = tokens;
   }
 
   static async update(token: TokenModel): Promise<void> {
@@ -45,11 +81,7 @@ export class TokenStorage {
         break;
       }
     }
-    const ctx: Context = TokenStorage.getContext();
-    const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    const jsonStr: string = JSON.stringify(tokens);
-    prefs.putSync(KEY_TOKENS, jsonStr);
-    await prefs.flush();
+    await TokenStorage.saveAll(tokens);
   }
 
   static async delete(id: string): Promise<void> {
@@ -60,17 +92,29 @@ export class TokenStorage {
         filtered.push(tokens[i]);
       }
     }
-    const ctx: Context = TokenStorage.getContext();
-    const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    const jsonStr: string = JSON.stringify(filtered);
-    prefs.putSync(KEY_TOKENS, jsonStr);
-    await prefs.flush();
+    await TokenStorage.saveAll(filtered);
   }
 
   static async clear(): Promise<void> {
     const ctx: Context = TokenStorage.getContext();
     const prefs: preferences.Preferences = TokenStorage.getPrefsSync(ctx);
-    prefs.deleteSync(KEY_TOKENS);
+    prefs.deleteSync(KEY_TOKENS_V2);
+    prefs.deleteSync(KEY_TOKENS_LEGACY);
+    await prefs.flush();
+    TokenStorage.cachedTokens = undefined;
+  }
+
+  private static async readEncrypted(encrypted: string): Promise<TokenModel[]> {
+    const cipher: string = TokenPayloadCodec.extractCipher(encrypted);
+    const jsonStr: string = await HuksStore.decrypt(cipher);
+    return TokenStorage.parseTokens(jsonStr);
+  }
+
+  private static async writeEncrypted(prefs: preferences.Preferences,
+    tokens: TokenModel[]): Promise<void> {
+    const jsonStr: string = JSON.stringify(tokens);
+    const cipher: string = await HuksStore.encrypt(jsonStr);
+    prefs.putSync(KEY_TOKENS_V2, TokenPayloadCodec.build(cipher));
     await prefs.flush();
   }
 
