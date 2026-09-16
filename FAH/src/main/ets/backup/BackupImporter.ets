@@ -154,9 +154,8 @@ export class BackupImporter {
     const existing: TokenModel[] = await TokenStorage.getAll();
     const mergeResult: MergeResult = BackupImporter.mergeTokens(existing, importedTokens);
 
-    for (let i: number = 0; i < mergeResult.newTokens.length; i++) {
-      await TokenStorage.save(mergeResult.newTokens[i]);
-    }
+    const existingAfterMerge: TokenModel[] = existing.concat(mergeResult.newTokens);
+    await TokenStorage.saveAll(existingAfterMerge);
 
     await BackupImporter.importTags(importedTags);
 
