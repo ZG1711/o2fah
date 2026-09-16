@@ -11,4 +11,5 @@ export class AppSettings {
   developerMode: boolean = false;
   mockDataEnabled: boolean = false;
   privacyMode: boolean = true;
+  schemaVersion: number = 1;
 }

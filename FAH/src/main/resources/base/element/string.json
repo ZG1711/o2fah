@@ -477,6 +477,10 @@
       "value": "Stored data could not be decrypted. Please restore from a backup."
     },
     {
+      "name": "storage_version_too_new_toast",
+      "value": "Local data was created by a newer app version. Please update the app."
+    },
+    {
       "name": "set_toast_biometric_enabled",
       "value": "Biometric lock enabled"
     },

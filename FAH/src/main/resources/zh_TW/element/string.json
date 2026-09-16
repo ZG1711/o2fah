@@ -477,6 +477,10 @@
       "value": "本機資料解密失敗，請從加密備份還原"
     },
     {
+      "name": "storage_version_too_new_toast",
+      "value": "本機資料來自更高版本的應用，請先升級應用"
+    },
+    {
       "name": "set_toast_biometric_enabled",
       "value": "生物辨識已開啟"
     },

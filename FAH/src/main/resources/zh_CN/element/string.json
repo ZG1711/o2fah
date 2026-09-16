@@ -477,6 +477,10 @@
       "value": "本地数据解密失败，请从加密备份恢复"
     },
     {
+      "name": "storage_version_too_new_toast",
+      "value": "本地数据来自更高版本的应用，请先升级应用"
+    },
+    {
       "name": "set_toast_biometric_enabled",
       "value": "生物识别已开启"
     },

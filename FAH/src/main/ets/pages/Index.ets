@@ -591,7 +591,13 @@ struct Index {
       return;
     }
     const all: TokenModel[] = await TokenStorage.getAll();
-    if (TokenStorage.consumeDecryptFailed()) {
+    if (TokenStorage.consumeVersionTooNew()) {
+      this.toastMessage = this.str($r('app.string.storage_version_too_new_toast'));
+      this.toastVisible = true;
+      setTimeout((): void => {
+        this.toastVisible = false;
+      }, 4000);
+    } else if (TokenStorage.consumeDecryptFailed()) {
       this.toastMessage = this.str($r('app.string.storage_decrypt_failed_toast'));
       this.toastVisible = true;
       setTimeout((): void => {

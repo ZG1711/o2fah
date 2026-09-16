@@ -6,6 +6,8 @@ const KEY_SETTINGS: string = 'settings';
 const KEY_LAST_BACKGROUND: string = 'lastBackgroundTime';
 
 export class SettingsStorage {
+  static readonly CURRENT_SETTINGS_VERSION: number = 1;
+
   private static storedContext: Context | undefined = undefined;
   private static prefsCache: preferences.Preferences | undefined = undefined;
 
@@ -17,7 +19,13 @@ export class SettingsStorage {
     const ctx: Context = SettingsStorage.getContext();
     const prefs: preferences.Preferences = SettingsStorage.getPrefsSync(ctx);
     const jsonStr: string = prefs.getSync(KEY_SETTINGS, '{}') as string;
-    return SettingsStorage.parseSettings(jsonStr);
+    const settings: AppSettings = SettingsStorage.parseSettings(jsonStr);
+    // 历史数据（无 schemaVersion）补齐版本标记并落盘，避免每次启动重复判定
+    const rawHadVersion: boolean = jsonStr.indexOf('"schemaVersion"') >= 0;
+    if (!rawHadVersion && jsonStr !== '{}') {
+      await SettingsStorage.save(settings);
+    }
+    return settings;
   }
 
   static async save(settings: AppSettings): Promise<void> {
@@ -66,6 +74,14 @@ export class SettingsStorage {
   private static parseSettings(jsonStr: string): AppSettings {
     const raw: Record<string, Object> = JSON.parse(jsonStr) as Record<string, Object>;
     const settings: AppSettings = new AppSettings();
+    if (raw['schemaVersion'] !== undefined) {
+      settings.schemaVersion = (raw['schemaVersion']) as number;
+    }
+    // 迁移：无 schemaVersion 的历史数据按 v1 处理。
+    // v1 → v1 无字段变更，仅补版本标记；未来版本迁移在此追加字段改写。
+    if (settings.schemaVersion < SettingsStorage.CURRENT_SETTINGS_VERSION) {
+      settings.schemaVersion = SettingsStorage.CURRENT_SETTINGS_VERSION;
+    }
     if (raw['biometricEnabled'] !== undefined) {
       settings.biometricEnabled = (raw['biometricEnabled']) as boolean;
     }
