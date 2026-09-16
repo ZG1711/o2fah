@@ -10,4 +10,5 @@ export class AppSettings {
   cardCompact: boolean = true;
   developerMode: boolean = false;
   mockDataEnabled: boolean = false;
+  privacyMode: boolean = true;
 }

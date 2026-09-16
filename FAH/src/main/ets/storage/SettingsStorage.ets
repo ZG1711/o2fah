@@ -99,6 +99,9 @@ export class SettingsStorage {
     if (raw['mockDataEnabled'] !== undefined) {
       settings.mockDataEnabled = (raw['mockDataEnabled']) as boolean;
     }
+    if (raw['privacyMode'] !== undefined) {
+      settings.privacyMode = (raw['privacyMode']) as boolean;
+    }
     return settings;
   }
 }
