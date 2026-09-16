@@ -6,12 +6,14 @@ import { SettingsStorage } from '../storage/SettingsStorage';
 import { AppSettings } from '../model/AppSettings';
 import { BiometricUtil } from '../utils/BiometricUtil';
 import { LanguageManager } from '../common/LanguageManager';
+import { PrivacyModeManager } from '../common/PrivacyModeManager';
 
 const DOMAIN = 0x0000;
 const BIOMETRIC_AUTH_KEY: string = 'requireBiometricAuth';
 const APP_LOCKED_KEY: string = 'appIsLocked';
 const CACHED_BIOMETRIC_ENABLED: string = 'cachedBiometricEnabled';
 const CACHED_AUTO_LOCK_TIMEOUT: string = 'cachedAutoLockTimeout';
+const PRIVACY_MODE_KEY: string = 'privacyMode';
 
 export default class FAHAbility extends UIAbility {
   private lastBackgroundTimestamp: number = 0;
@@ -33,6 +35,7 @@ export default class FAHAbility extends UIAbility {
     AppStorage.setOrCreate('lockExpiryTime', 0);
     AppStorage.setOrCreate('lockRetryCountPersisted', 0);
     AppStorage.setOrCreate('pendingImportUri', '');
+    AppStorage.setOrCreate(PRIVACY_MODE_KEY, true);
     if (want.uri !== undefined && want.uri.length > 0) {
       AppStorage.set('pendingImportUri', want.uri);
     }
@@ -59,11 +62,18 @@ export default class FAHAbility extends UIAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
+    try {
+      PrivacyModeManager.attach(windowStage.getMainWindowSync());
+    } catch (err) {
+      hilog.error(DOMAIN, 'testTag', 'getMainWindowSync failed: %{public}s', JSON.stringify(err));
+    }
+
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
         return;
       }
+      PrivacyModeManager.applyCurrent();
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
     });
   }
@@ -94,6 +104,9 @@ export default class FAHAbility extends UIAbility {
     SettingsStorage.get().then((settings: AppSettings): void => {
       AppStorage.set(CACHED_BIOMETRIC_ENABLED, settings.biometricEnabled);
       AppStorage.set(CACHED_AUTO_LOCK_TIMEOUT, settings.autoLockTimeout);
+      // 持久化设置是异步读出的，可能晚于窗口创建时的默认应用，
+      // 因此这里再同步一次 AppStorage 并重新应用到窗口（窗口未就绪时只记录，由 applyCurrent 兜底）。
+      PrivacyModeManager.apply(settings.privacyMode);
       LanguageManager.applyStartup(settings.language);
     });
   }
