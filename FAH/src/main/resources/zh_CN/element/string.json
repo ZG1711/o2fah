@@ -253,6 +253,18 @@
       "value": "用于验证身份以解锁 O2FAH"
     },
     {
+      "name": "permission_reason_privacy_window",
+      "value": "防止验证码被截屏或录屏"
+    },
+    {
+      "name": "set_privacy_mode",
+      "value": "防截屏保护"
+    },
+    {
+      "name": "set_privacy_mode_desc",
+      "value": "阻止截屏与录屏获取验证码"
+    },
+    {
       "name": "set_section_security",
       "value": "安全"
     },

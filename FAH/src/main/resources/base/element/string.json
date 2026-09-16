@@ -253,6 +253,18 @@
       "value": "Used to verify identity to unlock O2FAH"
     },
     {
+      "name": "permission_reason_privacy_window",
+      "value": "Prevent screen capture and recording of verification codes"
+    },
+    {
+      "name": "set_privacy_mode",
+      "value": "Prevent screenshots"
+    },
+    {
+      "name": "set_privacy_mode_desc",
+      "value": "Block screen capture and recording of codes"
+    },
+    {
       "name": "set_section_security",
       "value": "Security"
     },

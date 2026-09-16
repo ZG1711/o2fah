@@ -253,6 +253,18 @@
       "value": "用於驗證身分以解鎖 O2FAH"
     },
     {
+      "name": "permission_reason_privacy_window",
+      "value": "防止驗證碼被截圖或錄影"
+    },
+    {
+      "name": "set_privacy_mode",
+      "value": "防截圖保護"
+    },
+    {
+      "name": "set_privacy_mode_desc",
+      "value": "阻止截圖與錄影取得驗證碼"
+    },
+    {
       "name": "set_section_security",
       "value": "安全"
     },

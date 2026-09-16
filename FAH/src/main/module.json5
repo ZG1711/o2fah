@@ -26,6 +26,14 @@
           "abilities": ["FAHAbility"],
           "when": "inuse"
         }
+      },
+      {
+        "name": "ohos.permission.PRIVACY_WINDOW",
+        "reason": "$string:permission_reason_privacy_window",
+        "usedScene": {
+          "abilities": ["FAHAbility"],
+          "when": "inuse"
+        }
       }
     ],
     "abilities": [
