@@ -5,6 +5,7 @@ import { TokenStorage } from '../storage/TokenStorage';
 import { OtpUriBuilder } from '../engine/OtpUriBuilder';
 import { QrGenerator } from '../engine/QrGenerator';
 import { EmptyState } from '../components/EmptyState';
+import { PrivacyModeManager } from '../common/PrivacyModeManager';
 import { image } from '@kit.ImageKit';
 
 @Entry
@@ -24,15 +25,25 @@ struct ExportQrPage {
   private alive: boolean = true;
   private inProgress: number = -1;
   private swiperController: SwiperController = new SwiperController();
+  private privacyRestoreNeeded: boolean = false;
 
   aboutToAppear(): void {
     TokenStorage.init(this.getUIContext().getHostContext()!);
+    // 二维码页无论用户设置如何都强制防截屏（不修改 AppStorage 中的用户设置）
+    if (!(AppStorage.get<boolean>('privacyMode') ?? true)) {
+      this.privacyRestoreNeeded = true;
+      PrivacyModeManager.applyWindow(true);
+    }
     this.loadTokens();
   }
 
   aboutToDisappear(): void {
     this.alive = false;
     this.releaseAll();
+    if (this.privacyRestoreNeeded) {
+      PrivacyModeManager.applyWindow(false);
+      this.privacyRestoreNeeded = false;
+    }
   }
 
   getColors(): ThemeColors {
