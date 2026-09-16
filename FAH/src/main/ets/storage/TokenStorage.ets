@@ -2,6 +2,8 @@ import { preferences } from '@kit.ArkData';
 import { TokenModel } from '../model/TokenModel';
 import { HuksStore } from './HuksStore';
 import { TokenPayloadCodec } from './TokenPayloadCodec';
+import { MigrationRegistry } from './MigrationRegistry';
+import { TokenSchema, TokenVersionTooNewError } from './TokenSchema';
 
 const STORE_NAME: string = 'o2fah_tokens';
 const KEY_TOKENS_V2: string = 'tokens_v2';
@@ -12,8 +14,9 @@ export class TokenStorage {
   private static prefsCache: preferences.Preferences | undefined = undefined;
   private static cachedTokens: TokenModel[] | undefined = undefined;
   private static decryptFailedFlag: boolean = false;
-  // 解密失败期间锁定写入：此时内存里的令牌集合是空的（非真实数据），
-  // 任何 save 都会用空集合覆盖 tokens_v2，导致原始密文永久丢失。
+  private static versionTooNewFlag: boolean = false;
+  // 解密失败 / 数据版本高于本应用期间锁定写入：此时内存里的令牌集合是空的（非真实数据），
+  // 任何 save 都会用空集合覆盖 tokens_v2，导致原始数据永久丢失。
   private static writeLocked: boolean = false;
 
   static init(ctx: Context): void {
@@ -25,6 +28,13 @@ export class TokenStorage {
     const failed: boolean = TokenStorage.decryptFailedFlag;
     TokenStorage.decryptFailedFlag = false;
     return failed;
+  }
+
+  /** 读取并重置「数据版本高于本应用」标志（供 UI 层提示一次） */
+  static consumeVersionTooNew(): boolean {
+    const tooNew: boolean = TokenStorage.versionTooNewFlag;
+    TokenStorage.versionTooNewFlag = false;
+    return tooNew;
   }
 
   /** 解密失败后是否为「只读保护」状态 */
@@ -46,25 +56,53 @@ export class TokenStorage {
         TokenStorage.writeLocked = false;
         return tokens;
       } catch (e) {
-        TokenStorage.decryptFailedFlag = true;
+        if (e instanceof TokenVersionTooNewError) {
+          TokenStorage.versionTooNewFlag = true;
+        } else {
+          TokenStorage.decryptFailedFlag = true;
+        }
         TokenStorage.writeLocked = true;
         TokenStorage.cachedTokens = [];
         return [];
       }
     }
     const legacy: string = prefs.getSync(KEY_TOKENS_LEGACY, '') as string;
-    if (legacy !== '' && legacy !== '[]') {
-      const tokens: TokenModel[] = TokenStorage.parseTokens(legacy);
-      await TokenStorage.writeEncrypted(prefs, tokens);
-      const verify: TokenModel[] = await TokenStorage.readEncrypted(
-        prefs.getSync(KEY_TOKENS_V2, '') as string);
-      if (verify.length !== tokens.length) {
-        throw new Error('token migration verify failed');
+    if (legacy !== '') {
+      const version: number = TokenSchema.detectVersion(legacy);
+      TokenSchema.assertNotFromFuture(version);
+      if (version < TokenSchema.CURRENT) {
+        const expected: TokenModel[] = TokenStorage.parseTokens(legacy);
+        // 空态不写盘：仅清理旧键
+        if (expected.length === 0) {
+          prefs.deleteSync(KEY_TOKENS_LEGACY);
+          await prefs.flush();
+          TokenStorage.cachedTokens = [];
+          return [];
+        }
+        const migrated: string = await MigrationRegistry.runChain(
+          legacy, version, TokenSchema.CURRENT, TokenSchema.steps());
+        // 先写新键，校验可读后再删旧键
+        prefs.putSync(KEY_TOKENS_V2, migrated);
+        await prefs.flush();
+        const verify: TokenModel[] = await TokenStorage.readEncrypted(
+          prefs.getSync(KEY_TOKENS_V2, '') as string);
+        if (verify.length !== expected.length) {
+          throw new Error('token migration verify failed');
+        }
+        prefs.deleteSync(KEY_TOKENS_LEGACY);
+        await prefs.flush();
+        TokenStorage.cachedTokens = verify;
+        return verify;
       }
+      // 旧键中已是当前版本（异常但可能出现）：搬到新键，校验可读后删旧键
+      prefs.putSync(KEY_TOKENS_V2, legacy);
+      await prefs.flush();
+      const moved: TokenModel[] = await TokenStorage.readEncrypted(
+        prefs.getSync(KEY_TOKENS_V2, '') as string);
       prefs.deleteSync(KEY_TOKENS_LEGACY);
       await prefs.flush();
-      TokenStorage.cachedTokens = tokens;
-      return tokens;
+      TokenStorage.cachedTokens = moved;
+      return moved;
     }
     TokenStorage.cachedTokens = [];
     return [];
@@ -116,10 +154,16 @@ export class TokenStorage {
     await prefs.flush();
     TokenStorage.cachedTokens = undefined;
     TokenStorage.decryptFailedFlag = false;
+    TokenStorage.versionTooNewFlag = false;
     TokenStorage.writeLocked = false;
   }
 
   private static async readEncrypted(encrypted: string): Promise<TokenModel[]> {
+    const version: number = TokenSchema.detectVersion(encrypted);
+    TokenSchema.assertNotFromFuture(version);
+    if (version < TokenSchema.CURRENT) {
+      throw new Error('token data needs migration, version=' + version.toString());
+    }
     const cipher: string = TokenPayloadCodec.extractCipher(encrypted);
     const jsonStr: string = await HuksStore.decrypt(cipher);
     return TokenStorage.parseTokens(jsonStr);
