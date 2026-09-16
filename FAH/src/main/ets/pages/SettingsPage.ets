@@ -13,6 +13,7 @@ import { TokenModel } from '../model/TokenModel';
 import { AppSettings } from '../model/AppSettings';
 import { BiometricUtil } from '../utils/BiometricUtil';
 import { LanguageManager, LANG_SYSTEM, LANG_ZH_CN, LANG_EN, LANG_ZH_TW } from '../common/LanguageManager';
+import { PrivacyModeManager } from '../common/PrivacyModeManager';
 import { PromptAction } from '@kit.ArkUI';
 import { bundleManager } from '@kit.AbilityKit';
 
@@ -34,6 +35,7 @@ export struct SettingsPage {
   @StorageLink('showBackupReminderPicker') showBackupReminderPicker: boolean = false;
   @StorageLink('showDefaultSortPicker') showDefaultSortPicker: boolean = false;
   @StorageLink('showLanguagePicker') showLanguagePicker: boolean = false;
+  @StorageLink('privacyMode') privacyMode: boolean = true;
   @State importRetryCount: number = 0;
   @State importLocked: boolean = false;
   @State version: string = ""
@@ -126,12 +128,26 @@ export struct SettingsPage {
                 label: this.str($r('app.string.set_auto_lock')),
                 value: this.biometricEnabled ? this.getAutoLockLabel() : '',
                 showArrow: this.biometricEnabled,
-                showDivider: false,
+                showDivider: true,
                 dimmed: !this.biometricEnabled,
                 onRowClick: (): void => {
                   if (this.biometricEnabled) {
                     this.showAutoLockPicker = true;
                   }
+                }
+              })
+              Divider().height(0.5).color(this.getColors().divider).width('100%').margin({ left: 56 })
+              SettingsRow({
+                iconEmoji: '🛡️',
+                iconBgColor: '#E8F0FE',
+                label: this.str($r('app.string.set_privacy_mode')),
+                desc: this.str($r('app.string.set_privacy_mode_desc')),
+                hasToggle: true,
+                toggleOn: this.privacyMode,
+                showArrow: false,
+                showDivider: false,
+                onToggle: (): void => {
+                  this.handlePrivacyModeToggle();
                 }
               })
             }
@@ -444,6 +460,8 @@ export struct SettingsPage {
       this.defaultSort = settings.defaultSort;
       this.language = settings.language;
       this.biometricEnabled = settings.biometricEnabled;
+      this.privacyMode = settings.privacyMode;
+      PrivacyModeManager.applyWindow(settings.privacyMode);
       if (AppStorage.get<boolean>('devMockEnabled') !== settings.mockDataEnabled) {
         AppStorage.set('devMockEnabled', settings.mockDataEnabled);
       }
@@ -475,6 +493,11 @@ export struct SettingsPage {
         settings.biometricEnabled = partial.biometricEnabled;
         this.biometricEnabled = partial.biometricEnabled;
         AppStorage.set('cachedBiometricEnabled', partial.biometricEnabled);
+      }
+      if (partial.privacyMode !== undefined) {
+        settings.privacyMode = partial.privacyMode;
+        this.privacyMode = partial.privacyMode;
+        AppStorage.set('privacyMode', partial.privacyMode);
       }
       await SettingsStorage.save(settings);
     } catch (_e) {
@@ -632,6 +655,15 @@ export struct SettingsPage {
       this.saveSettings({ language: value });
     }
     this.showToast(this.str($r('app.string.set_language_changed_toast')), 2500);
+  }
+
+  // --- Privacy mode (anti screenshot) ---
+
+  private handlePrivacyModeToggle(): void {
+    const next: boolean = !this.privacyMode;
+    this.privacyMode = next;
+    PrivacyModeManager.apply(next);
+    this.saveSettings({ privacyMode: next });
   }
 
   // --- Biometric toggle ---

@@ -7,6 +7,7 @@ export struct SettingsRow {
   @Prop iconEmoji: string = '';
   @Prop iconBgColor: string = '#E8F0FE';
   @Prop label: string = '';
+  @Prop desc: string = '';
   @Prop value: string = '';
   @Prop showArrow: boolean = true;
   @Prop isDestructive: boolean = false;
@@ -45,11 +46,22 @@ export struct SettingsRow {
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
 
-        Text(this.label)
-          .fontSize(15)
-          .fontColor(this.getColors().textPrimary)
-          .layoutWeight(1)
-          .margin({ left: 10 })
+        Column() {
+          Text(this.label)
+            .fontSize(15)
+            .fontColor(this.getColors().textPrimary)
+            .width('100%')
+          if (this.desc.length > 0) {
+            Text(this.desc)
+              .fontSize(11)
+              .fontColor(this.getColors().textSecondary)
+              .width('100%')
+              .margin({ top: 2 })
+          }
+        }
+        .layoutWeight(1)
+        .alignItems(HorizontalAlign.Start)
+        .margin({ left: 10 })
 
         Row({ space: 4 }) {
           if (this.hasToggle) {
