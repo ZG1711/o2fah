@@ -7,6 +7,7 @@ import { TokenStorage } from '../storage/TokenStorage';
 import { TagStorage } from '../storage/TagStorage';
 import { TagModel } from '../model/TagModel';
 import { OtpUriParser } from '../engine/OtpUriParser';
+import { TokenMatcher } from '../utils/TokenMatcher';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { router } from '@kit.ArkUI';
 
@@ -423,6 +424,33 @@ struct AddConfirmPage {
     token.icon = this.icon;
     token.iconColor = this.getIconColor(issuerTrimmed);
 
+    TokenStorage.getAll().then((existing: TokenModel[]): void => {
+      this.loading = false;
+      if (TokenMatcher.isDuplicate(existing, issuerTrimmed, accountTrimmed)) {
+        this.getUIContext().getPromptAction().showDialog({
+          title: this.str($r('app.string.dialog_duplicate_title')),
+          message: this.str($r('app.string.dialog_duplicate_message')),
+          buttons: [
+            { text: this.str($r('app.string.button_cancel')), color: '#86868B' },
+            { text: this.str($r('app.string.button_add_anyway')), color: '#007AFF' }
+          ]
+        }).then((data): void => {
+          if (data.index === 1) {
+            this.persistToken(token);
+          }
+        }).catch((): void => {
+        });
+        return;
+      }
+      this.persistToken(token);
+    }).catch((): void => {
+      this.loading = false;
+      this.persistToken(token);
+    });
+  }
+
+  private persistToken(token: TokenModel): void {
+    this.loading = true;
     TokenStorage.save(token).then((): void => {
       this.loading = false;
       this.showToastMsg(this.str($r('app.string.toast_token_added')));
