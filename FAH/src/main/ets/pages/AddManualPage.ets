@@ -63,6 +63,7 @@ struct AddManualPage {
   private buildDigitsOptions(): PickerOption[] {
     const options: PickerOption[] = [
       { label: '6 ' + this.str($r('app.string.unit_digits')), value: '6', description: this.str($r('app.string.digits_6_desc')) },
+      { label: '7 ' + this.str($r('app.string.unit_digits')), value: '7', description: this.str($r('app.string.digits_7_desc')) },
       { label: '8 ' + this.str($r('app.string.unit_digits')), value: '8', description: this.str($r('app.string.digits_8_desc')) }
     ];
     return options;
@@ -71,7 +72,9 @@ struct AddManualPage {
   private buildPeriodOptions(): PickerOption[] {
     const options: PickerOption[] = [
       { label: '30 ' + this.str($r('app.string.unit_seconds')), value: '30', description: this.str($r('app.string.period_30_desc')) },
-      { label: '60 ' + this.str($r('app.string.unit_seconds')), value: '60', description: this.str($r('app.string.period_60_desc')) }
+      { label: '60 ' + this.str($r('app.string.unit_seconds')), value: '60', description: this.str($r('app.string.period_60_desc')) },
+      { label: '90 ' + this.str($r('app.string.unit_seconds')), value: '90', description: this.str($r('app.string.period_90_desc')) },
+      { label: '120 ' + this.str($r('app.string.unit_seconds')), value: '120', description: this.str($r('app.string.period_120_desc')) }
     ];
     return options;
   }
