@@ -4,6 +4,7 @@ import tokenPayloadTest from './TokenPayload.test';
 import migrationRegistryTest from './MigrationRegistry.test';
 import tokenSchemaTest from './TokenSchema.test';
 import secretNormalizerTest from './SecretNormalizer.test';
+import tokenMatcherTest from './TokenMatcher.test';
 
 export default function testsuite() {
   localUnitTest();
@@ -12,4 +13,5 @@ export default function testsuite() {
   migrationRegistryTest();
   tokenSchemaTest();
   secretNormalizerTest();
+  tokenMatcherTest();
 }
