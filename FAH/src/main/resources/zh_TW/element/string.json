@@ -857,6 +857,10 @@
       "value": "令牌已新增 ✓"
     },
     {
+      "name": "toast_secret_corrected",
+      "value": "已自動修正 %d 個無效字元"
+    },
+    {
       "name": "confirm_token_title",
       "value": "確認令牌資訊"
     },

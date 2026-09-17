@@ -7,6 +7,7 @@ import { TagStorage } from '../storage/TagStorage';
 import { TagModel } from '../model/TagModel';
 import { ClipboardUtil } from '../utils/ClipboardUtil';
 import { PickerPanel, PickerOption } from '../components/PickerPanel';
+import { SecretNormalizer, NormalizeResult } from '../utils/SecretNormalizer';
 
 @Entry
 @Component
@@ -539,7 +540,8 @@ struct AddManualPage {
   private handleSave(): void {
     const issuerTrimmed: string = this.issuer.trim();
     const accountTrimmed: string = this.account.trim();
-    const secretTrimmed: string = this.secretKey.trim().toUpperCase();
+    const normalized: NormalizeResult = SecretNormalizer.normalize(this.secretKey);
+    const secretTrimmed: string = normalized.secret;
 
     if (issuerTrimmed.length === 0) {
       this.showToastMsg(this.str($r('app.string.toast_enter_issuer')));
@@ -553,9 +555,7 @@ struct AddManualPage {
       this.showToastMsg(this.str($r('app.string.toast_enter_secret')));
       return;
     }
-
-    const base32Regex: RegExp = /^[A-Z2-7]+=*$/;
-    if (!base32Regex.test(secretTrimmed)) {
+    if (!SecretNormalizer.isValid(secretTrimmed)) {
       this.showToastMsg(this.str($r('app.string.toast_invalid_secret')));
       return;
     }
@@ -578,7 +578,13 @@ struct AddManualPage {
     token.iconColor = this.getIconColor(issuerTrimmed);
 
     TokenStorage.save(token).then((): void => {
-      this.showToastMsg(this.str($r('app.string.toast_token_added')));
+      if (normalized.correctedCount > 0) {
+        const msg: string = this.str($r('app.string.toast_secret_corrected'))
+          .replace('%d', normalized.correctedCount.toString());
+        this.showToastMsg(msg);
+      } else {
+        this.showToastMsg(this.str($r('app.string.toast_token_added')));
+      }
       setTimeout(() => {
         this.getUIContext().getRouter().back();
       }, 800);
@@ -588,7 +594,7 @@ struct AddManualPage {
   private handlePaste(): void {
     ClipboardUtil.paste().then((text: string): void => {
       if (text.length > 0) {
-        this.secretKey = text.toUpperCase();
+        this.secretKey = SecretNormalizer.normalize(text).secret;
       }
     });
   }

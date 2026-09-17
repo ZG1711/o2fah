@@ -857,6 +857,10 @@
       "value": "Token added ✓"
     },
     {
+      "name": "toast_secret_corrected",
+      "value": "Corrected %d invalid character(s)"
+    },
+    {
       "name": "confirm_token_title",
       "value": "Confirm Token"
     },
