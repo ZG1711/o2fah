@@ -813,6 +813,10 @@
       "value": "生成 6 位验证码"
     },
     {
+      "name": "digits_7_desc",
+      "value": "部分服务使用（如 Steam Guard）"
+    },
+    {
       "name": "digits_8_desc",
       "value": "生成 8 位验证码"
     },
@@ -823,6 +827,14 @@
     {
       "name": "period_60_desc",
       "value": "每 60 秒刷新一次"
+    },
+    {
+      "name": "period_90_desc",
+      "value": "每 90 秒刷新一次"
+    },
+    {
+      "name": "period_120_desc",
+      "value": "每 120 秒刷新一次"
     },
     {
       "name": "toast_enter_issuer",

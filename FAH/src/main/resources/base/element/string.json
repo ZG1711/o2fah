@@ -813,6 +813,10 @@
       "value": "Generate 6-digit code"
     },
     {
+      "name": "digits_7_desc",
+      "value": "Used by some services (such as Steam Guard)"
+    },
+    {
       "name": "digits_8_desc",
       "value": "Generate 8-digit code"
     },
@@ -823,6 +827,14 @@
     {
       "name": "period_60_desc",
       "value": "Refresh every 60 seconds"
+    },
+    {
+      "name": "period_90_desc",
+      "value": "90-second refresh window"
+    },
+    {
+      "name": "period_120_desc",
+      "value": "120-second refresh window"
     },
     {
       "name": "toast_enter_issuer",

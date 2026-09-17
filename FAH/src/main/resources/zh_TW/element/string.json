@@ -813,6 +813,10 @@
       "value": "產生 6 位驗證碼"
     },
     {
+      "name": "digits_7_desc",
+      "value": "部分服務使用（如 Steam Guard）"
+    },
+    {
       "name": "digits_8_desc",
       "value": "產生 8 位驗證碼"
     },
@@ -823,6 +827,14 @@
     {
       "name": "period_60_desc",
       "value": "每 60 秒重新整理一次"
+    },
+    {
+      "name": "period_90_desc",
+      "value": "每 90 秒重新整理一次"
+    },
+    {
+      "name": "period_120_desc",
+      "value": "每 120 秒重新整理一次"
     },
     {
       "name": "toast_enter_issuer",
