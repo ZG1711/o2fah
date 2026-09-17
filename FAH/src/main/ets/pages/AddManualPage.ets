@@ -8,6 +8,7 @@ import { TagModel } from '../model/TagModel';
 import { ClipboardUtil } from '../utils/ClipboardUtil';
 import { PickerPanel, PickerOption } from '../components/PickerPanel';
 import { SecretNormalizer, NormalizeResult } from '../utils/SecretNormalizer';
+import { TokenMatcher } from '../utils/TokenMatcher';
 
 @Entry
 @Component
@@ -577,6 +578,30 @@ struct AddManualPage {
     token.icon = this.icon;
     token.iconColor = this.getIconColor(issuerTrimmed);
 
+    TokenStorage.getAll().then((existing: TokenModel[]): void => {
+      if (TokenMatcher.isDuplicate(existing, issuerTrimmed, accountTrimmed)) {
+        this.getUIContext().getPromptAction().showDialog({
+          title: this.str($r('app.string.dialog_duplicate_title')),
+          message: this.str($r('app.string.dialog_duplicate_message')),
+          buttons: [
+            { text: this.str($r('app.string.button_cancel')), color: '#86868B' },
+            { text: this.str($r('app.string.button_add_anyway')), color: '#007AFF' }
+          ]
+        }).then((data): void => {
+          if (data.index === 1) {
+            this.persistToken(token, normalized);
+          }
+        }).catch((): void => {
+        });
+        return;
+      }
+      this.persistToken(token, normalized);
+    }).catch((): void => {
+      this.persistToken(token, normalized);
+    });
+  }
+
+  private persistToken(token: TokenModel, normalized: NormalizeResult): void {
     TokenStorage.save(token).then((): void => {
       if (normalized.correctedCount > 0) {
         const msg: string = this.str($r('app.string.toast_secret_corrected'))
