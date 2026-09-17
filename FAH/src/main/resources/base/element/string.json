@@ -905,6 +905,18 @@
       "value": "Delete Token"
     },
     {
+      "name": "dialog_duplicate_title",
+      "value": "Duplicate token"
+    },
+    {
+      "name": "dialog_duplicate_message",
+      "value": "A token with the same issuer and account already exists. Add it anyway?"
+    },
+    {
+      "name": "button_add_anyway",
+      "value": "Add anyway"
+    },
+    {
       "name": "dialog_delete_token_message",
       "value": "Delete %s?"
     },

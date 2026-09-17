@@ -905,6 +905,18 @@
       "value": "删除令牌"
     },
     {
+      "name": "dialog_duplicate_title",
+      "value": "已存在相同令牌"
+    },
+    {
+      "name": "dialog_duplicate_message",
+      "value": "已存在相同服务与账号的令牌，仍要添加吗？"
+    },
+    {
+      "name": "button_add_anyway",
+      "value": "仍然添加"
+    },
+    {
       "name": "dialog_delete_token_message",
       "value": "确定删除 %s 吗？"
     },
