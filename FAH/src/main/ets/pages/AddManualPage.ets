@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { IconPickerPanel } from '../components/IconPicker';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
@@ -14,6 +15,7 @@ import { TokenMatcher } from '../utils/TokenMatcher';
 @Component
 struct AddManualPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @State issuer: string = '';
   @State account: string = '';
   @State icon: string = '';
@@ -43,6 +45,10 @@ struct AddManualPage {
 
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.FORM_MAX_WIDTH);
   }
 
   private buildProtocolOptions(): PickerOption[] {
@@ -433,7 +439,7 @@ struct AddManualPage {
             .width('100%')
           }
           .width('100%')
-          .padding({ top: 4, left: 20, right: 20, bottom: 24 })
+          .padding({ top: 4, left: this.getSidePadding(), right: this.getSidePadding(), bottom: 24 })
         }
         .width('100%')
         .layoutWeight(1)

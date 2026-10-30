@@ -1,11 +1,13 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 @Component
 export struct SearchBar {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @State searchText: string = '';
   @Prop codesHidden: boolean = false;
+  @Prop sidePadding: number = DimenConstants.PAGE_HORIZONTAL_PADDING;
   onChange?: (text: string) => void;
   onSortClick?: () => void;
   onToggleCodesHidden?: () => void;
@@ -97,6 +99,6 @@ export struct SearchBar {
       })
     }
     .width('100%')
-    .padding({ top: 10 ,left: 20, right: 20, bottom: 10 })
+    .padding({ top: 10, left: this.sidePadding, right: this.sidePadding, bottom: 10 })
   }
 }

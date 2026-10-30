@@ -5,7 +5,8 @@
     "description": "$string:module_desc",
     "mainElement": "FAHAbility",
     "deviceTypes": [
-      "phone"
+      "phone",
+      "tablet"
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
@@ -45,6 +46,7 @@
         "label": "$string:FAHAbility_label",
         "startWindowIcon": "$media:startIcon",
         "startWindowBackground": "$color:start_window_background",
+        "orientation": "auto_rotation_restricted",
         "exported": true,
         "skills": [
           {

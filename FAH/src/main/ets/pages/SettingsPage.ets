@@ -1,5 +1,6 @@
 import { SettingsRow } from '../components/SettingsRow';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { PickerPanel, PickerOption } from '../components/PickerPanel';
 import { ExportPasswordDialog } from '../components/dialogs/ExportPasswordDialog';
 import { ImportPasswordDialog } from '../components/dialogs/ImportPasswordDialog';
@@ -21,6 +22,7 @@ import { bundleManager } from '@kit.AbilityKit';
 export struct SettingsPage {
   promptAction: PromptAction = this.getUIContext().getPromptAction();
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @StorageLink('themeMode') themeMode: string = 'system';
   @StorageLink('devMockEnabled') devMockEnabled: boolean = false;
   @State toastMessage: string = '';
@@ -100,6 +102,10 @@ export struct SettingsPage {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.SETTINGS_MAX_WIDTH);
   }
 
   build() {
@@ -327,7 +333,7 @@ export struct SettingsPage {
               .padding({ top: 12, bottom: 32 })
           }
           .width('100%')
-          .padding({ left: 20, right: 20 })
+          .padding({ left: this.getSidePadding(), right: this.getSidePadding() })
         }
         .layoutWeight(1)
         .scrollBar(BarState.Off)

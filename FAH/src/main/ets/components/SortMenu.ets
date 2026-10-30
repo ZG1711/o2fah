@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 export interface SortOption {
   key: string;
@@ -12,6 +13,7 @@ export struct SortMenu {
   @Prop selectedSort: string = 'manual';
   @Prop visible: boolean = false;
   @Prop compactMode: boolean = false;
+  @Prop rightOffset: number = DimenConstants.PAGE_HORIZONTAL_PADDING;
   onSelectSort?: (sortKey: string) => void;
   onClose?: () => void;
   onToggleCardMode?: () => void;
@@ -141,7 +143,7 @@ export struct SortMenu {
         .borderRadius(14)
         .backgroundColor(this.getColors().cardBackground)
         .shadow(this.isDarkMode ? undefined : ({ radius: 20, color: 'rgba(0,0,0,0.12)', offsetY: 4 } as ShadowOptions))
-        .position({ right: 20, top: 48 })
+        .position({ right: this.rightOffset, top: 48 })
       }
       .width('100%')
       .height('100%')

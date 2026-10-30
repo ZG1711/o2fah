@@ -1,4 +1,5 @@
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 export interface TagItem {
   id: string;
@@ -10,6 +11,7 @@ export interface TagItem {
 export struct CategoryTabs {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
   @Prop tags: TagItem[] = [];
+  @Prop sidePadding: number = DimenConstants.PAGE_HORIZONTAL_PADDING;
   @State selectedIndex: number = 0;
   onTagSelect?: (tagId: string, index: number) => void;
 
@@ -43,7 +45,7 @@ export struct CategoryTabs {
             })
         }, (tag: TagItem) => tag.id)
       }
-      .padding({ left: 20, right: 20, top: 2, bottom: 6 })
+      .padding({ left: this.sidePadding, right: this.sidePadding, top: 2, bottom: 6 })
     }
     .scrollable(ScrollDirection.Horizontal)
     .scrollBar(BarState.Off)

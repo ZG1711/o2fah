@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsStorage } from '../storage/SettingsStorage';
 import { AppSettings } from '../model/AppSettings';
@@ -16,6 +17,7 @@ interface LibInfo {
 @Component
 struct AboutPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @StorageLink('developerMode') developerMode: boolean = false;
   @StorageLink('devMockEnabled') mockDataEnabled: boolean = false;
   @State clickCount: number = 0;
@@ -45,6 +47,10 @@ struct AboutPage {
 
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.CONTENT_MAX_WIDTH);
   }
 
   getCapsuleBgLight(): string {
@@ -448,7 +454,7 @@ struct AboutPage {
           .padding({ top: 8, bottom: 32 })
         }
         .width('100%')
-        .padding({ left: 20, right: 20 })
+        .padding({ left: this.getSidePadding(), right: this.getSidePadding() })
       }
       .layoutWeight(1)
       .scrollBar(BarState.Off)

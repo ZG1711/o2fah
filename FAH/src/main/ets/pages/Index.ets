@@ -8,6 +8,7 @@ import { AddTokenPanel } from '../components/AddTokenPanel';
 import { SettingsPage } from './SettingsPage';
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
 import { TotpEngine } from '../engine/TotpEngine';
@@ -38,6 +39,7 @@ struct Index {
   @StorageLink('appIsLocked') @Watch('onAppLockedChanged') appIsLocked: boolean = false;
   @StorageLink('codesHidden') codesHidden: boolean = false;
   @StorageLink('cardCompact') cardCompact: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @StorageLink('devMockEnabled') @Watch('onDevMockChange') devMockEnabled: boolean = false;
   @State currentTabIndex: number = 0;
   @State @Watch('onListCriteriaChange') searchText: string = '';
@@ -302,6 +304,10 @@ struct Index {
     return ThemeManager.getLightColors();
   }
 
+  private getContentSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.contentMaxWidth(this.windowWidthVp));
+  }
+
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
   }
@@ -316,6 +322,7 @@ struct Index {
               // Search bar
               SearchBar({
                 codesHidden: this.codesHidden,
+                sidePadding: this.getContentSidePadding(),
                 onChange: (text: string) => {
                   this.searchText = text;
                 },
@@ -331,6 +338,7 @@ struct Index {
               CategoryTabs({
                 tags: this.displayTags,
                 selectedIndex: this.selectedTagIndex,
+                sidePadding: this.getContentSidePadding(),
                 onTagSelect: (tagId: string, index: number) => {
                   this.selectedTagIndex = index;
                 }
@@ -347,7 +355,7 @@ struct Index {
                     .margin({ left: 6 })
                 }
                 .width('100%')
-                .padding({ left: 20, right: 20 })
+                .padding({ left: this.getContentSidePadding(), right: this.getContentSidePadding() })
                 .margin({ top: 4, bottom: 4 })
               }
 
@@ -386,7 +394,7 @@ struct Index {
                   }
                   .width('100%')
                   .backgroundColor('#FEF3C7')
-                  .padding({ left: 20, right: 20, bottom: 4 })
+                  .padding({ left: this.getContentSidePadding(), right: this.getContentSidePadding(), bottom: 4 })
                 }
                 if (this.tokens.length > 0) {
                   List({ space: 10 }) {
@@ -405,7 +413,9 @@ struct Index {
                   }
                   .width('100%')
                   .height('100%')
-                  .padding({ left: 20, right: 20, top: 6 })
+                  .padding({ left: this.getContentSidePadding(), right: this.getContentSidePadding(), top: 6 })
+                  .lanes(this.windowWidthVp >= DimenConstants.WIDE_LIST_MIN_WIDTH ? 2 : 1,
+                    DimenConstants.LIST_TWO_COLUMN_GAP)
                   .cachedCount(8)
                   .scrollBar(BarState.Off)
                   .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
@@ -439,7 +449,7 @@ struct Index {
                   Column() {
                     FabButton({ onFabClick: () => { this.showAddPanel = true; } })
                   }
-                  .padding({ right: 20, bottom: 20 })
+                  .padding({ right: this.getContentSidePadding(), bottom: 20 })
                 }
               }
               .layoutWeight(1)
@@ -484,6 +494,7 @@ struct Index {
           selectedSort: this.selectedSort,
           visible: true,
           compactMode: this.cardCompact,
+          rightOffset: this.getContentSidePadding(),
           onSelectSort: (sortKey: string) => {
             this.selectedSort = sortKey;
             this.showSortMenu = false;

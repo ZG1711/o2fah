@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { TokenModel } from '../model/TokenModel';
 import { TokenStorage } from '../storage/TokenStorage';
 import { OtpUriBuilder } from '../engine/OtpUriBuilder';
@@ -12,6 +13,7 @@ import { image } from '@kit.ImageKit';
 @Component
 struct ExportQrPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @State tokens: TokenModel[] = [];
   @State qrStatus: string[] = [];
   @State qrMaps: image.PixelMap[] = [];
@@ -55,6 +57,10 @@ struct ExportQrPage {
 
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private getQrSize(): number {
+    return DimenConstants.isTablet(this.windowWidthVp) ? 320 : 260;
   }
 
   build() {
@@ -187,8 +193,8 @@ struct ExportQrPage {
       Column() {
         if (this.qrStatus[index] === 'ready') {
           Image(this.qrMaps[index])
-            .width(260)
-            .height(260)
+            .width(this.getQrSize())
+            .height(this.getQrSize())
             .objectFit(ImageFit.Contain)
         } else if (this.qrStatus[index] === 'error') {
           Column({ space: 12 }) {
@@ -216,8 +222,8 @@ struct ExportQrPage {
             .color(this.getColors().accentBlue)
         }
       }
-      .width(260)
-      .height(260)
+      .width(this.getQrSize())
+      .height(this.getQrSize())
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
       .borderRadius(16)

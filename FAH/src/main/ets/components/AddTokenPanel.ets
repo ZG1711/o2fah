@@ -1,9 +1,11 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 @Component
 export struct AddTokenPanel {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @Prop visible: boolean = false;
   onClose?: () => void;
   onScanQR?: () => void;
@@ -15,6 +17,10 @@ export struct AddTokenPanel {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private isTablet(): boolean {
+    return DimenConstants.isTablet(this.windowWidthVp);
   }
 
   build() {
@@ -169,9 +175,16 @@ export struct AddTokenPanel {
               })
           }
           .backgroundColor(this.getColors().cardBackground)
-          .borderRadius({ topLeft: 20, topRight: 20, bottomLeft: 0, bottomRight: 0 })
+          .borderRadius({
+            topLeft: DimenConstants.PICKER_RADIUS,
+            topRight: DimenConstants.PICKER_RADIUS,
+            bottomLeft: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0,
+            bottomRight: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0
+          })
           .padding({ top: 16, left: 28, right: 28, bottom: 36 })
           .width('100%')
+          .constraintSize({ maxWidth: DimenConstants.SHEET_MAX_WIDTH })
+          .margin({ bottom: this.isTablet() ? DimenConstants.SHEET_TABLET_BOTTOM_MARGIN : 0 })
         }
         .width('100%')
         .height('100%')
