@@ -52,4 +52,34 @@ export class DimenConstants {
   static readonly HANDLE_WIDTH: number = 36;
   static readonly HANDLE_HEIGHT: number = 5;
   static readonly HANDLE_RADIUS: number = 3;
+
+  // Responsive layout
+  static readonly TABLET_MIN_WIDTH: number = 600;
+  static readonly WIDE_LIST_MIN_WIDTH: number = 840;
+  static readonly CONTENT_MAX_WIDTH: number = 760;
+  static readonly WIDE_CONTENT_MAX_WIDTH: number = 1000;
+  static readonly SETTINGS_MAX_WIDTH: number = 640;
+  static readonly FORM_MAX_WIDTH: number = 600;
+  static readonly SHEET_MAX_WIDTH: number = 520;
+  static readonly SHEET_TABLET_BOTTOM_MARGIN: number = 24;
+  static readonly LIST_TWO_COLUMN_GAP: number = 12;
+
+  static isTablet(windowWidth: number): boolean {
+    return windowWidth >= DimenConstants.TABLET_MIN_WIDTH;
+  }
+
+  static contentMaxWidth(windowWidth: number): number {
+    if (windowWidth >= DimenConstants.WIDE_LIST_MIN_WIDTH) {
+      return DimenConstants.WIDE_CONTENT_MAX_WIDTH;
+    }
+    return DimenConstants.CONTENT_MAX_WIDTH;
+  }
+
+  static pageSidePadding(windowWidth: number, maxContentWidth: number): number {
+    const centered: number = (windowWidth - maxContentWidth) / 2;
+    if (centered > DimenConstants.PAGE_HORIZONTAL_PADDING) {
+      return centered;
+    }
+    return DimenConstants.PAGE_HORIZONTAL_PADDING;
+  }
 }

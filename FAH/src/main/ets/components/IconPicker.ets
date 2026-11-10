@@ -1,5 +1,6 @@
 import { BRAND_ICON_NAMES } from '../common/BrandIconNames';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 class IconDataSource implements IDataSource {
   private names: string[] = [];
@@ -41,6 +42,7 @@ class IconDataSource implements IDataSource {
 @Component
 export struct IconGrid {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @Prop selected: string = '';
   onSelect?: (name: string) => void;
 
@@ -52,6 +54,10 @@ export struct IconGrid {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private isTablet(): boolean {
+    return DimenConstants.isTablet(this.windowWidthVp);
   }
 
   private filteredNames(): string[] {
@@ -107,7 +113,7 @@ export struct IconGrid {
           }
         }, (name: string) => name)
       }
-      .columnsTemplate('1fr 1fr 1fr 1fr 1fr 1fr')
+      .columnsTemplate(this.isTablet() ? '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr' : '1fr 1fr 1fr 1fr 1fr 1fr')
       .columnsGap(8)
       .rowsGap(8)
       .width('100%')
@@ -121,6 +127,7 @@ export struct IconGrid {
 @Component
 export struct IconPickerPanel {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @Prop visible: boolean = false;
   @Prop selected: string = '';
   onSelect?: (name: string) => void;
@@ -131,6 +138,10 @@ export struct IconPickerPanel {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private isTablet(): boolean {
+    return DimenConstants.isTablet(this.windowWidthVp);
   }
 
   build() {
@@ -182,9 +193,16 @@ export struct IconPickerPanel {
             })
         }
         .width('100%')
+        .constraintSize({ maxWidth: DimenConstants.SHEET_MAX_WIDTH })
         .padding({ top: 16, left: 20, right: 20, bottom: 28 })
         .backgroundColor(this.getColors().cardBackground)
-        .borderRadius({ topLeft: 20, topRight: 20 })
+        .borderRadius({
+          topLeft: DimenConstants.PICKER_RADIUS,
+          topRight: DimenConstants.PICKER_RADIUS,
+          bottomLeft: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0,
+          bottomRight: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0
+        })
+        .margin({ bottom: this.isTablet() ? DimenConstants.SHEET_TABLET_BOTTOM_MARGIN : 0 })
       }
       .width('100%')
       .height('100%')

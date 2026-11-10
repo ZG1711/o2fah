@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 
 interface FaqItem {
   emoji: string;
@@ -18,6 +19,7 @@ interface GuideItem {
 @Component
 struct HelpFeedbackPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @State faqExpanded: boolean[] = [false, false, false, false, false];
   @State guideExpanded: boolean[] = [false, false, false];
   @State selectedFeedbackType: number = 0;
@@ -92,6 +94,10 @@ struct HelpFeedbackPage {
 
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.CONTENT_MAX_WIDTH);
   }
 
   getInputBg(): string {
@@ -379,7 +385,7 @@ struct HelpFeedbackPage {
         }
         .width('100%')
         .height("100%")
-        .padding({ left: 20, right: 20 })
+        .padding({ left: this.getSidePadding(), right: this.getSidePadding() })
 
       }
       .scrollBar(BarState.Off)

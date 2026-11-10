@@ -14,9 +14,11 @@ const APP_LOCKED_KEY: string = 'appIsLocked';
 const CACHED_BIOMETRIC_ENABLED: string = 'cachedBiometricEnabled';
 const CACHED_AUTO_LOCK_TIMEOUT: string = 'cachedAutoLockTimeout';
 const PRIVACY_MODE_KEY: string = 'privacyMode';
+const WINDOW_WIDTH_KEY: string = 'windowWidthVp';
 
 export default class FAHAbility extends UIAbility {
   private lastBackgroundTimestamp: number = 0;
+  private mainWindow: window.Window | undefined = undefined;
 
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     SettingsStorage.init(this.context);
@@ -36,6 +38,7 @@ export default class FAHAbility extends UIAbility {
     AppStorage.setOrCreate('lockRetryCountPersisted', 0);
     AppStorage.setOrCreate('pendingImportUri', '');
     AppStorage.setOrCreate(PRIVACY_MODE_KEY, true);
+    AppStorage.setOrCreate<number>(WINDOW_WIDTH_KEY, 0);
     if (want.uri !== undefined && want.uri.length > 0) {
       AppStorage.set('pendingImportUri', want.uri);
     }
@@ -59,6 +62,31 @@ export default class FAHAbility extends UIAbility {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
+  private setupWindowLayout(windowStage: window.WindowStage): void {
+    try {
+      const mainWindow: window.Window = windowStage.getMainWindowSync();
+      this.mainWindow = mainWindow;
+      this.updateWindowLayout(mainWindow.getWindowProperties().windowRect.width);
+      mainWindow.on('windowSizeChange', (size: window.Size): void => {
+        this.updateWindowLayout(size.width);
+      });
+    } catch (err) {
+      hilog.error(DOMAIN, 'testTag', 'Failed to track window size. Cause: %{public}s', JSON.stringify(err));
+    }
+  }
+
+  private updateWindowLayout(widthPx: number): void {
+    try {
+      if (this.mainWindow === undefined) {
+        return;
+      }
+      const widthVp: number = this.mainWindow.getUIContext().px2vp(widthPx);
+      AppStorage.setOrCreate<number>(WINDOW_WIDTH_KEY, widthVp);
+    } catch (err) {
+      hilog.error(DOMAIN, 'testTag', 'Failed to update window width. Cause: %{public}s', JSON.stringify(err));
+    }
+  }
+
   onWindowStageCreate(windowStage: window.WindowStage): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
@@ -74,12 +102,21 @@ export default class FAHAbility extends UIAbility {
         return;
       }
       PrivacyModeManager.applyCurrent();
+      this.setupWindowLayout(windowStage);
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
     });
   }
 
   onWindowStageDestroy(): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
+    if (this.mainWindow !== undefined) {
+      try {
+        this.mainWindow.off('windowSizeChange');
+      } catch (err) {
+        hilog.error(DOMAIN, 'testTag', 'Failed to remove window size listener. Cause: %{public}s', JSON.stringify(err));
+      }
+      this.mainWindow = undefined;
+    }
   }
 
   onForeground(): void {

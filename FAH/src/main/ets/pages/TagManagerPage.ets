@@ -3,6 +3,7 @@ import { TagRow, TagRowData } from '../components/TagRow';
 import { TagCreateDialog } from '../components/dialogs/TagCreateDialog';
 import { TagDeleteDialog } from '../components/dialogs/TagDeleteDialog';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { TagModel } from '../model/TagModel';
 import { TagStorage } from '../storage/TagStorage';
 import { TokenModel } from '../model/TokenModel';
@@ -12,6 +13,7 @@ import { TokenStorage } from '../storage/TokenStorage';
 @Component
 struct TagManagerPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @State tags: TagRowData[] = [];
   @State dragTagId: string = '';
 
@@ -77,6 +79,10 @@ struct TagManagerPage {
     return ThemeManager.getLightColors();
   }
 
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.CONTENT_MAX_WIDTH);
+  }
+
   build() {
     Column() {
       // Navigation bar
@@ -103,7 +109,7 @@ struct TagManagerPage {
         .fontSize(12)
         .fontColor(this.getColors().textSecondary)
         .width('100%')
-        .padding({ left: 20, right: 20, top: 0, bottom: 4 })
+        .padding({ left: this.getSidePadding(), right: this.getSidePadding(), top: 0, bottom: 4 })
 
       // Tag list
       List() {
@@ -125,7 +131,7 @@ struct TagManagerPage {
               actionAreaDistance: 112
             }
           } as SwipeActionOptions)
-          .margin({ left: 20, right: 20, bottom: 8 })
+          .margin({ left: this.getSidePadding(), right: this.getSidePadding(), bottom: 8 })
         }, (tag: TagRowData) => tag.id + '_' + tag.name + '_' + tag.color + '_' +
           tag.tokenCount.toString() + '_' + tag.isDragging.toString())
         .onMove((from: number, to: number): void => {
@@ -146,7 +152,7 @@ struct TagManagerPage {
             .fontSize(12)
             .fontColor(this.getColors().textSecondary)
             .width('100%')
-            .padding({ left: 20, right: 20, top: 0, bottom: 4 })
+            .padding({ left: this.getSidePadding(), right: this.getSidePadding(), top: 0, bottom: 4 })
             .textAlign(TextAlign.Center)
         }
         // New tag button
@@ -168,7 +174,7 @@ struct TagManagerPage {
           .borderRadius(14)
           .border({ width: 2, color: '#D1D1D6', style: BorderStyle.Dashed })
         }
-        .margin({ left: 20, right: 20 })
+        .margin({ left: this.getSidePadding(), right: this.getSidePadding() })
         .onClick(() => {
           this.showCreateDialog();
         })

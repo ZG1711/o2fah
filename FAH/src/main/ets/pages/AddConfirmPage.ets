@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { matchIcon } from '../common/BrandIconNames';
 import { IconPickerPanel } from '../components/IconPicker';
 import { TokenModel } from '../model/TokenModel';
@@ -15,6 +16,7 @@ import { router } from '@kit.ArkUI';
 @Component
 struct AddConfirmPage {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @State issuer: string = '';
   @State account: string = '';
   @State icon: string = '';
@@ -75,6 +77,10 @@ struct AddConfirmPage {
 
   private str(res: Resource): string {
     return this.getUIContext().getHostContext()!.resourceManager.getStringSync(res.id);
+  }
+
+  private getSidePadding(): number {
+    return DimenConstants.pageSidePadding(this.windowWidthVp, DimenConstants.FORM_MAX_WIDTH);
   }
 
   build() {
@@ -329,7 +335,7 @@ struct AddConfirmPage {
             .width('100%')
           }
           .width('100%')
-          .padding({ top: 0, left: 20, right: 20, bottom: 24 })
+          .padding({ top: 0, left: this.getSidePadding(), right: this.getSidePadding(), bottom: 24 })
         }
         .width('100%')
         .layoutWeight(1)

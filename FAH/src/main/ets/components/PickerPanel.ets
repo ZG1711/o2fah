@@ -1,5 +1,6 @@
 import { IconConstants } from '../common/IconConstants';
 import { ThemeManager, ThemeColors } from '../common/ThemeManager';
+import { DimenConstants } from '../common/DimenConstants';
 import { curves } from '@kit.ArkUI';
 
 export interface PickerOption {
@@ -12,6 +13,7 @@ export interface PickerOption {
 @Component
 export struct PickerPanel {
   @StorageLink('isDarkMode') isDarkMode: boolean = false;
+  @StorageLink('windowWidthVp') windowWidthVp: number = 0;
   @Prop title: string = '';
   @Prop options: PickerOption[] = [];
   @Prop selectedValue: string = '';
@@ -25,6 +27,10 @@ export struct PickerPanel {
       return ThemeManager.getDarkColors();
     }
     return ThemeManager.getLightColors();
+  }
+
+  private isTablet(): boolean {
+    return DimenConstants.isTablet(this.windowWidthVp);
   }
 
   onVisibleChanged(): void {
@@ -122,9 +128,16 @@ export struct PickerPanel {
           }
         }
         .width('100%')
+        .constraintSize({ maxWidth: DimenConstants.SHEET_MAX_WIDTH })
         .padding({ top: 16, bottom: 28, left: 28, right: 28 })
         .backgroundColor(this.getColors().cardBackground)
-        .borderRadius({ topLeft: 20, topRight: 20 })
+        .borderRadius({
+          topLeft: DimenConstants.PICKER_RADIUS,
+          topRight: DimenConstants.PICKER_RADIUS,
+          bottomLeft: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0,
+          bottomRight: this.isTablet() ? DimenConstants.PICKER_RADIUS : 0
+        })
+        .margin({ bottom: this.isTablet() ? DimenConstants.SHEET_TABLET_BOTTOM_MARGIN : 0 })
       }
       .width('100%')
       .height('100%')
